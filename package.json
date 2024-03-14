@@ -1,0 +1,37 @@
+{
+  "name": "std-kit",
+  "version": "1.0.0",
+  "description": "NodeJS Standard Library Additions",
+  "keywords": [
+    "std",
+    "standard",
+    "library",
+    "utilities",
+    "node",
+    "typescript"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "repository": "https://github.com/luastoned/std-kit",
+  "author": "LuaStoned <npm@luastoned.com>",
+  "license": "MIT",
+  "private": false,
+  "files": [
+    "lib/**/*"
+  ],
+  "scripts": {
+    "build": "yarn clean && yarn build:code && yarn build:types",
+    "build:code": "tsc --project tsconfig.build.json",
+    "build:types": "tsc --project tsconfig.build.json --declaration --emitDeclarationOnly",
+    "clean": "rimraf coverage lib",
+    "release": "release-it"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.11.27",
+    "release-it": "^17.1.1",
+    "rimraf": "^5.0.5",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.2"
+  }
+}
