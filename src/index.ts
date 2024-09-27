@@ -1,4 +1,18 @@
+export * from './utilities/generic';
+
 export * from './natives/array';
-export * from './natives/generic';
 export * from './natives/number';
 export * from './natives/object';
+export * from './natives/timer';
+
+// https://github.com/voodoocreation/ts-deepmerge
+export { merge as mergeDeep1 } from 'ts-deepmerge';
+
+// https://github.com/RebeccaStevens/deepmerge-ts
+export { deepmerge as mergeDeep2 } from 'deepmerge-ts';
+
+// https://github.com/ichernetskii/merge-deep-ts
+export { default as mergeDeep3 } from 'merge-deep-ts';
+
+// https://github.com/toss/es-toolkit/blob/main/src/object/merge.ts
+// https://github.com/Maggi64/moderndash/blob/main/package/src/object/merge.ts

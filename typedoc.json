@@ -1,0 +1,16 @@
+{
+  "entryPointStrategy": "expand",
+  "entryPoints": [
+    "src/natives",
+    "src/utilities",
+  ],
+  "plugin": [
+    "typedoc-plugin-markdown",
+    "typedoc-plugin-merge-modules",
+  ],
+  "out": "./docs",
+  "categorizeByGroup": true,
+  "mergeModulesRenameDefaults": true,
+  "mergeModulesMergeMode": "module",
+  "outputFileStrategy": "modules"
+}

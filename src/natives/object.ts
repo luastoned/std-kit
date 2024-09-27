@@ -1,42 +1,144 @@
-import { isArray, isObject } from './generic';
+import type { GenericObject, GetFieldType } from '~/utilities/types';
+import { isArray, isObject } from '~/utilities/generic';
 
-export type DFPredicate = (value: any, key: string, parent: object | []) => boolean;
-export type DFOptions = { path?: boolean; seperator?: string };
-export type DFReducerEntry = [string, any, DFPredicate, string[], object | []];
-export type DFReducerReturn = [string[], any][];
+/**
+ * Retrieves a value from a nested object or array using a dot/bracket notation path.
+ * If the value at the specified path doesn't exist, returns a default value.
+ *
+ * Supports accessing both object properties and array indices using a path such as 'user.posts[0].title'.
+ *
+ * @template TData - The type of the data object.
+ * @template TPath - The dot/bracket notation path to the property in the object.
+ * @template TDefault - The type of the default value to be returned if the path does not exist.
+ *
+ * @param {TData} data - The object or array from which to retrieve the value.
+ * @param {TPath} path - The string path specifying the property to retrieve.
+ * Supports dot notation (e.g., 'user.name') and bracket notation (e.g., 'user.posts[0]').
+ * @param {TDefault} defaultValue - The value to return if the specified path does not exist or is undefined.
+ *
+ * @returns {GetFieldType<TData, TPath> | TDefault} - The value at the specified path, or the default value if the path does not exist.
+ */
+export const getValue = <TData, TPath extends string, TDefault = GetFieldType<TData, TPath>>(
+  data: TData,
+  path: TPath,
+  defaultValue: TDefault,
+): GetFieldType<TData, TPath> | TDefault => {
+  const keys = path.split(/[\.\[\]]/).filter(Boolean) as Array<string | number>; // Split by dot or brackets, remove empty parts
 
-export const mergeObject = (target: any, source: any) => {
-  if (!isObject(target) || !isObject(source)) {
-    return source;
-  }
-
-  for (const key of Object.keys(source)) {
-    const targetValue = target[key];
-    const sourceValue = source[key];
-
-    if (isArray(targetValue) && isArray(sourceValue)) {
-      target[key] = targetValue.concat(sourceValue);
-    } else if (isObject(targetValue) && isObject(sourceValue)) {
-      target[key] = mergeObject(Object.assign({}, targetValue), sourceValue);
+  let result: unknown = data; // Use `unknown` to ensure strict type checking
+  for (const key of keys) {
+    if (result && typeof result === 'object' && key in result) {
+      result = (result as Record<string, unknown>)[key]; // Use indexed access for objects/arrays
     } else {
-      target[key] = sourceValue;
+      return defaultValue;
     }
   }
 
-  return target;
+  return result !== undefined ? (result as GetFieldType<TData, TPath>) : defaultValue;
 };
 
-const deepFilterReducer = (accumulator: DFReducerReturn, entry: DFReducerEntry) => {
-  const [key, value, filter, path, parent] = entry;
-  if (filter(value, key, parent)) accumulator.push([path, value]);
-  if (isArray(value) || isObject(value)) accumulator = accumulator.concat(deepFilterEntries(value, filter, path));
-  return accumulator;
+/**
+ * Sets a value in a nested object or array using a dot/bracket notation path.
+ * If the path does not exist, it will create intermediate objects or arrays as needed.
+ *
+ * Supports both object properties and array indices in the path, such as 'user.posts[0].title'.
+ *
+ * @template TData - The type of the data object being modified.
+ * @template TPath - The dot/bracket notation path to the property where the value will be set.
+ * @template TValue - The type of the value to set at the specified path.
+ *
+ * @param {TData} data - The object or array in which the value will be set.
+ * @param {TPath} path - The string path specifying the property to set.
+ * Supports dot notation (e.g., 'user.name') and bracket notation (e.g., 'user.posts[0]').
+ * @param {TValue} value - The value to set at the specified path.
+ *
+ * @returns {void}
+ */
+export const setValue = <TData, TPath extends string, TValue>(data: TData, path: TPath, value: TValue): void => {
+  const keys = path.split(/[\.\[\]]/).filter(Boolean) as Array<string | number>; // Split by dot or brackets, remove empty parts
+
+  // biome-ignore lint/suspicious/noExplicitAny: current is unknown territory, this is fine
+  let current: any = data; // Start at the root object
+  for (let idx = 0; idx < keys.length; idx++) {
+    const key = keys[idx];
+
+    // If we are at the last key, assign the value
+    if (idx === keys.length - 1) {
+      current[key] = value;
+    } else {
+      // Check if the current key exists and is an object or array
+      if (typeof current[key] !== 'object' || current[key] === null) {
+        // Create an empty object or array if the next key is a number (array-like access)
+        current[key] = Number.isNaN(Number(keys[idx + 1])) ? {} : [];
+      }
+
+      current = current[key]; // Move to the next level
+    }
+  }
 };
 
-const deepFilterEntries = (obj: object | [], filter: DFPredicate, path: string[] = []) =>
-  Object.entries(obj)
-    .map<DFReducerEntry>(([key, value]) => [key, value, filter, path.concat(key), obj])
-    .reduce(deepFilterReducer, []);
+type FilterFunction<T> = (obj: T) => boolean;
 
-export const filterObject = <T>(obj: object | [], filter: DFPredicate, options: DFOptions = {}): T[] =>
-  deepFilterEntries(obj, filter).map(([path, value]) => (options.path ? [path.join(options.seperator ?? '.'), value] : value));
+type FilterResult<T, P extends boolean> = P extends true ? { path: string; value: T } : T;
+
+/**
+ * Recursively filters a JSON-like object or array, applying the filter function to each sub-object or sub-array.
+ * Returns matching objects, and optionally, the paths where the matches were found.
+ *
+ * The return type is inferred dynamically based on the `path` argument. If `path: true`, the return type includes
+ * both the path and the value. Otherwise, it returns just the values.
+ *
+ * @template T - The type of the object or array to filter.
+ * @template P - A boolean, controlling whether the path should be included in the return type.
+ *
+ * @param {T} obj - The JSON-like object or array to filter.
+ * @param {FilterFunction<any>} filter - The filter function that returns true for a matching sub-object.
+ * @param {P} [path=false] - Whether to include the path in the result.
+ * If `true`, the path to the matching sub-object is returned alongside the result.
+ *
+ * @returns {Array<FilterResult<T, P>>} - An array of matching sub-objects or matching objects with paths (if `path` is true).
+ */
+export const filterObject = <T extends object, P extends boolean = false>(
+  obj: T,
+  filter: FilterFunction<T>,
+  path: P = false as P,
+): Array<FilterResult<T, P>> => {
+  const results: Array<FilterResult<T, P>> = [];
+
+  /**
+   * Helper function to build the new path based on the current path and key.
+   */
+  const buildPath = (currentPath: string, key: string): string => {
+    return currentPath ? (Array.isArray(obj) ? `${currentPath}[${key}]` : `${currentPath}.${key}`) : key;
+  };
+
+  /**
+   * Recursive traversal function to iterate over the object or array.
+   */
+  const traverse = (o: unknown, currentPath = ''): void => {
+    // Ensure `o` is an object or array
+    if (filter(o as T)) {
+      if (path) {
+        results.push({ path: currentPath, value: o as T } as FilterResult<T, P>);
+      } else {
+        results.push(o as FilterResult<T, P>);
+      }
+    }
+
+    if (typeof o === 'object' && o !== null) {
+      for (const key in o as Record<string, unknown>) {
+        if (Object.hasOwn(o, key)) {
+          const newPath = buildPath(currentPath, key);
+          traverse((o as Record<string, unknown>)[key], newPath); // Ensure proper indexing
+        }
+      }
+    }
+  };
+
+  // Early return for non-object values
+  if (isArray(obj) || isObject(obj)) {
+    traverse(obj);
+  }
+
+  return results;
+};
