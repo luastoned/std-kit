@@ -51,7 +51,7 @@ If `true`, the path to the matching sub-object is returned alongside the result.
 
 #### Defined in
 
-[natives/object.ts:101](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/object.ts#L101)
+[natives/object.ts:101](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/object.ts#L101)
 
 ***
 
@@ -101,7 +101,7 @@ The value to return if the specified path does not exist or is undefined.
 
 #### Defined in
 
-[natives/object.ts:21](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/object.ts#L21)
+[natives/object.ts:21](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/object.ts#L21)
 
 ***
 
@@ -149,4 +149,4 @@ The value to set at the specified path.
 
 #### Defined in
 
-[natives/object.ts:57](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/object.ts#L57)
+[natives/object.ts:57](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/object.ts#L57)

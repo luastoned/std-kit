@@ -32,7 +32,7 @@ The cloned item.
 
 #### Defined in
 
-utilities/generic.ts:126
+[utilities/generic.ts:126](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L126)
 
 ***
 
@@ -60,7 +60,7 @@ item is T\[\] \| readonly T\[\]
 
 #### Defined in
 
-utilities/generic.ts:7
+[utilities/generic.ts:7](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L7)
 
 ***
 
@@ -84,7 +84,7 @@ The item to check.
 
 #### Defined in
 
-utilities/generic.ts:15
+[utilities/generic.ts:15](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L15)
 
 ***
 
@@ -108,7 +108,7 @@ The item to check.
 
 #### Defined in
 
-utilities/generic.ts:23
+[utilities/generic.ts:23](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L23)
 
 ***
 
@@ -132,7 +132,7 @@ A boolean indicating whether the item is defined or not.
 
 #### Defined in
 
-utilities/generic.ts:30
+[utilities/generic.ts:30](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L30)
 
 ***
 
@@ -156,7 +156,7 @@ The item to check.
 
 #### Defined in
 
-utilities/generic.ts:38
+[utilities/generic.ts:38](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L38)
 
 ***
 
@@ -180,7 +180,7 @@ The item to check.
 
 #### Defined in
 
-utilities/generic.ts:47
+[utilities/generic.ts:47](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L47)
 
 ***
 
@@ -204,7 +204,7 @@ A boolean indicating whether the item is an infinity number.
 
 #### Defined in
 
-utilities/generic.ts:54
+[utilities/generic.ts:54](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L54)
 
 ***
 
@@ -228,7 +228,7 @@ The item to check.
 
 #### Defined in
 
-utilities/generic.ts:62
+[utilities/generic.ts:62](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L62)
 
 ***
 
@@ -252,7 +252,7 @@ The item to be checked.
 
 #### Defined in
 
-utilities/generic.ts:70
+[utilities/generic.ts:70](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L70)
 
 ***
 
@@ -276,7 +276,7 @@ The item to check.
 
 #### Defined in
 
-utilities/generic.ts:78
+[utilities/generic.ts:78](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L78)
 
 ***
 
@@ -300,7 +300,7 @@ A boolean indicating whether the item is a plain object.
 
 #### Defined in
 
-utilities/generic.ts:86
+[utilities/generic.ts:86](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L86)
 
 ***
 
@@ -324,7 +324,7 @@ The item to check.
 
 #### Defined in
 
-utilities/generic.ts:94
+[utilities/generic.ts:94](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L94)
 
 ***
 
@@ -348,7 +348,7 @@ The item to check.
 
 #### Defined in
 
-utilities/generic.ts:102
+[utilities/generic.ts:102](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L102)
 
 ***
 
@@ -372,7 +372,7 @@ The item to check.
 
 #### Defined in
 
-utilities/generic.ts:110
+[utilities/generic.ts:110](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L110)
 
 ***
 
@@ -396,4 +396,4 @@ A boolean indicating whether the item is undefined or not.
 
 #### Defined in
 
-utilities/generic.ts:118
+[utilities/generic.ts:118](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L118)

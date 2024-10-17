@@ -176,9 +176,39 @@ function* cartesianIt<T>(items: T[][]): IterableIterator<T[]> {
 }
 
 /**
- * Generates the cartesian product of the given arrays.
+ * Calculates the cartesian product of the given array of arrays.
  *
- * @param items - An array of arrays containing the items.
- * @returns The cartesian product of the given arrays.
+ * @param items - The array of arrays to calculate the cartesian product from.
+ * @returns The cartesian product as a 2D array.
  */
 export const cartesian = <T>(items: T[][]): T[][] => [...cartesianIt(items)];
+
+/**
+ * Generates all possible non-empty combinations of the elements in an array.
+ *
+ * @template T - The type of the array elements.
+ * @param {T[]} items - The array of elements.
+ * @returns {T[][]} - An array of arrays representing the combinations.
+ */
+export const combinations = <T>(items: T[]): T[][] => {
+  const result: T[][] = [];
+
+  // Iterate over each number from 1 to (2^length - 1)
+  // This will generate all possible non-empty combinations of the array elements.
+  for (let subsetMask = 1; subsetMask < 1 << items.length; subsetMask++) {
+    const combination: T[] = [];
+
+    // Check each bit in `subsetMask` to see if the corresponding element should be included
+    for (let bitPosition = 0; bitPosition < items.length; bitPosition++) {
+      if (subsetMask & (1 << bitPosition)) {
+        // If the bitPosition-th bit is set in `subsetMask`, include array[bitPosition] in the current combination
+        combination.push(items[bitPosition]);
+      }
+    }
+
+    // Add the generated combination to the result array
+    result.push(combination);
+  }
+
+  return result;
+};

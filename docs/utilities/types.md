@@ -30,7 +30,7 @@ The type of arguments accepted by the function.
 
 #### Defined in
 
-utilities/types.ts:28
+[utilities/types.ts:28](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/types.ts#L28)
 
 ***
 
@@ -56,7 +56,7 @@ The type of the function.
 
 #### Defined in
 
-utilities/types.ts:39
+[utilities/types.ts:39](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/types.ts#L39)
 
 ***
 
@@ -68,7 +68,7 @@ Represents a generic object with dynamic keys and unknown values.
 
 #### Defined in
 
-utilities/types.ts:33
+[utilities/types.ts:33](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/types.ts#L33)
 
 ***
 
@@ -84,7 +84,7 @@ utilities/types.ts:33
 
 #### Defined in
 
-utilities/types.ts:55
+[utilities/types.ts:55](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/types.ts#L55)
 
 ***
 
@@ -114,7 +114,7 @@ The key extracted from the value.
 
 #### Defined in
 
-utilities/types.ts:22
+[utilities/types.ts:22](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/types.ts#L22)
 
 ***
 
@@ -132,7 +132,7 @@ The type of the value.
 
 #### Defined in
 
-utilities/types.ts:14
+[utilities/types.ts:14](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/types.ts#L14)
 
 ***
 
@@ -150,4 +150,4 @@ The type to be prettified.
 
 #### Defined in
 
-utilities/types.ts:5
+[utilities/types.ts:5](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/types.ts#L5)

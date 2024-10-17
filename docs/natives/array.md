@@ -12,7 +12,7 @@
 
 > **cartesian**\<`T`\>(`items`): `T`[][]
 
-Generates the cartesian product of the given arrays.
+Calculates the cartesian product of the given array of arrays.
 
 #### Type Parameters
 
@@ -22,17 +22,47 @@ Generates the cartesian product of the given arrays.
 
 • **items**: `T`[][]
 
-An array of arrays containing the items.
+The array of arrays to calculate the cartesian product from.
 
 #### Returns
 
 `T`[][]
 
-The cartesian product of the given arrays.
+The cartesian product as a 2D array.
 
 #### Defined in
 
-[natives/array.ts:184](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/array.ts#L184)
+[natives/array.ts:184](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L184)
+
+***
+
+### combinations()
+
+> **combinations**\<`T`\>(`items`): `T`[][]
+
+Generates all possible non-empty combinations of the elements in an array.
+
+#### Type Parameters
+
+• **T**
+
+The type of the array elements.
+
+#### Parameters
+
+• **items**: `T`[]
+
+The array of elements.
+
+#### Returns
+
+`T`[][]
+
+- An array of arrays representing the combinations.
+
+#### Defined in
+
+[natives/array.ts:193](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L193)
 
 ***
 
@@ -72,7 +102,7 @@ The key used for counting. Can be a property name or a function that returns the
 
 #### Defined in
 
-[natives/array.ts:61](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/array.ts#L61)
+[natives/array.ts:61](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L61)
 
 ***
 
@@ -106,7 +136,7 @@ An array of the specified size filled with the provided value.
 
 #### Defined in
 
-[natives/array.ts:48](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/array.ts#L48)
+[natives/array.ts:48](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L48)
 
 ***
 
@@ -134,7 +164,7 @@ The flattened array.
 
 #### Defined in
 
-[natives/array.ts:38](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/array.ts#L38)
+[natives/array.ts:38](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L38)
 
 ***
 
@@ -174,7 +204,7 @@ The key used for grouping. Can be a property name or a function that returns the
 
 #### Defined in
 
-[natives/array.ts:81](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/array.ts#L81)
+[natives/array.ts:81](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L81)
 
 ***
 
@@ -222,7 +252,7 @@ Indicates whether to sort the array in place or return a new sorted array.
 
 #### Defined in
 
-[natives/array.ts:110](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/array.ts#L110)
+[natives/array.ts:110](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L110)
 
 ***
 
@@ -256,7 +286,7 @@ Specifies whether to reverse the array in place or create a new reversed array.
 
 #### Defined in
 
-[natives/array.ts:20](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/array.ts#L20)
+[natives/array.ts:20](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L20)
 
 ***
 
@@ -290,7 +320,7 @@ The shuffled array.
 
 #### Defined in
 
-[natives/array.ts:30](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/array.ts#L30)
+[natives/array.ts:30](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L30)
 
 ***
 
@@ -320,7 +350,7 @@ The input array.
 
 #### Defined in
 
-[natives/array.ts:10](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/array.ts#L10)
+[natives/array.ts:10](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L10)
 
 ***
 
@@ -360,4 +390,4 @@ The key property or function used to extract the key from each element.
 
 #### Defined in
 
-[natives/array.ts:147](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/array.ts#L147)
+[natives/array.ts:147](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L147)

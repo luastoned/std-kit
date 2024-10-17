@@ -47,7 +47,7 @@ The amount of time (in milliseconds) to wait before invoking the debounced callb
 
 #### Defined in
 
-natives/timer.ts:17
+[natives/timer.ts:17](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/timer.ts#L17)
 
 ***
 
@@ -71,7 +71,7 @@ A promise that resolves after the specified number of milliseconds.
 
 #### Defined in
 
-natives/timer.ts:6
+[natives/timer.ts:6](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/timer.ts#L6)
 
 ***
 
@@ -114,4 +114,4 @@ The time interval in milliseconds.
 
 #### Defined in
 
-natives/timer.ts:35
+[natives/timer.ts:35](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/timer.ts#L35)

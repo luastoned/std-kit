@@ -36,7 +36,7 @@ The clamped value.
 
 #### Defined in
 
-[natives/number.ts:9](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/number.ts#L9)
+[natives/number.ts:9](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L9)
 
 ***
 
@@ -60,7 +60,7 @@ The equivalent value in radians.
 
 #### Defined in
 
-[natives/number.ts:43](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/number.ts#L43)
+[natives/number.ts:43](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L43)
 
 ***
 
@@ -84,7 +84,7 @@ The mean value of the numbers.
 
 #### Defined in
 
-[natives/number.ts:77](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/number.ts#L77)
+[natives/number.ts:77](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L77)
 
 ***
 
@@ -108,7 +108,7 @@ The value in degrees.
 
 #### Defined in
 
-[natives/number.ts:50](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/number.ts#L50)
+[natives/number.ts:50](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L50)
 
 ***
 
@@ -136,7 +136,7 @@ A random integer between the minimum and maximum values.
 
 #### Defined in
 
-[natives/number.ts:27](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/number.ts#L27)
+[natives/number.ts:27](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L27)
 
 ***
 
@@ -164,7 +164,7 @@ A random number between the minimum and maximum values.
 
 #### Defined in
 
-[natives/number.ts:36](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/number.ts#L36)
+[natives/number.ts:36](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L36)
 
 ***
 
@@ -196,7 +196,7 @@ An array of numbers within the specified range.
 
 #### Defined in
 
-[natives/number.ts:60](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/number.ts#L60)
+[natives/number.ts:60](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L60)
 
 ***
 
@@ -224,7 +224,7 @@ The rounded number.
 
 #### Defined in
 
-[natives/number.ts:18](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/number.ts#L18)
+[natives/number.ts:18](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L18)
 
 ***
 
@@ -248,4 +248,4 @@ The sum of the numbers in the array.
 
 #### Defined in
 
-[natives/number.ts:69](https://github.com/luastoned/std-kit/blob/91c4cbc49b0ad85f9227a7481adcb5c36e3e4427/src/natives/number.ts#L69)
+[natives/number.ts:69](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L69)
