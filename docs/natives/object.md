@@ -1,4 +1,4 @@
-[**std-kit**](../README.md) • **Docs**
+[**std-kit**](../README.md)
 
 ***
 
@@ -8,9 +8,55 @@
 
 ## Functions
 
+### deepMerge()
+
+> **deepMerge**\<`TSource`, `TPatch`\>(`source`, `patch`): `TSource` & `TPatch`
+
+Defined in: [natives/object.ts:161](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/object.ts#L161)
+
+Deeply merges a patch object into a source object.
+
+- New keys in the patch object will be added to the source.
+- Nested objects are recursively merged.
+- Arrays are replaced entirely rather than merged.
+
+#### Type Parameters
+
+• **TSource** *extends* [`PlainObject`](../utilities/types.md#plainobject)
+
+Type of the source object.
+
+• **TPatch** *extends* [`PlainObject`](../utilities/types.md#plainobject)
+
+Type of the patch object.
+
+#### Parameters
+
+##### source
+
+`TSource`
+
+The original object to be merged into.
+
+##### patch
+
+`TPatch`
+
+The object containing updates or new keys to be merged.
+
+#### Returns
+
+`TSource` & `TPatch`
+
+A new object that is the result of deeply merging the patch into the source.
+
+***
+
 ### filterObject()
 
-> **filterObject**\<`T`, `P`\>(`obj`, `filter`, `path`?): `FilterResult`\<`T`, `P`\>[]
+> **filterObject**\<`R`, `T`, `P`\>(`obj`, `filter`, `path`?): `FilterResult`\<`R`, `P`\>[]
+
+Defined in: [natives/object.ts:102](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/object.ts#L102)
 
 Recursively filters a JSON-like object or array, applying the filter function to each sub-object or sub-array.
 Returns matching objects, and optionally, the paths where the matches were found.
@@ -20,7 +66,11 @@ both the path and the value. Otherwise, it returns just the values.
 
 #### Type Parameters
 
-• **T** *extends* `object`
+• **R** = `unknown`
+
+The expected return type of the object.
+
+• **T** = `unknown`
 
 The type of the object or array to filter.
 
@@ -30,34 +80,38 @@ A boolean, controlling whether the path should be included in the return type.
 
 #### Parameters
 
-• **obj**: `T`
+##### obj
+
+`T`
 
 The JSON-like object or array to filter.
 
-• **filter**: `FilterFunction`\<`T`\>
+##### filter
+
+`FilterFunction`\<`unknown`\>
 
 The filter function that returns true for a matching sub-object.
 
-• **path?**: `P` = `...`
+##### path?
+
+`P` = `...`
 
 Whether to include the path in the result.
 If `true`, the path to the matching sub-object is returned alongside the result.
 
 #### Returns
 
-`FilterResult`\<`T`, `P`\>[]
+`FilterResult`\<`R`, `P`\>[]
 
 - An array of matching sub-objects or matching objects with paths (if `path` is true).
-
-#### Defined in
-
-[natives/object.ts:101](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/object.ts#L101)
 
 ***
 
 ### getValue()
 
 > **getValue**\<`TData`, `TPath`, `TDefault`\>(`data`, `path`, `defaultValue`): `TDefault` \| [`GetFieldType`](../utilities/types.md#getfieldtypet-path)\<`TData`, `TPath`\>
+
+Defined in: [natives/object.ts:21](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/object.ts#L21)
 
 Retrieves a value from a nested object or array using a dot/bracket notation path.
 If the value at the specified path doesn't exist, returns a default value.
@@ -80,16 +134,22 @@ The type of the default value to be returned if the path does not exist.
 
 #### Parameters
 
-• **data**: `TData`
+##### data
+
+`TData`
 
 The object or array from which to retrieve the value.
 
-• **path**: `TPath`
+##### path
+
+`TPath`
 
 The string path specifying the property to retrieve.
 Supports dot notation (e.g., 'user.name') and bracket notation (e.g., 'user.posts[0]').
 
-• **defaultValue**: `TDefault`
+##### defaultValue
+
+`TDefault`
 
 The value to return if the specified path does not exist or is undefined.
 
@@ -99,15 +159,13 @@ The value to return if the specified path does not exist or is undefined.
 
 - The value at the specified path, or the default value if the path does not exist.
 
-#### Defined in
-
-[natives/object.ts:21](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/object.ts#L21)
-
 ***
 
 ### setValue()
 
 > **setValue**\<`TData`, `TPath`, `TValue`\>(`data`, `path`, `value`): `void`
+
+Defined in: [natives/object.ts:57](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/object.ts#L57)
 
 Sets a value in a nested object or array using a dot/bracket notation path.
 If the path does not exist, it will create intermediate objects or arrays as needed.
@@ -130,23 +188,25 @@ The type of the value to set at the specified path.
 
 #### Parameters
 
-• **data**: `TData`
+##### data
+
+`TData`
 
 The object or array in which the value will be set.
 
-• **path**: `TPath`
+##### path
+
+`TPath`
 
 The string path specifying the property to set.
 Supports dot notation (e.g., 'user.name') and bracket notation (e.g., 'user.posts[0]').
 
-• **value**: `TValue`
+##### value
+
+`TValue`
 
 The value to set at the specified path.
 
 #### Returns
 
 `void`
-
-#### Defined in
-
-[natives/object.ts:57](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/object.ts#L57)

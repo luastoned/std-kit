@@ -1,4 +1,4 @@
-[**std-kit**](../README.md) • **Docs**
+[**std-kit**](../README.md)
 
 ***
 
@@ -12,19 +12,27 @@
 
 > **clamp**(`value`, `rangeA`, `rangeB`): `number`
 
+Defined in: [natives/number.ts:9](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/number.ts#L9)
+
 Clamps a value between a specified range.
 
 #### Parameters
 
-• **value**: `number`
+##### value
+
+`number`
 
 The value to be clamped.
 
-• **rangeA**: `number`
+##### rangeA
+
+`number`
 
 The first value of the range.
 
-• **rangeB**: `number`
+##### rangeB
+
+`number`
 
 The second value of the range.
 
@@ -34,21 +42,21 @@ The second value of the range.
 
 The clamped value.
 
-#### Defined in
-
-[natives/number.ts:9](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L9)
-
 ***
 
 ### deg2rad()
 
 > **deg2rad**(`degrees`): `number`
 
+Defined in: [natives/number.ts:43](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/number.ts#L43)
+
 Converts degrees to radians.
 
 #### Parameters
 
-• **degrees**: `number`
+##### degrees
+
+`number`
 
 The number of degrees to convert.
 
@@ -58,9 +66,41 @@ The number of degrees to convert.
 
 The equivalent value in radians.
 
-#### Defined in
+***
 
-[natives/number.ts:43](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L43)
+### lerp()
+
+> **lerp**(`from`, `to`, `t`): `number`
+
+Defined in: [natives/number.ts:87](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/number.ts#L87)
+
+Linearly interpolates between two numbers.
+
+#### Parameters
+
+##### from
+
+`number`
+
+The starting value.
+
+##### to
+
+`number`
+
+The ending value.
+
+##### t
+
+`number`
+
+The interpolation factor.
+
+#### Returns
+
+`number`
+
+The interpolated value.
 
 ***
 
@@ -68,11 +108,15 @@ The equivalent value in radians.
 
 > **mean**(`values`): `number`
 
+Defined in: [natives/number.ts:77](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/number.ts#L77)
+
 Calculates the mean of an array of numbers.
 
 #### Parameters
 
-• **values**: `number`[]
+##### values
+
+`number`[]
 
 The array of numbers.
 
@@ -82,21 +126,21 @@ The array of numbers.
 
 The mean value of the numbers.
 
-#### Defined in
-
-[natives/number.ts:77](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L77)
-
 ***
 
 ### rad2deg()
 
 > **rad2deg**(`radians`): `number`
 
+Defined in: [natives/number.ts:50](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/number.ts#L50)
+
 Converts radians to degrees.
 
 #### Parameters
 
-• **radians**: `number`
+##### radians
+
+`number`
 
 The value in radians to be converted.
 
@@ -106,25 +150,27 @@ The value in radians to be converted.
 
 The value in degrees.
 
-#### Defined in
-
-[natives/number.ts:50](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L50)
-
 ***
 
 ### randomInt()
 
 > **randomInt**(`min`, `max`): `number`
 
+Defined in: [natives/number.ts:27](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/number.ts#L27)
+
 Generates a random integer between the specified minimum and maximum values (inclusive).
 
 #### Parameters
 
-• **min**: `number`
+##### min
+
+`number`
 
 The minimum value of the range.
 
-• **max**: `number`
+##### max
+
+`number`
 
 The maximum value of the range.
 
@@ -134,25 +180,27 @@ The maximum value of the range.
 
 A random integer between the minimum and maximum values.
 
-#### Defined in
-
-[natives/number.ts:27](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L27)
-
 ***
 
 ### randomNum()
 
 > **randomNum**(`min`, `max`): `number`
 
+Defined in: [natives/number.ts:36](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/number.ts#L36)
+
 Generates a random number between the specified minimum and maximum values.
 
 #### Parameters
 
-• **min**: `number`
+##### min
+
+`number`
 
 The minimum value of the range (inclusive).
 
-• **max**: `number`
+##### max
+
+`number`
 
 The maximum value of the range (exclusive).
 
@@ -162,29 +210,33 @@ The maximum value of the range (exclusive).
 
 A random number between the minimum and maximum values.
 
-#### Defined in
-
-[natives/number.ts:36](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L36)
-
 ***
 
 ### range()
 
 > **range**(`start`, `end`, `step`): `number`[]
 
+Defined in: [natives/number.ts:60](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/number.ts#L60)
+
 Generates an array of numbers within a specified range.
 
 #### Parameters
 
-• **start**: `number`
+##### start
+
+`number`
 
 The starting number of the range.
 
-• **end**: `number`
+##### end
+
+`number`
 
 The ending number of the range.
 
-• **step**: `number` = `1`
+##### step
+
+`number` = `1`
 
 The increment value between numbers in the range. Default is 1.
 
@@ -194,25 +246,27 @@ The increment value between numbers in the range. Default is 1.
 
 An array of numbers within the specified range.
 
-#### Defined in
-
-[natives/number.ts:60](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L60)
-
 ***
 
 ### roundTo()
 
 > **roundTo**(`value`, `decimals`): `number`
 
+Defined in: [natives/number.ts:18](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/number.ts#L18)
+
 Rounds a number to the specified number of decimal places.
 
 #### Parameters
 
-• **value**: `number`
+##### value
+
+`number`
 
 The number to round.
 
-• **decimals**: `number` = `2`
+##### decimals
+
+`number` = `2`
 
 The number of decimal places to round to. Default is 2.
 
@@ -222,21 +276,21 @@ The number of decimal places to round to. Default is 2.
 
 The rounded number.
 
-#### Defined in
-
-[natives/number.ts:18](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L18)
-
 ***
 
 ### sum()
 
 > **sum**(`values`): `number`
 
+Defined in: [natives/number.ts:69](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/number.ts#L69)
+
 Calculates the sum of an array of numbers.
 
 #### Parameters
 
-• **values**: `number`[]
+##### values
+
+`number`[]
 
 An array of numbers.
 
@@ -245,7 +299,3 @@ An array of numbers.
 `number`
 
 The sum of the numbers in the array.
-
-#### Defined in
-
-[natives/number.ts:69](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/number.ts#L69)

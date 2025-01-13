@@ -48,6 +48,22 @@ export const flatten = <T extends T[]>(array: T[]): T[] => array.reduce((acc, it
 export const fill = <T>(size: number, value: T): T[] => Array(size).fill(value);
 
 /**
+ * Clusters an array into subarrays of a specified size.
+ *
+ * @param array - The array to be clustered.
+ * @param size - The size of each subarray. Default is 2.
+ * @returns An array of subarrays, each containing elements from the original array.
+ */
+export const cluster = <T>(array: T[], size = 2): T[][] => {
+  const clusters: T[][] = [];
+  for (let idx = 0; idx < array.length; idx += size) {
+    clusters.push(array.slice(idx, idx + size));
+  }
+
+  return clusters;
+};
+
+/**
  * Counts the occurrences of each unique key in an array.
  * If a key function is provided, it will be used to extract the key from each element.
  * If a key property is provided, it will be used to extract the key from each element.

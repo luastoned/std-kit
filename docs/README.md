@@ -1,4 +1,4 @@
-**std-kit** • [**Docs**](modules.md)
+**std-kit**
 
 ***
 

@@ -1,5 +1,5 @@
-import type { GenericObject, GetFieldType } from '~/utilities/types';
-import { isArray, isObject } from '~/utilities/generic';
+import type { GetFieldType, PlainObject } from '~/utilities/types';
+import { isArray, isObject, isPlainObject } from '~/utilities/generic';
 
 /**
  * Retrieves a value from a nested object or array using a dot/bracket notation path.
@@ -88,6 +88,7 @@ type FilterResult<T, P extends boolean> = P extends true ? { path: string; value
  * The return type is inferred dynamically based on the `path` argument. If `path: true`, the return type includes
  * both the path and the value. Otherwise, it returns just the values.
  *
+ * @template R - The expected return type of the object.
  * @template T - The type of the object or array to filter.
  * @template P - A boolean, controlling whether the path should be included in the return type.
  *
@@ -98,12 +99,12 @@ type FilterResult<T, P extends boolean> = P extends true ? { path: string; value
  *
  * @returns {Array<FilterResult<T, P>>} - An array of matching sub-objects or matching objects with paths (if `path` is true).
  */
-export const filterObject = <T extends object, P extends boolean = false>(
+export const filterObject = <R = unknown, T = unknown, P extends boolean = false>(
   obj: T,
-  filter: FilterFunction<T>,
+  filter: FilterFunction<unknown>,
   path: P = false as P,
-): Array<FilterResult<T, P>> => {
-  const results: Array<FilterResult<T, P>> = [];
+): Array<FilterResult<R, P>> => {
+  const results: Array<FilterResult<R, P>> = [];
 
   /**
    * Helper function to build the new path based on the current path and key.
@@ -119,9 +120,9 @@ export const filterObject = <T extends object, P extends boolean = false>(
     // Ensure `o` is an object or array
     if (filter(o as T)) {
       if (path) {
-        results.push({ path: currentPath, value: o as T } as FilterResult<T, P>);
+        results.push({ path: currentPath, value: o as T } as FilterResult<R, P>);
       } else {
-        results.push(o as FilterResult<T, P>);
+        results.push(o as FilterResult<R, P>);
       }
     }
 
@@ -141,4 +142,57 @@ export const filterObject = <T extends object, P extends boolean = false>(
   }
 
   return results;
+};
+
+/**
+ * Deeply merges a patch object into a source object.
+ *
+ * - New keys in the patch object will be added to the source.
+ * - Nested objects are recursively merged.
+ * - Arrays are replaced entirely rather than merged.
+ *
+ * @template TSource - Type of the source object.
+ * @template TPatch - Type of the patch object.
+ * @param source - The original object to be merged into.
+ * @param patch - The object containing updates or new keys to be merged.
+ *
+ * @returns A new object that is the result of deeply merging the patch into the source.
+ */
+export const deepMerge = <TSource extends PlainObject, TPatch extends PlainObject>(source: TSource, patch: TPatch): TSource & TPatch => {
+  /**
+   * Recursively merges two objects.
+   *
+   * @param src - The source object being updated.
+   * @param patchObj - The patch object providing updates.
+   * @returns The merged object.
+   */
+  const merge = (src: PlainObject, patchObj: PlainObject): PlainObject => {
+    for (const key in patchObj) {
+      // Ensure the key exists on the patch object itself (not inherited)
+      if (Object.hasOwn(patchObj, key)) {
+        const srcValue = src[key];
+        const patchValue = patchObj[key];
+
+        // If the patch value is an object, recursively merge
+        if (isPlainObject(patchValue)) {
+          if (!isPlainObject(srcValue)) {
+            src[key] = {};
+          }
+
+          src[key] = merge(srcValue as PlainObject, patchValue);
+        } else if (isArray(patchValue)) {
+          // Replace arrays entirely
+          src[key] = [...patchValue];
+        } else {
+          // Directly assign primitive values or other types
+          src[key] = patchValue;
+        }
+      }
+    }
+
+    return src;
+  };
+
+  // Start the merge process with a shallow copy of the source object
+  return merge({ ...source }, patch) as TSource & TPatch;
 };

@@ -54,6 +54,16 @@ export const isFunction = (item: unknown): item is Function => typeof item === '
 export const isInfinity = (item: unknown): item is number => item === Number.POSITIVE_INFINITY || item === Number.NEGATIVE_INFINITY;
 
 /**
+ * Checks if the given item is an instance of Map.
+ *
+ * @template K - The type of keys in the Map.
+ * @template V - The type of values in the Map.
+ * @param item - The item to check.
+ * @returns `true` if the item is a Map, `false` otherwise.
+ */
+export const isMap = <K = unknown, V = unknown>(item: unknown): item is Map<K, V> => item instanceof Map;
+
+/**
  * Checks if the given item is null.
  *
  * @param item The item to check.
@@ -86,12 +96,28 @@ export const isObject = (item: unknown): item is object => typeof item === 'obje
 export const isPlainObject = (item: unknown): item is Record<PropertyKey, unknown> => isObject(item) && item.constructor === Object;
 
 /**
+ * Checks if the given item is a Promise.
+ *
+ * @param item - The item to check.
+ * @returns `true` if the item is a Promise, `false` otherwise.
+ */
+export const isPromise = <T = unknown>(item: unknown): item is Promise<T> => item instanceof Promise;
+
+/**
  * Checks if the given item is a regular expression.
  *
  * @param item - The item to check.
  * @returns `true` if the item is a regular expression, `false` otherwise.
  */
 export const isRegExp = (item: unknown): item is RegExp => item instanceof RegExp;
+
+/**
+ * Checks if the given item is a Set.
+ *
+ * @param item - The item to check.
+ * @returns A boolean indicating whether the item is a Set.
+ */
+export const isSet = <T = unknown>(item: unknown): item is Set<T> => item instanceof Set;
 
 /**
  * Checks if the given item is a string.
@@ -116,6 +142,25 @@ export const isSymbol = (item: unknown): item is symbol => typeof item === 'symb
  * @returns A boolean indicating whether the item is undefined or not.
  */
 export const isUndefined = (item: unknown): item is undefined => item === undefined;
+
+/**
+ * Checks if the given item is an instance of WeakMap.
+ *
+ * @template K - The type of the keys in the WeakMap.
+ * @template V - The type of the values in the WeakMap.
+ * @param item - The item to be checked.
+ * @returns A boolean indicating whether the item is an instance of WeakMap.
+ */
+export const isWeakMap = <K extends WeakKey, V = unknown>(item: unknown): item is WeakMap<K, V> => item instanceof WeakMap;
+
+/**
+ * Checks if the given item is a WeakSet.
+ *
+ * @template T - The type of the WeakSet keys.
+ * @param item - The item to check.
+ * @returns A boolean indicating whether the item is a WeakSet.
+ */
+export const isWeakSet = <T extends WeakKey>(item: unknown): item is WeakSet<T> => item instanceof WeakSet;
 
 /**
  * Creates a deep clone of an item.

@@ -1,4 +1,4 @@
-[**std-kit**](../README.md) • **Docs**
+[**std-kit**](../README.md)
 
 ***
 
@@ -12,6 +12,8 @@
 
 > **cartesian**\<`T`\>(`items`): `T`[][]
 
+Defined in: [natives/array.ts:200](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/array.ts#L200)
+
 Calculates the cartesian product of the given array of arrays.
 
 #### Type Parameters
@@ -20,7 +22,9 @@ Calculates the cartesian product of the given array of arrays.
 
 #### Parameters
 
-• **items**: `T`[][]
+##### items
+
+`T`[][]
 
 The array of arrays to calculate the cartesian product from.
 
@@ -30,15 +34,47 @@ The array of arrays to calculate the cartesian product from.
 
 The cartesian product as a 2D array.
 
-#### Defined in
+***
 
-[natives/array.ts:184](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L184)
+### cluster()
+
+> **cluster**\<`T`\>(`array`, `size`): `T`[][]
+
+Defined in: [natives/array.ts:57](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/array.ts#L57)
+
+Clusters an array into subarrays of a specified size.
+
+#### Type Parameters
+
+• **T**
+
+#### Parameters
+
+##### array
+
+`T`[]
+
+The array to be clustered.
+
+##### size
+
+`number` = `2`
+
+The size of each subarray. Default is 2.
+
+#### Returns
+
+`T`[][]
+
+An array of subarrays, each containing elements from the original array.
 
 ***
 
 ### combinations()
 
 > **combinations**\<`T`\>(`items`): `T`[][]
+
+Defined in: [natives/array.ts:209](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/array.ts#L209)
 
 Generates all possible non-empty combinations of the elements in an array.
 
@@ -50,7 +86,9 @@ The type of the array elements.
 
 #### Parameters
 
-• **items**: `T`[]
+##### items
+
+`T`[]
 
 The array of elements.
 
@@ -60,15 +98,13 @@ The array of elements.
 
 - An array of arrays representing the combinations.
 
-#### Defined in
-
-[natives/array.ts:193](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L193)
-
 ***
 
 ### countBy()
 
 > **countBy**\<`T`, `K`\>(`array`, `key`): `Record`\<`K`, `number`\>
+
+Defined in: [natives/array.ts:77](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/array.ts#L77)
 
 Counts the occurrences of each unique key in an array.
 If a key function is provided, it will be used to extract the key from each element.
@@ -86,13 +122,17 @@ The type of the key used for counting.
 
 #### Parameters
 
-• **array**: `T`[]
+##### array
+
+`T`[]
 
 The array to count the occurrences in.
 
-• **key**: `K` \| (`item`) => `K`
+##### key
 
 The key used for counting. Can be a property name or a function that returns the key.
+
+`K` | (`item`) => `K`
 
 #### Returns
 
@@ -100,15 +140,13 @@ The key used for counting. Can be a property name or a function that returns the
 
 - An object that maps each unique key to its count.
 
-#### Defined in
-
-[natives/array.ts:61](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L61)
-
 ***
 
 ### fill()
 
 > **fill**\<`T`\>(`size`, `value`): `T`[]
+
+Defined in: [natives/array.ts:48](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/array.ts#L48)
 
 Creates a new array of a specified size and fills it with the provided value.
 
@@ -120,11 +158,15 @@ The type of elements in the array.
 
 #### Parameters
 
-• **size**: `number`
+##### size
+
+`number`
 
 The size of the array to create.
 
-• **value**: `T`
+##### value
+
+`T`
 
 The value to fill the array with.
 
@@ -134,15 +176,13 @@ The value to fill the array with.
 
 An array of the specified size filled with the provided value.
 
-#### Defined in
-
-[natives/array.ts:48](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L48)
-
 ***
 
 ### flatten()
 
 > **flatten**\<`T`\>(`array`): `T`[]
+
+Defined in: [natives/array.ts:38](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/array.ts#L38)
 
 Flattens a nested array of type T.
 
@@ -152,7 +192,9 @@ Flattens a nested array of type T.
 
 #### Parameters
 
-• **array**: `T`[]
+##### array
+
+`T`[]
 
 The array to flatten.
 
@@ -162,15 +204,13 @@ The array to flatten.
 
 The flattened array.
 
-#### Defined in
-
-[natives/array.ts:38](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L38)
-
 ***
 
 ### groupBy()
 
 > **groupBy**\<`T`, `K`\>(`array`, `key`): `Record`\<`K`, `T`[]\>
+
+Defined in: [natives/array.ts:97](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/array.ts#L97)
 
 Groups the elements of an array by a specified key.
 If a key function is provided, it will be used to extract the key from each element.
@@ -188,13 +228,17 @@ The type of the key used for grouping.
 
 #### Parameters
 
-• **array**: `T`[]
+##### array
+
+`T`[]
 
 The array to group.
 
-• **key**: `K` \| (`item`) => `K`
+##### key
 
 The key used for grouping. Can be a property name or a function that returns the key.
+
+`K` | (`item`) => `K`
 
 #### Returns
 
@@ -202,15 +246,13 @@ The key used for grouping. Can be a property name or a function that returns the
 
 - An object where the keys are the grouped values and the values are arrays of elements that belong to each group.
 
-#### Defined in
-
-[natives/array.ts:81](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L81)
-
 ***
 
 ### orderBy()
 
 > **orderBy**\<`T`, `K`\>(`array`, `keys`, `orders`, `inPlace`?): `T`[]
+
+Defined in: [natives/array.ts:126](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/array.ts#L126)
 
 Sorts an array of objects based on the specified keys and orders.
 If a key function is provided, it will be used to extract the key from each element.
@@ -228,19 +270,27 @@ The type of the keys used for sorting.
 
 #### Parameters
 
-• **array**: `T`[]
+##### array
+
+`T`[]
 
 The array to be sorted.
 
-• **keys**: (`K` \| (`item`) => `K`)[]
+##### keys
+
+(`K` \| (`item`) => `K`)[]
 
 The keys or functions used for sorting.
 
-• **orders**: (`"asc"` \| `"desc"`)[]
+##### orders
+
+(`"asc"` \| `"desc"`)[]
 
 The sort orders for each key.
 
-• **inPlace?**: `boolean` = `false`
+##### inPlace?
+
+`boolean` = `false`
 
 Indicates whether to sort the array in place or return a new sorted array.
 
@@ -250,15 +300,13 @@ Indicates whether to sort the array in place or return a new sorted array.
 
 - The sorted array.
 
-#### Defined in
-
-[natives/array.ts:110](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L110)
-
 ***
 
 ### reverse()
 
 > **reverse**\<`T`\>(`array`, `inPlace`?): `T`[]
+
+Defined in: [natives/array.ts:20](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/array.ts#L20)
 
 Reverses the elements of an array.
 
@@ -270,11 +318,15 @@ The type of elements in the array.
 
 #### Parameters
 
-• **array**: `T`[]
+##### array
+
+`T`[]
 
 The array to be reversed.
 
-• **inPlace?**: `boolean` = `false`
+##### inPlace?
+
+`boolean` = `false`
 
 Specifies whether to reverse the array in place or create a new reversed array.
 
@@ -284,15 +336,13 @@ Specifies whether to reverse the array in place or create a new reversed array.
 
 - The reversed array.
 
-#### Defined in
-
-[natives/array.ts:20](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L20)
-
 ***
 
 ### shuffle()
 
 > **shuffle**\<`T`\>(`array`, `inPlace`?): `T`[]
+
+Defined in: [natives/array.ts:30](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/array.ts#L30)
 
 Shuffles the elements of an array.
 
@@ -304,11 +354,15 @@ The type of elements in the array.
 
 #### Parameters
 
-• **array**: `T`[]
+##### array
+
+`T`[]
 
 The array to shuffle.
 
-• **inPlace?**: `boolean` = `false`
+##### inPlace?
+
+`boolean` = `false`
 
 Specifies whether to shuffle the array in place or create a new shuffled array.
 
@@ -318,15 +372,13 @@ Specifies whether to shuffle the array in place or create a new shuffled array.
 
 The shuffled array.
 
-#### Defined in
-
-[natives/array.ts:30](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L30)
-
 ***
 
 ### unique()
 
 > **unique**\<`T`\>(`array`): `T`[]
+
+Defined in: [natives/array.ts:10](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/array.ts#L10)
 
 Returns a new array with unique elements from the input array.
 
@@ -338,7 +390,9 @@ The type of elements in the array.
 
 #### Parameters
 
-• **array**: `T`[]
+##### array
+
+`T`[]
 
 The input array.
 
@@ -348,15 +402,13 @@ The input array.
 
 - A new array with unique elements.
 
-#### Defined in
-
-[natives/array.ts:10](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L10)
-
 ***
 
 ### uniqueBy()
 
 > **uniqueBy**\<`T`, `K`\>(`array`, `key`): `T`[]
+
+Defined in: [natives/array.ts:163](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/array.ts#L163)
 
 Returns a new array containing unique elements from the input array based on the specified key.
 If a key function is provided, it will be used to extract the key from each element.
@@ -374,20 +426,20 @@ The type of the key used for uniqueness.
 
 #### Parameters
 
-• **array**: `T`[]
+##### array
+
+`T`[]
 
 The input array.
 
-• **key**: `K` \| (`item`) => `K`
+##### key
 
 The key property or function used to extract the key from each element.
+
+`K` | (`item`) => `K`
 
 #### Returns
 
 `T`[]
 
 - A new array containing unique elements based on the specified key.
-
-#### Defined in
-
-[natives/array.ts:147](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/array.ts#L147)

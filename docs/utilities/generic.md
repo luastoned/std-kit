@@ -1,4 +1,4 @@
-[**std-kit**](../README.md) • **Docs**
+[**std-kit**](../README.md)
 
 ***
 
@@ -12,6 +12,8 @@
 
 > **cloneObject**\<`T`\>(`item`): `T`
 
+Defined in: [utilities/generic.ts:171](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L171)
+
 Creates a deep clone of an item.
 
 #### Type Parameters
@@ -20,7 +22,9 @@ Creates a deep clone of an item.
 
 #### Parameters
 
-• **item**: `T`
+##### item
+
+`T`
 
 The item to clone.
 
@@ -30,15 +34,13 @@ The item to clone.
 
 The cloned item.
 
-#### Defined in
-
-[utilities/generic.ts:126](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L126)
-
 ***
 
 ### isArray()
 
 > **isArray**\<`T`\>(`item`): item is T\[\] \| readonly T\[\]
+
+Defined in: [utilities/generic.ts:7](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L7)
 
 Checks if the given item is an array.
 
@@ -48,7 +50,9 @@ Checks if the given item is an array.
 
 #### Parameters
 
-• **item**: `unknown`
+##### item
+
+`unknown`
 
 The item to check.
 
@@ -58,21 +62,21 @@ item is T\[\] \| readonly T\[\]
 
 `true` if the item is an array, `false` otherwise.
 
-#### Defined in
-
-[utilities/generic.ts:7](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L7)
-
 ***
 
 ### isBoolean()
 
 > **isBoolean**(`item`): `item is boolean`
 
+Defined in: [utilities/generic.ts:15](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L15)
+
 Checks if the given item is a boolean.
 
 #### Parameters
 
-• **item**: `unknown`
+##### item
+
+`unknown`
 
 The item to check.
 
@@ -82,21 +86,21 @@ The item to check.
 
 `true` if the item is a boolean, `false` otherwise.
 
-#### Defined in
-
-[utilities/generic.ts:15](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L15)
-
 ***
 
 ### isDate()
 
 > **isDate**(`item`): `item is Date`
 
+Defined in: [utilities/generic.ts:23](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L23)
+
 Checks if the given item is a Date object.
 
 #### Parameters
 
-• **item**: `unknown`
+##### item
+
+`unknown`
 
 The item to check.
 
@@ -106,21 +110,21 @@ The item to check.
 
 `true` if the item is a Date object, `false` otherwise.
 
-#### Defined in
-
-[utilities/generic.ts:23](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L23)
-
 ***
 
 ### isDefined()
 
 > **isDefined**(`item`): `boolean`
 
+Defined in: [utilities/generic.ts:30](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L30)
+
 Checks if the given item is defined.
 
 #### Parameters
 
-• **item**: `unknown`
+##### item
+
+`unknown`
 
 The item to check.
 
@@ -130,21 +134,21 @@ The item to check.
 
 A boolean indicating whether the item is defined or not.
 
-#### Defined in
-
-[utilities/generic.ts:30](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L30)
-
 ***
 
 ### isError()
 
 > **isError**(`item`): `item is Error`
 
+Defined in: [utilities/generic.ts:38](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L38)
+
 Checks if the given item is an instance of the Error class.
 
 #### Parameters
 
-• **item**: `unknown`
+##### item
+
+`unknown`
 
 The item to check.
 
@@ -154,21 +158,21 @@ The item to check.
 
 `true` if the item is an instance of Error, `false` otherwise.
 
-#### Defined in
-
-[utilities/generic.ts:38](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L38)
-
 ***
 
 ### isFunction()
 
 > **isFunction**(`item`): `item is Function`
 
+Defined in: [utilities/generic.ts:47](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L47)
+
 Checks if the given item is a function.
 
 #### Parameters
 
-• **item**: `unknown`
+##### item
+
+`unknown`
 
 The item to check.
 
@@ -178,21 +182,21 @@ The item to check.
 
 `true` if the item is a function, `false` otherwise.
 
-#### Defined in
-
-[utilities/generic.ts:47](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L47)
-
 ***
 
 ### isInfinity()
 
 > **isInfinity**(`item`): `item is number`
 
+Defined in: [utilities/generic.ts:54](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L54)
+
 Checks if the given item is an infinity number.
 
 #### Parameters
 
-• **item**: `unknown`
+##### item
+
+`unknown`
 
 The item to be checked.
 
@@ -202,9 +206,39 @@ The item to be checked.
 
 A boolean indicating whether the item is an infinity number.
 
-#### Defined in
+***
 
-[utilities/generic.ts:54](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L54)
+### isMap()
+
+> **isMap**\<`K`, `V`\>(`item`): `item is Map<K, V>`
+
+Defined in: [utilities/generic.ts:64](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L64)
+
+Checks if the given item is an instance of Map.
+
+#### Type Parameters
+
+• **K** = `unknown`
+
+The type of keys in the Map.
+
+• **V** = `unknown`
+
+The type of values in the Map.
+
+#### Parameters
+
+##### item
+
+`unknown`
+
+The item to check.
+
+#### Returns
+
+`item is Map<K, V>`
+
+`true` if the item is a Map, `false` otherwise.
 
 ***
 
@@ -212,11 +246,15 @@ A boolean indicating whether the item is an infinity number.
 
 > **isNull**(`item`): `item is null`
 
+Defined in: [utilities/generic.ts:72](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L72)
+
 Checks if the given item is null.
 
 #### Parameters
 
-• **item**: `unknown`
+##### item
+
+`unknown`
 
 The item to check.
 
@@ -226,21 +264,21 @@ The item to check.
 
 `true` if the item is null, `false` otherwise.
 
-#### Defined in
-
-[utilities/generic.ts:62](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L62)
-
 ***
 
 ### isNumber()
 
 > **isNumber**(`item`): `item is number`
 
+Defined in: [utilities/generic.ts:80](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L80)
+
 Checks if the given item is a number.
 
 #### Parameters
 
-• **item**: `unknown`
+##### item
+
+`unknown`
 
 The item to be checked.
 
@@ -250,21 +288,21 @@ The item to be checked.
 
 `true` if the item is a number, `false` otherwise.
 
-#### Defined in
-
-[utilities/generic.ts:70](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L70)
-
 ***
 
 ### isObject()
 
 > **isObject**(`item`): `item is object`
 
+Defined in: [utilities/generic.ts:88](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L88)
+
 Checks if the given item is an object.
 
 #### Parameters
 
-• **item**: `unknown`
+##### item
+
+`unknown`
 
 The item to check.
 
@@ -274,21 +312,21 @@ The item to check.
 
 `true` if the item is an object, `false` otherwise.
 
-#### Defined in
-
-[utilities/generic.ts:78](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L78)
-
 ***
 
 ### isPlainObject()
 
 > **isPlainObject**(`item`): `item is Record<PropertyKey, unknown>`
 
+Defined in: [utilities/generic.ts:96](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L96)
+
 Checks if the given item is a plain object.
 
 #### Parameters
 
-• **item**: `unknown`
+##### item
+
+`unknown`
 
 The item to check.
 
@@ -298,9 +336,33 @@ The item to check.
 
 A boolean indicating whether the item is a plain object.
 
-#### Defined in
+***
 
-[utilities/generic.ts:86](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L86)
+### isPromise()
+
+> **isPromise**\<`T`\>(`item`): `item is Promise<T>`
+
+Defined in: [utilities/generic.ts:104](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L104)
+
+Checks if the given item is a Promise.
+
+#### Type Parameters
+
+• **T** = `unknown`
+
+#### Parameters
+
+##### item
+
+`unknown`
+
+The item to check.
+
+#### Returns
+
+`item is Promise<T>`
+
+`true` if the item is a Promise, `false` otherwise.
 
 ***
 
@@ -308,11 +370,15 @@ A boolean indicating whether the item is a plain object.
 
 > **isRegExp**(`item`): `item is RegExp`
 
+Defined in: [utilities/generic.ts:112](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L112)
+
 Checks if the given item is a regular expression.
 
 #### Parameters
 
-• **item**: `unknown`
+##### item
+
+`unknown`
 
 The item to check.
 
@@ -322,9 +388,33 @@ The item to check.
 
 `true` if the item is a regular expression, `false` otherwise.
 
-#### Defined in
+***
 
-[utilities/generic.ts:94](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L94)
+### isSet()
+
+> **isSet**\<`T`\>(`item`): `item is Set<T>`
+
+Defined in: [utilities/generic.ts:120](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L120)
+
+Checks if the given item is a Set.
+
+#### Type Parameters
+
+• **T** = `unknown`
+
+#### Parameters
+
+##### item
+
+`unknown`
+
+The item to check.
+
+#### Returns
+
+`item is Set<T>`
+
+A boolean indicating whether the item is a Set.
 
 ***
 
@@ -332,11 +422,15 @@ The item to check.
 
 > **isString**(`item`): `item is string`
 
+Defined in: [utilities/generic.ts:128](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L128)
+
 Checks if the given item is a string.
 
 #### Parameters
 
-• **item**: `unknown`
+##### item
+
+`unknown`
 
 The item to check.
 
@@ -346,21 +440,21 @@ The item to check.
 
 `true` if the item is a string, `false` otherwise.
 
-#### Defined in
-
-[utilities/generic.ts:102](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L102)
-
 ***
 
 ### isSymbol()
 
 > **isSymbol**(`item`): `item is symbol`
 
+Defined in: [utilities/generic.ts:136](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L136)
+
 Checks if the given item is a symbol.
 
 #### Parameters
 
-• **item**: `unknown`
+##### item
+
+`unknown`
 
 The item to check.
 
@@ -370,21 +464,21 @@ The item to check.
 
 `true` if the item is a symbol, `false` otherwise.
 
-#### Defined in
-
-[utilities/generic.ts:110](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L110)
-
 ***
 
 ### isUndefined()
 
 > **isUndefined**(`item`): `item is undefined`
 
+Defined in: [utilities/generic.ts:144](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L144)
+
 Checks if the given item is undefined.
 
 #### Parameters
 
-• **item**: `unknown`
+##### item
+
+`unknown`
 
 The item to check.
 
@@ -394,6 +488,66 @@ The item to check.
 
 A boolean indicating whether the item is undefined or not.
 
-#### Defined in
+***
 
-[utilities/generic.ts:118](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/utilities/generic.ts#L118)
+### isWeakMap()
+
+> **isWeakMap**\<`K`, `V`\>(`item`): `item is WeakMap<K, V>`
+
+Defined in: [utilities/generic.ts:154](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L154)
+
+Checks if the given item is an instance of WeakMap.
+
+#### Type Parameters
+
+• **K** *extends* `WeakKey`
+
+The type of the keys in the WeakMap.
+
+• **V** = `unknown`
+
+The type of the values in the WeakMap.
+
+#### Parameters
+
+##### item
+
+`unknown`
+
+The item to be checked.
+
+#### Returns
+
+`item is WeakMap<K, V>`
+
+A boolean indicating whether the item is an instance of WeakMap.
+
+***
+
+### isWeakSet()
+
+> **isWeakSet**\<`T`\>(`item`): `item is WeakSet<T>`
+
+Defined in: [utilities/generic.ts:163](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/utilities/generic.ts#L163)
+
+Checks if the given item is a WeakSet.
+
+#### Type Parameters
+
+• **T** *extends* `WeakKey`
+
+The type of the WeakSet keys.
+
+#### Parameters
+
+##### item
+
+`unknown`
+
+The item to check.
+
+#### Returns
+
+`item is WeakSet<T>`
+
+A boolean indicating whether the item is a WeakSet.

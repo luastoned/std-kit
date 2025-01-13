@@ -75,3 +75,13 @@ export const sum = (values: number[]): number => values.reduce((acc, cur) => acc
  * @returns The mean value of the numbers.
  */
 export const mean = (values: number[]): number => (values.length === 0 ? 0 : sum(values) / values.length);
+
+/**
+ * Linearly interpolates between two numbers.
+ *
+ * @param from - The starting value.
+ * @param to - The ending value.
+ * @param t - The interpolation factor.
+ * @returns The interpolated value.
+ */
+export const lerp = (from: number, to: number, t: number): number => from + t * (to - from);

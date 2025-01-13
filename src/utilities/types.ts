@@ -33,6 +33,11 @@ export type GenericFn<T> = (...args: T[]) => unknown;
 export type GenericObject = Record<PropertyKey, unknown>;
 
 /**
+ * Represents a plain object with string keys and unknown values.
+ */
+export type PlainObject = Record<string, unknown>;
+
+/**
  * Represents a generic function type.
  * @template TFunc - The type of the function.
  */

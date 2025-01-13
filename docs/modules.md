@@ -1,4 +1,4 @@
-[**std-kit**](README.md) • **Docs**
+[**std-kit**](README.md)
 
 ***
 

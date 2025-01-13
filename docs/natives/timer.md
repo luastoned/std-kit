@@ -1,4 +1,4 @@
-[**std-kit**](../README.md) • **Docs**
+[**std-kit**](../README.md)
 
 ***
 
@@ -12,6 +12,8 @@
 
 > **debounce**\<`F`\>(`callback`, `waitFor`): (...`args`) => `void`
 
+Defined in: [natives/timer.ts:17](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/timer.ts#L17)
+
 Creates a debounced version of the provided callback function.
 The debounced function will delay invoking the callback until after a specified amount of time has passed since the last time it was invoked.
 
@@ -23,11 +25,15 @@ The type of the original callback function.
 
 #### Parameters
 
-• **callback**: `F`
+##### callback
+
+`F`
 
 The original callback function to debounce.
 
-• **waitFor**: `number`
+##### waitFor
+
+`number`
 
 The amount of time (in milliseconds) to wait before invoking the debounced callback.
 
@@ -39,15 +45,13 @@ The amount of time (in milliseconds) to wait before invoking the debounced callb
 
 ##### Parameters
 
-• ...**args**: `Parameters`\<`F`\>
+###### args
+
+...`Parameters`\<`F`\>
 
 ##### Returns
 
 `void`
-
-#### Defined in
-
-[natives/timer.ts:17](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/timer.ts#L17)
 
 ***
 
@@ -55,11 +59,15 @@ The amount of time (in milliseconds) to wait before invoking the debounced callb
 
 > **sleep**(`ms`): `Promise`\<`unknown`\>
 
+Defined in: [natives/timer.ts:6](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/timer.ts#L6)
+
 Pauses the execution for the specified number of milliseconds.
 
 #### Parameters
 
-• **ms**: `number`
+##### ms
+
+`number`
 
 The number of milliseconds to sleep.
 
@@ -69,15 +77,13 @@ The number of milliseconds to sleep.
 
 A promise that resolves after the specified number of milliseconds.
 
-#### Defined in
-
-[natives/timer.ts:6](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/timer.ts#L6)
-
 ***
 
 ### throttle()
 
 > **throttle**\<`F`\>(`callback`, `waitFor`): (...`args`) => `Promise`\<`ReturnType`\<`F`\>\>
+
+Defined in: [natives/timer.ts:35](https://github.com/luastoned/std-kit/blob/d6d9c66795f32f88d92ff1f7329818985963dcec/src/natives/timer.ts#L35)
 
 Throttles a function and returns a promise that resolves with the result of the function.
 The function will be called at most once within the specified time interval.
@@ -90,11 +96,15 @@ The type of the function to throttle.
 
 #### Parameters
 
-• **callback**: `F`
+##### callback
+
+`F`
 
 The function to throttle.
 
-• **waitFor**: `number`
+##### waitFor
+
+`number`
 
 The time interval in milliseconds.
 
@@ -106,12 +116,10 @@ The time interval in milliseconds.
 
 ##### Parameters
 
-• ...**args**: `Parameters`\<`F`\>
+###### args
+
+...`Parameters`\<`F`\>
 
 ##### Returns
 
 `Promise`\<`ReturnType`\<`F`\>\>
-
-#### Defined in
-
-[natives/timer.ts:35](https://github.com/luastoned/std-kit/blob/019ddf4e36ce84e216dda16e7c3c3f2700a06ed4/src/natives/timer.ts#L35)
