@@ -57,7 +57,12 @@ type FieldOrUndefined<T, Key> = Key extends keyof T
   : undefined;
 
 // Main recursive type to infer the type from a dot notation or array path
-export type GetFieldType<T, Path> = Path extends `${infer Left}.${infer Right}` ? GetNestedField<T, Left, Right> : GetDirectOrIndexedField<T, Path>;
+// export type GetFieldType<T, Path> = Path extends `${infer Left}.${infer Right}` ? GetNestedField<T, Left, Right> : GetDirectOrIndexedField<T, Path>;
+export type GetFieldType<T, Path> = Path extends ''
+  ? T
+  : Path extends `${infer Left}.${infer Right}`
+  ? GetNestedField<T, Left, Right>
+  : GetDirectOrIndexedField<T, Path>;
 
 // Handle direct field access or array indexing (e.g., 'user.name' or 'user.posts[0]')
 type GetDirectOrIndexedField<T, Path> = Path extends `${infer FieldKey}[${infer IdxKey}]`

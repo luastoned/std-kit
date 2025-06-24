@@ -21,7 +21,7 @@ import { isArray, isObject, isPlainObject } from '~/utilities/generic';
 export const getValue = <TData, TPath extends string, TDefault = GetFieldType<TData, TPath>>(
   data: TData,
   path: TPath,
-  defaultValue: TDefault,
+  defaultValue?: TDefault,
 ): GetFieldType<TData, TPath> | TDefault => {
   const keys = path.split(/[\.\[\]]/).filter(Boolean) as Array<string | number>; // Split by dot or brackets, remove empty parts
 
@@ -30,11 +30,11 @@ export const getValue = <TData, TPath extends string, TDefault = GetFieldType<TD
     if (result && typeof result === 'object' && key in result) {
       result = (result as Record<string, unknown>)[key]; // Use indexed access for objects/arrays
     } else {
-      return defaultValue;
+      return defaultValue as TDefault;
     }
   }
 
-  return result !== undefined ? (result as GetFieldType<TData, TPath>) : defaultValue;
+  return result !== undefined ? (result as GetFieldType<TData, TPath>) : (defaultValue as TDefault);
 };
 
 /**
@@ -144,6 +144,11 @@ export const filterObject = <R = unknown, T = unknown, P extends boolean = false
   return results;
 };
 
+interface DeepMergeOptions {
+  isImmutable?: boolean; // Whether the merge should be immutable (default: true)
+  replaceIfUndefined?: boolean; // Whether to replace keys with `undefined` values in the source
+}
+
 /**
  * Deeply merges a patch object into a source object.
  *
@@ -158,7 +163,12 @@ export const filterObject = <R = unknown, T = unknown, P extends boolean = false
  *
  * @returns A new object that is the result of deeply merging the patch into the source.
  */
-export const deepMerge = <TSource extends PlainObject, TPatch extends PlainObject>(source: TSource, patch: TPatch): TSource & TPatch => {
+export const deepMerge = <TSource extends PlainObject, TPatch extends PlainObject>(
+  source: TSource,
+  patch: TPatch,
+  options: DeepMergeOptions = {},
+): TSource & TPatch => {
+  const { isImmutable = true, replaceIfUndefined = false } = options;
   /**
    * Recursively merges two objects.
    *
@@ -167,32 +177,32 @@ export const deepMerge = <TSource extends PlainObject, TPatch extends PlainObjec
    * @returns The merged object.
    */
   const merge = (src: PlainObject, patchObj: PlainObject): PlainObject => {
+    const target = isImmutable ? { ...src } : src; // Create a copy if immutable, or work directly on the source
+
     for (const key in patchObj) {
-      // Ensure the key exists on the patch object itself (not inherited)
       if (Object.hasOwn(patchObj, key)) {
-        const srcValue = src[key];
+        const srcValue = target[key];
         const patchValue = patchObj[key];
 
-        // If the patch value is an object, recursively merge
         if (isPlainObject(patchValue)) {
           if (!isPlainObject(srcValue)) {
-            src[key] = {};
+            target[key] = {}; // Initialize as an object if `srcValue` is undefined or not an object
           }
 
-          src[key] = merge(srcValue as PlainObject, patchValue);
+          target[key] = merge(target[key] as PlainObject, patchValue as PlainObject);
         } else if (isArray(patchValue)) {
-          // Replace arrays entirely
-          src[key] = [...patchValue];
+          target[key] = [...patchValue]; // Always replace arrays
         } else {
-          // Directly assign primitive values or other types
-          src[key] = patchValue;
+          // Replace values based on `replaceIfUndefined` flag
+          if (replaceIfUndefined || srcValue !== undefined) {
+            target[key] = patchValue;
+          }
         }
       }
     }
 
-    return src;
+    return target;
   };
 
-  // Start the merge process with a shallow copy of the source object
-  return merge({ ...source }, patch) as TSource & TPatch;
+  return merge(source, patch) as TSource & TPatch;
 };

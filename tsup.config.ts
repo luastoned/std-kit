@@ -3,7 +3,7 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: ['src/index.ts'],
   format: ['cjs', 'esm'],
-  target: ['es2022'],
+  target: ['es2023'],
   platform: 'neutral',
   outDir: 'lib',
   outExtension: ({ format }) => {

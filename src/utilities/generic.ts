@@ -27,7 +27,7 @@ export const isDate = (item: unknown): item is Date => item instanceof Date;
  * @param item - The item to check.
  * @returns A boolean indicating whether the item is defined or not.
  */
-export const isDefined = (item: unknown): boolean => item !== undefined;
+export const isDefined = <T = unknown>(item: T): item is Exclude<T, undefined> => item !== undefined;
 
 /**
  * Checks if the given item is an instance of the Error class.
@@ -166,6 +166,7 @@ export const isWeakSet = <T extends WeakKey>(item: unknown): item is WeakSet<T> 
  * Creates a deep clone of an item.
  *
  * @param item - The item to clone.
- * @returns The cloned item.
+ * @returns The cloned item or undefined if the input is undefined.
  */
-export const cloneObject = <T>(item: T): T => (item !== undefined ? JSON.parse(JSON.stringify(item)) : undefined);
+export const cloneObject = <T>(item: T): T extends undefined ? undefined : T =>
+  (item !== undefined ? JSON.parse(JSON.stringify(item)) : undefined) as T extends undefined ? undefined : T;

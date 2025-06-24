@@ -58,7 +58,7 @@ export const rad2deg = (radians: number): number => radians * (180 / Math.PI);
  * @returns An array of numbers within the specified range.
  */
 export const range = (start: number, end: number, step = 1): number[] =>
-  Array.from(Array(Math.floor((end - start + 1) / step)).keys()).map((num) => start + num * step);
+  Array.from(Array(Math.ceil((end - start + 1) / step)).keys()).map((num) => start + num * step);
 
 /**
  * Calculates the sum of an array of numbers.

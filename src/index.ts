@@ -2,6 +2,7 @@ export * from './utilities/generic';
 export * from './utilities/types';
 
 export * from './natives/array';
+export * from './natives/buffer';
 export * from './natives/number';
 export * from './natives/object';
 export * from './natives/timer';
@@ -9,6 +10,10 @@ export * from './natives/timer';
 // https://radashi.js.org
 // https://moderndash.io
 // https://es-toolkit.slash.page
+
+// https://www.npmjs.com/package/rfc4648
+
+// https://github.com/denoland/std
 
 // https://github.com/voodoocreation/ts-deepmerge
 // export { merge as mergeDeep1 } from 'ts-deepmerge';
