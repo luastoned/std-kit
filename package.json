@@ -1,6 +1,6 @@
 {
   "name": "std-kit",
-  "version": "2.3.1",
+  "version": "2.4.1",
   "description": "NodeJS Standard Library Additions",
   "keywords": [
     "std",
@@ -30,19 +30,22 @@
     "build:types": "tsc --project tsconfig.build.json --declaration --emitDeclarationOnly",
     "clean": "rimraf coverage dist docs lib",
     "docs": "typedoc",
+    "test": "vitest",
     "release": "release-it"
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "^22.10.5",
-    "esbuild": "^0.24.2",
-    "release-it": "^18.1.1",
+    "@types/node": "^22.15.23",
+    "esbuild": "^0.25.5",
+    "release-it": "^19.0.2",
     "rimraf": "^6.0.1",
-    "tsup": "^8.3.5",
-    "tsx": "^4.19.2",
-    "typedoc": "^0.27.6",
-    "typedoc-plugin-markdown": "^4.4.1",
-    "typedoc-plugin-merge-modules": "^6.1.0",
-    "typescript": "^5.7.3"
+    "tsup": "^8.5.0",
+    "tsx": "^4.19.4",
+    "typedoc": "^0.28.5",
+    "typedoc-plugin-markdown": "^4.6.3",
+    "typedoc-plugin-merge-modules": "^7.0.0",
+    "typescript": "^5.8.3",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.1.4"
   }
 }
