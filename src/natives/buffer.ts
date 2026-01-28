@@ -7,7 +7,7 @@ import { type Readable, Writable } from 'node:stream';
  * @returns A promise that resolves with the concatenated buffer of all chunks read from the stream.
  */
 export const streamToBuffer = (stream: Readable): Promise<Buffer> => {
-  return new Promise((resolve, reject) => {
+  return new Promise<Buffer>((resolve, reject) => {
     const chunks: Buffer[] = [];
 
     stream.on('data', (chunk) => chunks.push(chunk));
@@ -33,9 +33,10 @@ export const pipeToBuffer = (stream: Readable): Promise<Buffer> => {
       },
     });
 
-    stream.pipe(writable);
-
-    writable.on('finish', () => resolve(Buffer.concat(chunks)));
     writable.on('error', reject);
+    writable.on('finish', () => resolve(Buffer.concat(chunks)));
+
+    stream.on('error', reject);
+    stream.pipe(writable);
   });
 };

@@ -3,18 +3,18 @@
  * @param ms - The number of milliseconds to sleep.
  * @returns A promise that resolves after the specified number of milliseconds.
  */
-export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+export const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * Creates a debounced version of the provided callback function.
  * The debounced function will delay invoking the callback until after a specified amount of time has passed since the last time it was invoked.
  *
  * @template F - The type of the original callback function.
- * @param {F} callback - The original callback function to debounce.
- * @param {number} waitFor - The amount of time (in milliseconds) to wait before invoking the debounced callback.
- * @returns {(...args: Parameters<F>) => void} - The debounced callback function.
+ * @param callback - The original callback function to debounce.
+ * @param waitFor - The amount of time (in milliseconds) to wait before invoking the debounced callback.
+ * @returns The debounced callback function.
  */
-export const debounce = <F extends (...args: Parameters<F>) => ReturnType<F>>(callback: F, waitFor: number): ((...args: Parameters<F>) => void) => {
+export const debounce = <F extends (...args: never[]) => unknown>(callback: F, waitFor: number): ((...args: Parameters<F>) => void) => {
   let timeout: NodeJS.Timeout;
 
   return (...args: Parameters<F>): void => {
@@ -28,13 +28,13 @@ export const debounce = <F extends (...args: Parameters<F>) => ReturnType<F>>(ca
  * The function will be called at most once within the specified time interval.
  *
  * @template F - The type of the function to throttle.
- * @param {F} callback - The function to throttle.
- * @param {number} waitFor - The time interval in milliseconds.
- * @returns {(...args: Parameters<F>) => Promise<ReturnType<F>>} - A throttled function that returns a promise.
+ * @param callback - The function to throttle.
+ * @param waitFor - The time interval in milliseconds.
+ * @returns A throttled function that returns a promise.
  */
-export const throttle = <F extends (...args: Parameters<F>) => ReturnType<F>>(callback: F, waitFor: number) => {
-  const now = () => Date.now();
-  const resetStartTime = () => {
+export const throttle = <F extends (...args: never[]) => ReturnType<F>>(callback: F, waitFor: number): ((...args: Parameters<F>) => Promise<ReturnType<F>>) => {
+  const now = (): number => Date.now();
+  const resetStartTime = (): void => {
     startTime = now();
   };
 

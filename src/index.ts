@@ -1,4 +1,5 @@
 export * from './utilities/generic';
+export * from './utilities/guard';
 export * from './utilities/types';
 
 export * from './natives/array';

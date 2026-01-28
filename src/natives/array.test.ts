@@ -59,6 +59,29 @@ describe('flatten', () => {
   it('should return empty array when input is empty', () => {
     expect(flatten([])).toEqual([]);
   });
+
+  it('should flatten to specified depth', () => {
+    expect(flatten([[[1, 2]], [[3, 4]]], 1)).toEqual([
+      [1, 2],
+      [3, 4],
+    ]);
+    expect(flatten([[[1, 2]], [[3, 4]]], 2)).toEqual([1, 2, 3, 4]);
+  });
+
+  it('should not flatten when depth is 0', () => {
+    expect(
+      flatten(
+        [
+          [1, 2],
+          [3, 4],
+        ],
+        0,
+      ),
+    ).toEqual([
+      [1, 2],
+      [3, 4],
+    ]);
+  });
 });
 
 describe('fill', () => {
@@ -200,20 +223,20 @@ describe('uniqueBy', () => {
 describe('cartesian', () => {
   it('should calculate cartesian product of two arrays', () => {
     expect(
-      cartesian([
+      cartesian<number | string>([
         [1, 2],
         ['a', 'b'],
       ]),
     ).toEqual([
       [1, 'a'],
-      [1, 'b'],
       [2, 'a'],
+      [1, 'b'],
       [2, 'b'],
     ]);
   });
 
   it('should calculate cartesian product of three arrays', () => {
-    expect(cartesian([[1], ['a', 'b'], ['x']])).toEqual([
+    expect(cartesian<number | string>([[1], ['a', 'b'], ['x']])).toEqual([
       [1, 'a', 'x'],
       [1, 'b', 'x'],
     ]);

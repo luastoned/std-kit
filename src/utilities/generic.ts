@@ -85,7 +85,7 @@ export const isNumber = (item: unknown): item is number => typeof item === 'numb
  * @param item - The item to check.
  * @returns `true` if the item is an object, `false` otherwise.
  */
-export const isObject = (item: unknown): item is object => typeof item === 'object' && !Array.isArray(item) && item !== null;
+export const isObject = (item: unknown): item is Record<PropertyKey, unknown> => typeof item === 'object' && !Array.isArray(item) && item !== null;
 
 /**
  * Checks if the given item is a plain object.

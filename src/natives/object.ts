@@ -10,24 +10,22 @@ import { isArray, isObject, isPlainObject } from '~/utilities/generic';
  * @template TData - The type of the data object.
  * @template TPath - The dot/bracket notation path to the property in the object.
  * @template TDefault - The type of the default value to be returned if the path does not exist.
- *
- * @param {TData} data - The object or array from which to retrieve the value.
- * @param {TPath} path - The string path specifying the property to retrieve.
+ * @param data - The object or array from which to retrieve the value.
+ * @param path - The string path specifying the property to retrieve.
  * Supports dot notation (e.g., 'user.name') and bracket notation (e.g., 'user.posts[0]').
- * @param {TDefault} defaultValue - The value to return if the specified path does not exist or is undefined.
- *
- * @returns {GetFieldType<TData, TPath> | TDefault} - The value at the specified path, or the default value if the path does not exist.
+ * @param defaultValue - The value to return if the specified path does not exist or is undefined.
+ * @returns The value at the specified path, or the default value if the path does not exist.
  */
 export const getValue = <TData, TPath extends string, TDefault = GetFieldType<TData, TPath>>(
-  data: TData,
+  data: Readonly<TData>,
   path: TPath,
   defaultValue?: TDefault,
 ): GetFieldType<TData, TPath> | TDefault => {
-  const keys = path.split(/[\.\[\]]/).filter(Boolean) as Array<string | number>; // Split by dot or brackets, remove empty parts
+  const keys = path.split(/[\.\[\]]/).filter(Boolean); // Split by dot or brackets, remove empty parts
 
   let result: unknown = data; // Use `unknown` to ensure strict type checking
   for (const key of keys) {
-    if (result && typeof result === 'object' && key in result) {
+    if (result !== null && result !== undefined && typeof result === 'object' && key in result) {
       result = (result as Record<string, unknown>)[key]; // Use indexed access for objects/arrays
     } else {
       return defaultValue as TDefault;
@@ -46,30 +44,33 @@ export const getValue = <TData, TPath extends string, TDefault = GetFieldType<TD
  * @template TData - The type of the data object being modified.
  * @template TPath - The dot/bracket notation path to the property where the value will be set.
  * @template TValue - The type of the value to set at the specified path.
- *
- * @param {TData} data - The object or array in which the value will be set.
- * @param {TPath} path - The string path specifying the property to set.
+ * @param data - The object or array in which the value will be set.
+ * @param path - The string path specifying the property to set.
  * Supports dot notation (e.g., 'user.name') and bracket notation (e.g., 'user.posts[0]').
- * @param {TValue} value - The value to set at the specified path.
- *
- * @returns {void}
+ * @param value - The value to set at the specified path.
  */
 export const setValue = <TData, TPath extends string, TValue>(data: TData, path: TPath, value: TValue): void => {
-  const keys = path.split(/[\.\[\]]/).filter(Boolean) as Array<string | number>; // Split by dot or brackets, remove empty parts
+  const keys = path.split(/[\.\[\]]/).filter(Boolean); // Split by dot or brackets, remove empty parts
 
   // biome-ignore lint/suspicious/noExplicitAny: current is unknown territory, this is fine
   let current: any = data; // Start at the root object
   for (let idx = 0; idx < keys.length; idx++) {
     const key = keys[idx];
 
+    // SECURITY: Prevent prototype pollution
+    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+      return;
+    }
+
     // If we are at the last key, assign the value
     if (idx === keys.length - 1) {
       current[key] = value;
     } else {
       // Check if the current key exists and is an object or array
-      if (typeof current[key] !== 'object' || current[key] === null) {
+      if (current[key] === null || current[key] === undefined || typeof current[key] !== 'object') {
         // Create an empty object or array if the next key is a number (array-like access)
-        current[key] = Number.isNaN(Number(keys[idx + 1])) ? {} : [];
+        const nextKey = keys[idx + 1];
+        current[key] = /^\d+$/.test(nextKey) ? [] : {};
       }
 
       current = current[key]; // Move to the next level
@@ -77,61 +78,62 @@ export const setValue = <TData, TPath extends string, TValue>(data: TData, path:
   }
 };
 
-type FilterFunction<T> = (obj: T) => boolean;
-
-type FilterResult<T, P extends boolean> = P extends true ? { path: string; value: T } : T;
+type SearchResult<T, P extends boolean> = P extends true ? { path: string; value: T } : T;
 
 /**
- * Recursively filters a JSON-like object or array, applying the filter function to each sub-object or sub-array.
- * Returns matching objects, and optionally, the paths where the matches were found.
+ * Recursively searches through an object or array tree, finding all values that match the filter function.
+ * Returns a flat array of matching values, optionally with their paths.
  *
  * The return type is inferred dynamically based on the `path` argument. If `path: true`, the return type includes
  * both the path and the value. Otherwise, it returns just the values.
  *
- * @template R - The expected return type of the object.
- * @template T - The type of the object or array to filter.
+ * @template R - The expected return type of matching values.
+ * @template T - The type of values being filtered in the tree.
  * @template P - A boolean, controlling whether the path should be included in the return type.
- *
- * @param {T} obj - The JSON-like object or array to filter.
- * @param {FilterFunction<any>} filter - The filter function that returns true for a matching sub-object.
- * @param {P} [path=false] - Whether to include the path in the result.
- * If `true`, the path to the matching sub-object is returned alongside the result.
- *
- * @returns {Array<FilterResult<T, P>>} - An array of matching sub-objects or matching objects with paths (if `path` is true).
+ * @param obj - The object or array to search through.
+ * @param filter - The filter function that returns true for matching values. Receives (key, value, path, parent).
+ * @param path - Whether to include the path in the result.
+ * If `true`, the path to the matching value is returned alongside the result.
+ * @returns A flat array of matching values or matching values with paths (if `path` is true).
  */
-export const filterObject = <R = unknown, T = unknown, P extends boolean = false>(
-  obj: T,
-  filter: FilterFunction<unknown>,
+export const queryObject = <R = unknown, T = unknown, P extends boolean = false>(
+  obj: unknown,
+  filter: (key: string, value: T, path: string, parent: unknown) => boolean,
   path: P = false as P,
-): Array<FilterResult<R, P>> => {
-  const results: Array<FilterResult<R, P>> = [];
+): Array<SearchResult<R, P>> => {
+  const results: Array<SearchResult<R, P>> = [];
 
   /**
-   * Helper function to build the new path based on the current path and key.
+   * Helper function to build the new path based on the current path, key, and parent type.
    */
-  const buildPath = (currentPath: string, key: string): string => {
-    return currentPath ? (Array.isArray(obj) ? `${currentPath}[${key}]` : `${currentPath}.${key}`) : key;
+  const buildPath = (currentPath: string, key: string, isParentArray: boolean): string => {
+    if (isParentArray) {
+      return `${currentPath}[${key}]`;
+    }
+
+    return currentPath ? `${currentPath}.${key}` : key;
   };
 
   /**
    * Recursive traversal function to iterate over the object or array.
    */
-  const traverse = (o: unknown, currentPath = ''): void => {
-    // Ensure `o` is an object or array
-    if (filter(o as T)) {
+  const traverse = (value: unknown, currentPath = '', currentKey = '', parent: unknown = null): void => {
+    // Check if the current node matches criteria
+    if (filter(currentKey, value as T, currentPath, parent)) {
       if (path) {
-        results.push({ path: currentPath, value: o as T } as FilterResult<R, P>);
+        results.push({ path: currentPath, value: value as T } as SearchResult<R, P>);
       } else {
-        results.push(o as FilterResult<R, P>);
+        results.push(value as SearchResult<R, P>);
       }
     }
 
-    if (typeof o === 'object' && o !== null) {
-      for (const key in o as Record<string, unknown>) {
-        if (Object.hasOwn(o, key)) {
-          const newPath = buildPath(currentPath, key);
-          traverse((o as Record<string, unknown>)[key], newPath); // Ensure proper indexing
-        }
+    if (typeof value === 'object' && value !== null) {
+      // Determine if current container is an array to format child paths correctly
+      const isArrayContainer = Array.isArray(value);
+
+      for (const [key, childValue] of Object.entries(value)) {
+        const newPath = buildPath(currentPath, key, isArrayContainer);
+        traverse(childValue, newPath, key, value);
       }
     }
   };
@@ -144,10 +146,195 @@ export const filterObject = <R = unknown, T = unknown, P extends boolean = false
   return results;
 };
 
-interface DeepMergeOptions {
-  isImmutable?: boolean; // Whether the merge should be immutable (default: true)
-  replaceIfUndefined?: boolean; // Whether to replace keys with `undefined` values in the source
-}
+/**
+ * Recursively filters an object or array tree, preserving the original structure but only keeping
+ * items that match the specified key and/or value filters.
+ *
+ * @template T - The type of the object or array to filter.
+ * @param obj - The object or array to filter.
+ * @param options - Filter options:
+ *   - `keys`: Array of key names to keep, or a function to test keys with access to both key and value
+ *   - `values`: Function to test values with access to both key and value
+ *   If both are provided, both conditions must be satisfied.
+ * @returns A new object/array with the same structure, containing only matching items.
+ *
+ * @example
+ * // Keep only specific keys
+ * filterTree(obj, { keys: ['color', 'background'] })
+ *
+ * @example
+ * // Keep only string values
+ * filterTree(obj, { values: (key, value) => typeof value === 'string' })
+ *
+ * @example
+ * // Keep keys containing 'color' in parent objects with type 'theme'
+ * filterTree(obj, {
+ *   keys: (key, value, path, parent) =>
+ *     key.includes('color') && parent?.type === 'theme'
+ * })
+ *
+ * @example
+ * // Combine both filters with path awareness
+ * filterObject(obj, {
+ *   keys: ['color', 'name'],
+ *   values: (key, value, path) =>
+ *     typeof value === 'string' && !path.includes('internal')
+ * })
+ */
+export const filterObject = <T>(
+  obj: Readonly<T>,
+  options: Readonly<{
+    keys?: readonly string[] | ((key: string, value: unknown, path: string, parent: unknown) => boolean);
+    values?: (key: string, value: unknown, path: string, parent: unknown) => boolean;
+  }>,
+): T | undefined => {
+  const { keys, values } = options;
+
+  const recurse = (value: unknown, currentPath: string, parent: unknown): unknown => {
+    // Create key filter function
+    let keyFilter: ((key: string, val: unknown, path: string, par: unknown) => boolean) | undefined;
+    if (keys) {
+      if (Array.isArray(keys)) {
+        keyFilter = (key: string) => keys.includes(key);
+      } else if (typeof keys === 'function') {
+        keyFilter = keys;
+      }
+    }
+
+    // If the current value matches the value filter, return it as-is (keep entire subtree)
+    if (values && values('', value, currentPath, parent)) {
+      return value;
+    }
+
+    // If no container and doesn't match value filter, exclude it
+    if (!isObject(value) && !isArray(value)) {
+      return undefined;
+    }
+
+    // Handle arrays - recursively filter children
+    if (Array.isArray(value)) {
+      const filtered = value
+        .map((item, index) => {
+          const itemPath = `${currentPath}[${index}]`;
+          return recurse(item, itemPath, value);
+        })
+        .filter((item) => item !== undefined);
+
+      return filtered.length > 0 ? filtered : undefined;
+    }
+
+    // Handle objects
+    if (isObject(value)) {
+      const result: Record<string, unknown> = {};
+      let hasMatchingItems = false;
+
+      for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
+        const keyPath = currentPath ? `${currentPath}.${key}` : key;
+
+        // Check if key matches (if key filter exists)
+        const keyMatches = !keyFilter || keyFilter(key, val, keyPath, value);
+
+        if (keyMatches) {
+          // Check if value matches (if value filter exists)
+          const valueMatches = !values || values(key, val, keyPath, value);
+
+          if (valueMatches) {
+            // Both key and value match (or no filter for that dimension)
+            result[key] = val;
+            hasMatchingItems = true;
+          } else if (isObject(val) || Array.isArray(val)) {
+            // Value doesn't match but is a container, recurse into it
+            const filteredValue = recurse(val, keyPath, value);
+            if (filteredValue !== undefined) {
+              result[key] = filteredValue;
+              hasMatchingItems = true;
+            }
+          }
+        } else {
+          // Key doesn't match - if it's a container, still recurse to check children
+          if (isObject(val) || Array.isArray(val)) {
+            const filteredValue = recurse(val, keyPath, value);
+            if (filteredValue !== undefined) {
+              result[key] = filteredValue;
+              hasMatchingItems = true;
+            }
+          }
+        }
+      }
+
+      return hasMatchingItems ? result : undefined;
+    }
+
+    return undefined;
+  };
+
+  return recurse(obj, '', null) as T | undefined;
+};
+
+/**
+ * Recursively maps over all values in an object or array tree, allowing transformation
+ * of each value while preserving the structure.
+ *
+ * @template T - The type of the object or array to map.
+ * @param obj - The object or array to map over.
+ * @param mapper - Function called for each value with (key, value, path).
+ *   - key: The property name or array index (as string)
+ *   - value: The current value
+ *   - path: The full path to this value (e.g., 'user.settings.theme' or 'users[0].name')
+ * @returns A new object/array with the same structure but transformed values.
+ *
+ * @example
+ * // Double all numbers
+ * mapTree({ a: 1, b: { c: 2 } }, (key, value) =>
+ *   typeof value === 'number' ? value * 2 : value
+ * )
+ *
+ * @example
+ * // Uppercase all strings, with path and parent context
+ * mapTree(obj, (key, value, path, parent) => {
+ *   console.log(`At ${path}: ${value}`);
+ *   return typeof value === 'string' ? value.toUpperCase() : value;
+ * })
+ *
+ * @example
+ * // Format values based on sibling properties in parent
+ * mapTree(obj, (key, value, path, parent) => {
+ *   if (key === 'amount' && parent?.currency === 'EUR') {
+ *     return `€${value}`;
+ *   }
+ *   return value;
+ * })
+ */
+export const mapObject = <T>(obj: T, mapper: (key: string, value: unknown, path: string, parent: unknown) => unknown): T => {
+  const recurse = (value: unknown, currentPath: string, parent: unknown): unknown => {
+    // Handle arrays
+    if (Array.isArray(value)) {
+      return value.map((item, index) => {
+        const itemPath = currentPath ? `${currentPath}[${index}]` : `[${index}]`;
+        const transformed = mapper(String(index), item, itemPath, value);
+        return isObject(transformed) || Array.isArray(transformed) ? recurse(transformed, itemPath, transformed) : transformed;
+      });
+    }
+
+    // Handle objects
+    if (isObject(value)) {
+      const result: Record<string, unknown> = {};
+      for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
+        const keyPath = currentPath ? `${currentPath}.${key}` : key;
+        const transformed = mapper(key, val, keyPath, value);
+        result[key] = isObject(transformed) || Array.isArray(transformed) ? recurse(transformed, keyPath, transformed) : transformed;
+      }
+      return result;
+    }
+
+    // For primitives, return as-is
+    return value;
+  };
+
+  // Start recursion
+  const transformed = mapper('', obj, '', null);
+  return recurse(transformed, '', transformed) as T;
+};
 
 /**
  * Deeply merges a patch object into a source object.
@@ -160,13 +347,16 @@ interface DeepMergeOptions {
  * @template TPatch - Type of the patch object.
  * @param source - The original object to be merged into.
  * @param patch - The object containing updates or new keys to be merged.
- *
+ * @param options - Merge options controlling immutability and undefined handling.
  * @returns A new object that is the result of deeply merging the patch into the source.
  */
-export const deepMerge = <TSource extends PlainObject, TPatch extends PlainObject>(
+export const mergeObject = <TSource extends PlainObject, TPatch extends PlainObject>(
   source: TSource,
-  patch: TPatch,
-  options: DeepMergeOptions = {},
+  patch: Readonly<TPatch>,
+  options: Readonly<{
+    isImmutable?: boolean;
+    replaceIfUndefined?: boolean;
+  }> = {},
 ): TSource & TPatch => {
   const { isImmutable = true, replaceIfUndefined = false } = options;
   /**
@@ -179,24 +369,22 @@ export const deepMerge = <TSource extends PlainObject, TPatch extends PlainObjec
   const merge = (src: PlainObject, patchObj: PlainObject): PlainObject => {
     const target = isImmutable ? { ...src } : src; // Create a copy if immutable, or work directly on the source
 
-    for (const key in patchObj) {
-      if (Object.hasOwn(patchObj, key)) {
-        const srcValue = target[key];
-        const patchValue = patchObj[key];
+    for (const [key, patchValue] of Object.entries(patchObj)) {
+      const srcValue = target[key];
 
-        if (isPlainObject(patchValue)) {
-          if (!isPlainObject(srcValue)) {
-            target[key] = {}; // Initialize as an object if `srcValue` is undefined or not an object
-          }
+      if (patchValue !== null && patchValue !== undefined && isPlainObject(patchValue)) {
+        if (!isPlainObject(srcValue)) {
+          target[key] = {}; // Initialize as an object if `srcValue` is undefined or not an object
+        }
 
-          target[key] = merge(target[key] as PlainObject, patchValue as PlainObject);
-        } else if (isArray(patchValue)) {
-          target[key] = [...patchValue]; // Always replace arrays
-        } else {
-          // Replace values based on `replaceIfUndefined` flag
-          if (replaceIfUndefined || srcValue !== undefined) {
-            target[key] = patchValue;
-          }
+        target[key] = merge(target[key] as PlainObject, patchValue as PlainObject);
+      } else if (isArray(patchValue)) {
+        target[key] = [...patchValue]; // Always replace arrays
+      } else {
+        // Standard merge: If key exists in patch, overwrite source
+        // Only skip if patchValue is undefined AND replaceIfUndefined is false
+        if (patchValue !== undefined || replaceIfUndefined) {
+          target[key] = patchValue;
         }
       }
     }
@@ -206,3 +394,6 @@ export const deepMerge = <TSource extends PlainObject, TPatch extends PlainObjec
 
   return merge(source, patch) as TSource & TPatch;
 };
+
+/** @deprecated Use mergeObject instead */
+export const deepMerge = mergeObject;

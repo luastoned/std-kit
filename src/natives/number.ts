@@ -54,11 +54,14 @@ export const rad2deg = (radians: number): number => radians * (180 / Math.PI);
  *
  * @param start - The starting number of the range.
  * @param end - The ending number of the range.
- * @param step - The increment value between numbers in the range. Default is 1.
- * @returns An array of numbers within the specified range.
+ * @param step - The increment value between numbers in the range. Default is 1. If not a positive integer, it will be clamped to 1.
+ * @returns A readonly array of numbers within the specified range.
  */
-export const range = (start: number, end: number, step = 1): number[] =>
-  Array.from(Array(Math.ceil((end - start + 1) / step)).keys()).map((num) => start + num * step);
+export const range = (start: number, end: number, step = 1): readonly number[] => {
+  const clampedStep = step <= 0 || !Number.isFinite(step) ? 1 : Math.max(1, Math.floor(step));
+  const length = Math.ceil((end - start + 1) / clampedStep);
+  return Array.from({ length }, (_, i) => start + i * clampedStep);
+};
 
 /**
  * Calculates the sum of an array of numbers.
@@ -66,7 +69,7 @@ export const range = (start: number, end: number, step = 1): number[] =>
  * @param values - An array of numbers.
  * @returns The sum of the numbers in the array.
  */
-export const sum = (values: number[]): number => values.reduce((acc, cur) => acc + cur, 0);
+export const sum = (values: readonly number[]): number => values.reduce((acc, cur) => acc + cur, 0);
 
 /**
  * Calculates the mean of an array of numbers.
@@ -74,7 +77,7 @@ export const sum = (values: number[]): number => values.reduce((acc, cur) => acc
  * @param values - The array of numbers.
  * @returns The mean value of the numbers.
  */
-export const mean = (values: number[]): number => (values.length === 0 ? 0 : sum(values) / values.length);
+export const mean = (values: readonly number[]): number => (values.length === 0 ? 0 : sum(values) / values.length);
 
 /**
  * Linearly interpolates between two numbers.

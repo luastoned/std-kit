@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { getValue } from './object';
+import { getValue, setValue, queryObject, filterObject, mapObject, mergeObject } from './object';
 
-describe('object getValue', () => {
+describe('getValue', () => {
   const data = {
     user: {
       name: 'Alice',
@@ -35,5 +35,1007 @@ describe('object getValue', () => {
 
   it('returns the entire value if path is empty', () => {
     expect(getValue(data, '')).toEqual(data);
+  });
+});
+
+describe('setValue', () => {
+  it('sets a shallow property', () => {
+    const obj = { name: 'Bob' };
+    setValue(obj, 'name', 'Alice');
+    expect(obj.name).toBe('Alice');
+  });
+
+  it('sets a nested property', () => {
+    const obj = { user: { name: 'Bob' } };
+    setValue(obj, 'user.name', 'Alice');
+    expect(obj.user.name).toBe('Alice');
+  });
+
+  it('creates intermediate objects', () => {
+    const obj: any = {};
+    setValue(obj, 'user.profile.name', 'Alice');
+    expect(obj.user.profile.name).toBe('Alice');
+  });
+
+  it('creates intermediate arrays for numeric indices', () => {
+    const obj: any = {};
+    setValue(obj, 'items[0]', 'first');
+    expect(Array.isArray(obj.items)).toBe(true);
+    expect(obj.items[0]).toBe('first');
+  });
+
+  it('sets array element in nested path', () => {
+    const obj: any = { data: {} };
+    setValue(obj, 'data.items[1].title', 'Test');
+    expect(obj.data.items[1].title).toBe('Test');
+  });
+
+  it('prevents prototype pollution with __proto__', () => {
+    const obj: any = {};
+    setValue(obj, '__proto__.polluted', 'bad');
+    expect(Object.prototype).not.toHaveProperty('polluted');
+    expect({}).not.toHaveProperty('polluted');
+  });
+
+  it('prevents prototype pollution with constructor', () => {
+    const obj: any = {};
+    setValue(obj, 'constructor.polluted', 'bad');
+    expect(obj.constructor).not.toHaveProperty('polluted');
+  });
+
+  it('prevents prototype pollution with prototype', () => {
+    const obj: any = {};
+    setValue(obj, 'prototype.polluted', 'bad');
+    expect(obj).not.toHaveProperty('prototype');
+  });
+
+  it('overwrites existing values', () => {
+    const obj = { count: 5 };
+    setValue(obj, 'count', 10);
+    expect(obj.count).toBe(10);
+  });
+});
+
+describe('findInTree', () => {
+  const data = {
+    users: [
+      { id: 1, name: 'Alice', active: true },
+      { id: 2, name: 'Bob', active: false },
+    ],
+    config: {
+      enabled: true,
+      settings: {
+        theme: 'dark',
+      },
+    },
+  };
+
+  it('filters objects by condition without paths', () => {
+    const result = queryObject(data, (key, value: any) => value?.active === true);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual({ id: 1, name: 'Alice', active: true });
+  });
+
+  it('filters objects by condition with paths', () => {
+    const result = queryObject(data, (key, value: any) => value?.active === true, true);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual({
+      path: 'users[0]',
+      value: { id: 1, name: 'Alice', active: true },
+    });
+  });
+
+  it('generates correct paths for nested objects', () => {
+    const result = queryObject(data, (key, value: any) => value === 'dark', true);
+    expect(result).toHaveLength(1);
+    expect(result[0].path).toBe('config.settings.theme');
+  });
+
+  it('generates correct paths for array elements', () => {
+    const result = queryObject(data, (key, value: any) => typeof value?.id === 'number', true);
+    expect(result).toHaveLength(2);
+    expect(result[0].path).toBe('users[0]');
+    expect(result[1].path).toBe('users[1]');
+  });
+
+  it('returns empty array when no matches', () => {
+    const result = queryObject(data, () => false);
+    expect(result).toEqual([]);
+  });
+
+  it('handles empty objects', () => {
+    const result = queryObject({}, (key, value: any) => value?.id === 1);
+    expect(result).toEqual([]);
+  });
+
+  it('filters by type', () => {
+    const result = queryObject(data, (key, value: any) => typeof value === 'boolean');
+    expect(result).toHaveLength(3); // active: true, active: false, enabled: true
+  });
+
+  it('receives key, path, and parent parameters', () => {
+    const data = {
+      users: [
+        { id: 1, name: 'Alice', role: 'admin' },
+        { id: 2, name: 'Bob', role: 'user' },
+      ],
+    };
+
+    const paths: string[] = [];
+    const keys: string[] = [];
+    const hasParent: boolean[] = [];
+
+    queryObject(data, (key, value, path, parent) => {
+      if (typeof value === 'string' && key === 'name') {
+        paths.push(path);
+        keys.push(key);
+        hasParent.push(parent !== null && parent !== undefined);
+      }
+      return false;
+    });
+
+    expect(keys).toEqual(['name', 'name']);
+    expect(paths).toEqual(['users[0].name', 'users[1].name']);
+    expect(hasParent).toEqual([true, true]);
+  });
+
+  it('can filter based on parent properties', () => {
+    const data = {
+      items: [
+        { type: 'admin', name: 'Alice' },
+        { type: 'user', name: 'Bob' },
+        { type: 'admin', name: 'Charlie' },
+      ],
+    };
+
+    // Find all names where parent type is 'admin'
+    const result = queryObject(data, (key, value, path, parent: any) => {
+      return key === 'name' && parent?.type === 'admin';
+    });
+
+    expect(result).toEqual(['Alice', 'Charlie']);
+  });
+});
+
+describe('mapObject', () => {
+  it('transforms all primitive values', () => {
+    const data = {
+      a: 1,
+      b: 2,
+      c: {
+        d: 3,
+        e: 4,
+      },
+    };
+
+    const result = mapObject(data, (key, value) => (typeof value === 'number' ? value * 2 : value));
+
+    expect(result).toEqual({
+      a: 2,
+      b: 4,
+      c: {
+        d: 6,
+        e: 8,
+      },
+    });
+  });
+
+  it('transforms strings to uppercase', () => {
+    const data = {
+      name: 'alice',
+      settings: {
+        theme: 'dark',
+        lang: 'en',
+      },
+    };
+
+    const result = mapObject(data, (key, value) => (typeof value === 'string' ? value.toUpperCase() : value));
+
+    expect(result).toEqual({
+      name: 'ALICE',
+      settings: {
+        theme: 'DARK',
+        lang: 'EN',
+      },
+    });
+  });
+
+  it('provides correct path to mapper', () => {
+    const data = {
+      user: {
+        name: 'Bob',
+        settings: {
+          theme: 'light',
+        },
+      },
+    };
+
+    const paths: string[] = [];
+    mapObject(data, (key, value, path) => {
+      if (typeof value === 'string') {
+        paths.push(path);
+      }
+      return value;
+    });
+
+    expect(paths).toEqual(['user.name', 'user.settings.theme']);
+  });
+
+  it('handles arrays correctly', () => {
+    const data = {
+      numbers: [1, 2, 3],
+      nested: {
+        items: [10, 20],
+      },
+    };
+
+    const result = mapObject(data, (key, value) => (typeof value === 'number' ? value + 1 : value));
+
+    expect(result).toEqual({
+      numbers: [2, 3, 4],
+      nested: {
+        items: [11, 21],
+      },
+    });
+  });
+
+  it('provides array indices in path', () => {
+    const data = {
+      items: [{ name: 'a' }, { name: 'b' }],
+    };
+
+    const paths: string[] = [];
+    mapObject(data, (key, value, path) => {
+      if (typeof value === 'string') {
+        paths.push(path);
+      }
+      return value;
+    });
+
+    expect(paths).toEqual(['items[0].name', 'items[1].name']);
+  });
+
+  it('can transform based on key name', () => {
+    const data = {
+      price: 100,
+      cost: 50,
+      name: 'Product',
+    };
+
+    const result = mapObject(data, (key, value) => {
+      if ((key === 'price' || key === 'cost') && typeof value === 'number') {
+        return value + 10; // Add 10
+      }
+      return value;
+    });
+
+    expect(result).toEqual({
+      price: 110,
+      cost: 60,
+      name: 'Product',
+    });
+  });
+
+  it('preserves structure with mixed types', () => {
+    const data = {
+      string: 'hello',
+      number: 42,
+      boolean: true,
+      null: null,
+      array: [1, 2],
+      object: { nested: 'value' },
+    };
+
+    const result = mapObject(data, (key, value) => value);
+
+    expect(result).toEqual(data);
+  });
+
+  it('handles empty objects and arrays', () => {
+    const data = {
+      empty: {},
+      emptyArray: [],
+      nested: {
+        alsoEmpty: {},
+      },
+    };
+
+    const result = mapObject(data, (key, value) => value);
+
+    expect(result).toEqual(data);
+  });
+
+  it('can convert types', () => {
+    const data = {
+      timestamp: '2024-01-01',
+      count: '42',
+    };
+
+    const result = mapObject(data, (key, value) => {
+      if (key === 'timestamp' && typeof value === 'string') {
+        return new Date(value).getFullYear();
+      }
+      if (key === 'count' && typeof value === 'string') {
+        return Number.parseInt(value, 10);
+      }
+      return value;
+    });
+
+    expect(result).toEqual({
+      timestamp: 2024,
+      count: 42,
+    });
+  });
+
+  it('handles deeply nested structures', () => {
+    const data = {
+      level1: {
+        level2: {
+          level3: {
+            level4: {
+              value: 1,
+            },
+          },
+        },
+      },
+    };
+
+    const result = mapObject(data, (key, value) => (typeof value === 'number' ? value * 10 : value));
+
+    expect(result).toEqual({
+      level1: {
+        level2: {
+          level3: {
+            level4: {
+              value: 10,
+            },
+          },
+        },
+      },
+    });
+  });
+
+  it('can add prefixes based on path depth', () => {
+    const data = {
+      title: 'root',
+      section: {
+        title: 'section',
+        subsection: {
+          title: 'subsection',
+        },
+      },
+    };
+
+    const result = mapObject(data, (key, value, path) => {
+      if (key === 'title' && typeof value === 'string') {
+        const depth = path.split('.').length - 1;
+        return `${'  '.repeat(depth)}${value}`;
+      }
+      return value;
+    });
+
+    expect(result).toEqual({
+      title: 'root',
+      section: {
+        title: '  section',
+        subsection: {
+          title: '    subsection',
+        },
+      },
+    });
+  });
+
+  it('handles arrays of primitives', () => {
+    const data = [1, 2, 3, 4, 5];
+
+    const result = mapObject(data, (key, value) => (typeof value === 'number' ? value ** 2 : value));
+
+    expect(result).toEqual([1, 4, 9, 16, 25]);
+  });
+
+  it('provides empty string path for root', () => {
+    let rootPath: string | undefined;
+    mapObject({ test: 1 }, (key, value, path) => {
+      if (key === '') {
+        rootPath = path;
+      }
+      return value;
+    });
+
+    expect(rootPath).toBe('');
+  });
+
+  it('uses parent context for transformation', () => {
+    const data = {
+      product1: { name: 'Widget', price: 100, currency: 'USD' },
+      product2: { name: 'Gadget', price: 50, currency: 'EUR' },
+    };
+
+    const result = mapObject(data, (key, value, path, parent) => {
+      if (key === 'price' && typeof value === 'number' && typeof parent === 'object' && parent !== null) {
+        const p = parent as Record<string, unknown>;
+        const symbol = p.currency === 'EUR' ? '€' : '$';
+        return `${symbol}${value}`;
+      }
+      return value;
+    });
+
+    expect(result).toEqual({
+      product1: { name: 'Widget', price: '$100', currency: 'USD' },
+      product2: { name: 'Gadget', price: '€50', currency: 'EUR' },
+    });
+  });
+
+  it('uses path to determine nesting level', () => {
+    const data = {
+      a: { b: { c: 1 } },
+    };
+
+    const result = mapObject(data, (key, value, path) => {
+      if (typeof value === 'number') {
+        const depth = path.split('.').length;
+        return value * depth;
+      }
+      return value;
+    });
+
+    expect(result).toEqual({
+      a: { b: { c: 3 } }, // depth of 'c' is 3
+    });
+  });
+
+  it('parent is the containing object/array', () => {
+    const data = {
+      items: [{ id: 1 }, { id: 2 }],
+    };
+
+    const result = mapObject(data, (key, value, path, parent) => {
+      // When key is 'id', parent is the object containing it: {id: 1}
+      // To check if we're in an array, need to check if parent's parent was an array
+      // or check the path pattern
+      if (key === 'id' && path.match(/\[\d+\]/)) {
+        return `item-${value}`;
+      }
+      return value;
+    });
+
+    expect(result).toEqual({
+      items: [{ id: 'item-1' }, { id: 'item-2' }],
+    });
+  });
+
+  it('parent is null for root', () => {
+    let rootParent: unknown;
+    mapObject({ test: 1 }, (key, value, path, parent) => {
+      if (key === '') {
+        rootParent = parent;
+      }
+      return value;
+    });
+
+    expect(rootParent).toBe(null);
+  });
+});
+
+describe('mergeObject', () => {
+  it('merges two simple objects', () => {
+    const source = { a: 1, b: 2 };
+    const patch = { b: 3, c: 4 };
+    const result = mergeObject(source, patch);
+
+    expect(result).toEqual({ a: 1, b: 3, c: 4 });
+    expect(source).toEqual({ a: 1, b: 2 }); // source unchanged (immutable)
+  });
+
+  it('merges nested objects', () => {
+    const source = { user: { name: 'Alice', age: 30 } };
+    const patch = { user: { age: 31, city: 'NYC' } };
+    const result = mergeObject(source, patch);
+
+    expect(result).toEqual({ user: { name: 'Alice', age: 31, city: 'NYC' } });
+  });
+
+  it('replaces arrays instead of merging', () => {
+    const source = { items: [1, 2, 3] };
+    const patch = { items: [4, 5] };
+    const result = mergeObject(source, patch);
+
+    expect(result.items).toEqual([4, 5]);
+  });
+
+  it('adds new keys from patch', () => {
+    const source = { a: 1 };
+    const patch = { b: 2, c: 3 };
+    const result = mergeObject(source, patch);
+
+    expect(result).toEqual({ a: 1, b: 2, c: 3 });
+  });
+
+  it('handles deeply nested objects', () => {
+    const source = { a: { b: { c: 1 } } };
+    const patch = { a: { b: { d: 2 } } };
+    const result = mergeObject(source, patch);
+
+    expect(result).toEqual({ a: { b: { c: 1, d: 2 } } });
+  });
+
+  it('mutates source when isImmutable is false', () => {
+    const source = { a: 1 };
+    const patch = { b: 2 };
+    const result = mergeObject(source, patch, { isImmutable: false });
+
+    expect(result).toBe(source); // same reference
+    expect(source).toEqual({ a: 1, b: 2 });
+  });
+
+  it('does not overwrite with undefined by default', () => {
+    const source = { a: 1, b: 2 };
+    const patch = { b: undefined, c: 3 };
+    const result = mergeObject(source, patch);
+
+    expect(result).toEqual({ a: 1, b: 2, c: 3 }); // b stays as 2
+  });
+
+  it('overwrites with undefined when replaceIfUndefined is true', () => {
+    const source = { a: 1, b: 2 };
+    const patch = { b: undefined, c: 3 };
+    const result = mergeObject(source, patch, { replaceIfUndefined: true });
+
+    expect(result).toEqual({ a: 1, b: undefined, c: 3 });
+  });
+
+  it('initializes nested object if source value is not an object', () => {
+    const source = { a: 'string' };
+    const patch = { a: { b: 1 } };
+    const result = mergeObject(source, patch);
+
+    expect(result).toEqual({ a: { b: 1 } });
+  });
+
+  it('handles null values', () => {
+    const source = { a: null };
+    const patch = { a: { b: 1 } };
+    const result = mergeObject(source, patch);
+
+    expect(result).toEqual({ a: { b: 1 } });
+  });
+
+  it('preserves unpatched nested properties', () => {
+    const source = { user: { name: 'Alice', age: 30, active: true } };
+    const patch = { user: { age: 31 } };
+    const result = mergeObject(source, patch);
+
+    expect(result.user).toEqual({ name: 'Alice', age: 31, active: true });
+  });
+});
+
+describe('filterObject (value filtering)', () => {
+  const data = {
+    users: [
+      { id: 1, name: 'Alice', active: true },
+      { id: 2, name: 'Bob', active: false },
+    ],
+    config: {
+      enabled: true,
+      theme: 'dark',
+      settings: {
+        autoSave: false,
+        notifications: true,
+      },
+    },
+  };
+
+  it('keeps only objects matching the filter', () => {
+    const result = filterObject(data, { values: (key, obj: any) => obj?.active === true });
+
+    expect(result).toEqual({
+      users: [{ id: 1, name: 'Alice', active: true }],
+    });
+  });
+
+  it('preserves nested structure when filtering', () => {
+    const result = filterObject(data, { values: (key, obj: any) => obj === true });
+
+    expect(result).toEqual({
+      users: [{ active: true }],
+      config: {
+        enabled: true,
+        settings: {
+          notifications: true,
+        },
+      },
+    });
+  });
+
+  it('keeps parent objects when children match', () => {
+    const result = filterObject(data, { values: (key, obj: any) => obj === 'dark' });
+
+    expect(result).toEqual({
+      config: {
+        theme: 'dark',
+      },
+    });
+  });
+
+  it('returns undefined when nothing matches', () => {
+    const result = filterObject(data, { values: () => false });
+
+    expect(result).toBeUndefined();
+  });
+
+  it('keeps entire structure when everything matches', () => {
+    const result = filterObject(data, { values: () => true });
+
+    expect(result).toEqual(data);
+  });
+
+  it('filters primitives in arrays', () => {
+    const numbers = [1, 2, 3, 4, 5];
+    const result = filterObject(numbers, { values: (key, n: any) => n > 3 });
+
+    expect(result).toEqual([4, 5]);
+  });
+
+  it('handles deeply nested objects', () => {
+    const nested = {
+      a: {
+        b: {
+          c: { match: true },
+          d: { match: false },
+        },
+      },
+    };
+
+    const result = filterObject(nested, { values: (key, obj: any) => obj?.match === true });
+
+    expect(result).toEqual({
+      a: {
+        b: {
+          c: { match: true },
+        },
+      },
+    });
+  });
+
+  it('handles empty objects', () => {
+    const result = filterObject({}, { values: (key, obj: any) => obj === 1 });
+
+    expect(result).toBeUndefined();
+  });
+
+  it('handles empty arrays', () => {
+    const result = filterObject([], { values: (key, obj: any) => obj === 1 });
+
+    expect(result).toBeUndefined();
+  });
+
+  it('filters mixed types correctly', () => {
+    const mixed = {
+      string: 'hello',
+      number: 42,
+      boolean: true,
+      nested: {
+        value: 100,
+      },
+    };
+
+    const result = filterObject(mixed, { values: (key, obj: any) => typeof obj === 'number' });
+
+    expect(result).toEqual({
+      number: 42,
+      nested: {
+        value: 100,
+      },
+    });
+  });
+
+  it('keeps array when array itself matches filter', () => {
+    const result = filterObject(data, { values: (key, obj: any) => Array.isArray(obj) });
+
+    expect(result).toEqual({
+      users: [
+        { id: 1, name: 'Alice', active: true },
+        { id: 2, name: 'Bob', active: false },
+      ],
+    });
+  });
+
+  it('removes empty branches after filtering', () => {
+    const tree = {
+      branch1: {
+        leaf1: { keep: true },
+        leaf2: { keep: false },
+      },
+      branch2: {
+        leaf3: { keep: false },
+      },
+    };
+
+    const result = filterObject(tree, { values: (key, obj: any) => obj?.keep === true });
+
+    expect(result).toEqual({
+      branch1: {
+        leaf1: { keep: true },
+      },
+    });
+  });
+});
+
+describe('filterObject (key filtering)', () => {
+  const data = {
+    user: {
+      name: 'Alice',
+      color: 'blue',
+      age: 30,
+      settings: {
+        theme: 'dark',
+        background: 'white',
+        fontSize: 12,
+        lineColor: 'red',
+      },
+    },
+    config: {
+      enabled: true,
+      fill: 'solid',
+      border: '1px',
+    },
+  };
+
+  it('keeps only specified keys throughout the tree', () => {
+    const result = filterObject(data, { keys: ['color', 'background', 'lineColor', 'fill'] });
+
+    expect(result).toEqual({
+      user: {
+        color: 'blue',
+        settings: {
+          background: 'white',
+          lineColor: 'red',
+        },
+      },
+      config: {
+        fill: 'solid',
+      },
+    });
+  });
+
+  it('removes branches with no matching keys', () => {
+    const tree = {
+      branch1: {
+        other: 'value',
+        nested: {
+          more: 'data',
+        },
+      },
+      branch2: {
+        color: 'red',
+      },
+    };
+
+    const result = filterObject(tree, { keys: ['color'] });
+
+    expect(result).toEqual({
+      branch2: {
+        color: 'red',
+      },
+    });
+  });
+
+  it('handles arrays correctly', () => {
+    const arrayData = {
+      items: [
+        { id: 1, color: 'red', name: 'Item 1' },
+        { id: 2, color: 'blue', name: 'Item 2' },
+      ],
+    };
+
+    const result = filterObject(arrayData, { keys: ['color'] });
+
+    expect(result).toEqual({
+      items: [{ color: 'red' }, { color: 'blue' }],
+    });
+  });
+
+  it('returns undefined for empty objects', () => {
+    const result = filterObject({}, { keys: ['color'] });
+
+    expect(result).toBeUndefined();
+  });
+
+  it('returns undefined when no keys match', () => {
+    const result = filterObject({ name: 'Alice', age: 30 }, { keys: ['color', 'background'] });
+
+    expect(result).toBeUndefined();
+  });
+
+  it('handles deeply nested structures', () => {
+    const deep = {
+      level1: {
+        level2: {
+          level3: {
+            color: 'green',
+            other: 'value',
+          },
+          unrelated: 'data',
+        },
+      },
+    };
+
+    const result = filterObject(deep, { keys: ['color'] });
+
+    expect(result).toEqual({
+      level1: {
+        level2: {
+          level3: {
+            color: 'green',
+          },
+        },
+      },
+    });
+  });
+
+  it('keeps multiple matching keys in same object', () => {
+    const obj = {
+      data: {
+        color: 'red',
+        background: 'white',
+        lineColor: 'black',
+        other: 'value',
+      },
+    };
+
+    const result = filterObject(obj, { keys: ['color', 'background', 'lineColor'] });
+
+    expect(result).toEqual({
+      data: {
+        color: 'red',
+        background: 'white',
+        lineColor: 'black',
+      },
+    });
+  });
+
+  it('handles empty arrays', () => {
+    const result = filterObject({ items: [] }, { keys: ['color'] });
+
+    expect(result).toBeUndefined();
+  });
+
+  it('filters array elements independently', () => {
+    const data = {
+      items: [
+        { color: 'red', size: 'large' },
+        { name: 'Item', size: 'small' },
+        { color: 'blue', description: 'Text' },
+      ],
+    };
+
+    const result = filterObject(data, { keys: ['color'] });
+
+    expect(result).toEqual({
+      items: [{ color: 'red' }, { color: 'blue' }],
+    });
+  });
+
+  it('handles mixed nesting with arrays and objects', () => {
+    const complex = {
+      users: [
+        {
+          name: 'Alice',
+          color: 'blue',
+          posts: [
+            { title: 'Post 1', background: 'white' },
+            { title: 'Post 2', background: 'black' },
+          ],
+        },
+        {
+          name: 'Bob',
+          color: 'red',
+        },
+      ],
+    };
+
+    const result = filterObject(complex, { keys: ['color', 'background'] });
+
+    expect(result).toEqual({
+      users: [
+        {
+          color: 'blue',
+          posts: [{ background: 'white' }, { background: 'black' }],
+        },
+        {
+          color: 'red',
+        },
+      ],
+    });
+  });
+});
+
+describe('filterObject (combined key and value filtering)', () => {
+  const data = {
+    user: {
+      name: 'Alice',
+      color: 'blue',
+      age: 30,
+      settings: {
+        theme: 'dark',
+        background: 'white',
+        fontSize: 12,
+        lineColor: 'red',
+      },
+    },
+    config: {
+      enabled: true,
+      fill: 'solid',
+      border: '1px',
+    },
+  };
+
+  it('filters by both key and value', () => {
+    // Only keep 'color' and 'background' keys that are strings
+    const result = filterObject(data, {
+      keys: ['color', 'background', 'lineColor', 'fill'],
+      values: (key, v: any) => typeof v === 'string',
+    });
+
+    expect(result).toEqual({
+      user: {
+        color: 'blue',
+        settings: {
+          background: 'white',
+          lineColor: 'red',
+        },
+      },
+      config: {
+        fill: 'solid',
+      },
+    });
+  });
+
+  it('accepts key filter as function', () => {
+    // Keep keys ending with 'Color' (case-insensitive)
+    const result = filterObject(data, {
+      keys: (key: string) => key.toLowerCase().endsWith('color'),
+    });
+
+    expect(result).toEqual({
+      user: {
+        color: 'blue',
+        settings: {
+          lineColor: 'red',
+        },
+      },
+    });
+  });
+
+  it('combines function key filter with value filter', () => {
+    const result = filterObject(data, {
+      keys: (key: string) => key.length > 5,
+      values: (key, v: any) => typeof v === 'string',
+    });
+
+    expect(result).toEqual({
+      user: {
+        settings: {
+          background: 'white',
+          lineColor: 'red',
+        },
+      },
+      config: {
+        border: '1px',
+      },
+    });
+  });
+
+  it('key filter receives both key and value', () => {
+    const result = filterObject(data, {
+      keys: (key: string, value: any) => key.includes('color') && typeof value === 'string',
+    });
+
+    expect(result).toEqual({
+      user: {
+        color: 'blue',
+        // settings.lineColor is not included because 'settings' is the key checked, not 'lineColor'
+      },
+    });
   });
 });
