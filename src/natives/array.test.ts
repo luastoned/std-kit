@@ -1,5 +1,5 @@
 import { expect, describe, it } from 'vitest';
-import { unique, reverse, shuffle, flatten, fill, cluster, countBy, groupBy, orderBy, uniqueBy, cartesian, combinations } from './array';
+import { unique, compact, reverse, shuffle, flatten, fill, chunk, cluster, countBy, groupBy, orderBy, uniqueBy, cartesian, combinations } from './array';
 
 describe('unique', () => {
   it('should remove duplicate numbers from array', () => {
@@ -12,6 +12,28 @@ describe('unique', () => {
 
   it('should return empty array when input is empty', () => {
     expect(unique([])).toEqual([]);
+  });
+});
+
+describe('compact', () => {
+  it('should remove all falsy values', () => {
+    expect(compact([0, 1, false, 2, '', 3, null, undefined, NaN])).toEqual([1, 2, 3]);
+  });
+
+  it('should keep all truthy values', () => {
+    expect(compact([1, 'a', true, {}, []])).toEqual([1, 'a', true, {}, []]);
+  });
+
+  it('should return empty array when all values are falsy', () => {
+    expect(compact([null, undefined, false, 0, ''])).toEqual([]);
+  });
+
+  it('should return empty array when input is empty', () => {
+    expect(compact([])).toEqual([]);
+  });
+
+  it('should handle mixed types correctly', () => {
+    expect(compact([null, 'hello', 0, 'world', false, 42])).toEqual(['hello', 'world', 42]);
   });
 });
 
@@ -98,28 +120,34 @@ describe('fill', () => {
   });
 });
 
-describe('cluster', () => {
-  it('should cluster array into pairs by default', () => {
-    expect(cluster([1, 2, 3, 4, 5, 6])).toEqual([
+describe('chunk', () => {
+  it('should chunk array into pairs by default', () => {
+    expect(chunk([1, 2, 3, 4, 5, 6])).toEqual([
       [1, 2],
       [3, 4],
       [5, 6],
     ]);
   });
 
-  it('should cluster array with custom size', () => {
-    expect(cluster([1, 2, 3, 4, 5, 6], 3)).toEqual([
+  it('should chunk array with custom size', () => {
+    expect(chunk([1, 2, 3, 4, 5, 6], 3)).toEqual([
       [1, 2, 3],
       [4, 5, 6],
     ]);
   });
 
-  it('should handle incomplete last group', () => {
-    expect(cluster([1, 2, 3, 4, 5], 2)).toEqual([[1, 2], [3, 4], [5]]);
+  it('should handle incomplete last chunk', () => {
+    expect(chunk([1, 2, 3, 4, 5], 2)).toEqual([[1, 2], [3, 4], [5]]);
   });
 
   it('should return empty array when input is empty', () => {
-    expect(cluster([])).toEqual([]);
+    expect(chunk([])).toEqual([]);
+  });
+});
+
+describe('cluster (deprecated)', () => {
+  it('should work as alias for chunk', () => {
+    expect(cluster([1, 2, 3, 4])).toEqual(chunk([1, 2, 3, 4]));
   });
 });
 

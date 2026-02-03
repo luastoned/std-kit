@@ -163,7 +163,10 @@ export const isWeakMap = <K extends WeakKey, V = unknown>(item: unknown): item i
 export const isWeakSet = <T extends WeakKey>(item: unknown): item is WeakSet<T> => item instanceof WeakSet;
 
 /**
- * Creates a deep clone of an item.
+ * Creates a deep clone of an item using JSON.parse/JSON.stringify serialization.
+ * Supports most JSON-compatible types including objects, arrays, strings, numbers, booleans, and null.
+ * Cannot clone functions, Dates, RegExps, Maps, Sets, ArrayBuffers, typed arrays, or circular references.
+ * For more complex cloning needs, consider using structuredClone() which supports additional types.
  *
  * @param item - The item to clone.
  * @returns The cloned item or undefined if the input is undefined.

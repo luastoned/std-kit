@@ -7,9 +7,7 @@
  * Useful for improving type display in IDE tooltips.
  * @template T - The type to be prettified.
  */
-export type Prettify<T> = {
-  [K in keyof T]: T[K];
-} & {};
+export type Prettify<T> = { [K in keyof T]: T[K] } & {};
 
 /**
  * Simplifies a type by forcing TypeScript to evaluate it.
@@ -92,9 +90,7 @@ export type PlainObject = Record<string, unknown>;
  * Removes readonly modifiers from all properties in a type.
  * @template T - The type to make mutable.
  */
-export type Mutable<T> = {
-  -readonly [K in keyof T]: T[K];
-};
+export type Mutable<T> = { -readonly [K in keyof T]: T[K] };
 
 /**
  * Makes specified keys required in a type.
@@ -132,31 +128,19 @@ export type OmitByValue<T, ValueType> = Pick<T, { [K in keyof T]: T[K] extends V
  * Makes all properties in T and nested objects optional recursively.
  * @template T - The type to make deeply partial.
  */
-export type DeepPartial<T> = T extends object
-  ? {
-      [P in keyof T]?: DeepPartial<T[P]>;
-    }
-  : T;
+export type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
 
 /**
  * Makes all properties in T and nested objects readonly recursively.
  * @template T - The type to make deeply readonly.
  */
-export type DeepReadonly<T> = T extends object
-  ? {
-      readonly [P in keyof T]: DeepReadonly<T[P]>;
-    }
-  : T;
+export type DeepReadonly<T> = T extends object ? { readonly [P in keyof T]: DeepReadonly<T[P]> } : T;
 
 /**
  * Makes all properties in T and nested objects required recursively.
  * @template T - The type to make deeply required.
  */
-export type DeepRequired<T> = T extends object
-  ? {
-      [P in keyof T]-?: DeepRequired<T[P]>;
-    }
-  : T;
+export type DeepRequired<T> = T extends object ? { [P in keyof T]-?: DeepRequired<T[P]> } : T;
 
 // =============================================================================
 // Type Extraction Utilities
@@ -172,18 +156,13 @@ export type ValueOf<T> = T[keyof T];
  * Extracts the union of all required keys from a type.
  * @template T - The object type.
  */
-export type RequiredKeys<T> = {
-  [K in keyof T]-?: {} extends Pick<T, K> ? never : K;
-}[keyof T];
+export type RequiredKeys<T> = { [K in keyof T]-?: {} extends Pick<T, K> ? never : K }[keyof T];
 
 /**
  * Extracts the union of all optional keys from a type.
  * @template T - The object type.
  */
-export type OptionalKeys<T> = {
-  [K in keyof T]-?: {} extends Pick<T, K> ? K : never;
-}[keyof T];
-
+export type OptionalKeys<T> = { [K in keyof T]-?: {} extends Pick<T, K> ? K : never }[keyof T];
 /**
  * Merges two object types, with U's properties taking precedence over T's.
  * @template T - The base object type.

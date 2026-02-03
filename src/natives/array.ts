@@ -10,6 +10,16 @@ import { isArray, isFunction } from '~/utilities/generic';
 export const unique = <T>(array: readonly T[]): T[] => Array.from(new Set(array));
 
 /**
+ * Returns a new array with all falsy values removed.
+ * Falsy values include: false, null, 0, "", undefined, and NaN.
+ *
+ * @template T - The type of elements in the array.
+ * @param array - The input array.
+ * @returns A new array with only truthy values.
+ */
+export const compact = <T>(array: readonly T[]): NonNullable<T>[] => array.filter(Boolean) as NonNullable<T>[];
+
+/**
  * Reverses the elements of an array.
  *
  * @template T - The type of elements in the array.
@@ -69,21 +79,24 @@ export const flatten = <T>(array: readonly unknown[], depth = Infinity): T[] => 
 export const fill = <T>(size: number, value: T): T[] => Array(size).fill(value);
 
 /**
- * Clusters an array into subarrays of a specified size.
+ * Splits an array into chunks of a specified size.
  *
  * @template T - The type of elements in the array.
- * @param array - The array to be clustered.
- * @param size - The size of each subarray. Default is 2.
- * @returns An array of subarrays, each containing elements from the original array.
+ * @param array - The array to be chunked.
+ * @param size - The size of each chunk. Default is 2.
+ * @returns An array of chunks, each containing elements from the original array.
  */
-export const cluster = <T>(array: readonly T[], size = 2): T[][] => {
-  const clusters: T[][] = [];
+export const chunk = <T>(array: readonly T[], size = 2): T[][] => {
+  const chunks: T[][] = [];
   for (let idx = 0; idx < array.length; idx += size) {
-    clusters.push([...array.slice(idx, idx + size)]);
+    chunks.push([...array.slice(idx, idx + size)]);
   }
 
-  return clusters;
+  return chunks;
 };
+
+/** @deprecated Use chunk instead */
+export const cluster = chunk;
 
 /**
  * Counts the occurrences of each unique key in an array.

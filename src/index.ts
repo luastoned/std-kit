@@ -4,6 +4,7 @@ export * from './utilities/types';
 
 export * from './natives/array';
 export * from './natives/buffer';
+export * from './natives/function';
 export * from './natives/number';
 export * from './natives/object';
 export * from './natives/timer';

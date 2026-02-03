@@ -1,4 +1,4 @@
-import type { GetFieldType, PlainObject } from '~/utilities/types';
+import type { DeepPartial, GetFieldType, PlainObject } from '~/utilities/types';
 import { isArray, isObject, isPlainObject } from '~/utilities/generic';
 
 /**
@@ -187,7 +187,7 @@ export const filterObject = <T>(
     keys?: readonly string[] | ((key: string, value: unknown, path: string, parent: unknown) => boolean);
     values?: (key: string, value: unknown, path: string, parent: unknown) => boolean;
   }>,
-): T | undefined => {
+): DeepPartial<T> | undefined => {
   const { keys, values } = options;
 
   const recurse = (value: unknown, currentPath: string, parent: unknown): unknown => {
@@ -268,7 +268,7 @@ export const filterObject = <T>(
     return undefined;
   };
 
-  return recurse(obj, '', null) as T | undefined;
+  return recurse(obj, '', null) as DeepPartial<T> | undefined;
 };
 
 /**
@@ -341,24 +341,29 @@ export const mapObject = <T>(obj: T, mapper: (key: string, value: unknown, path:
  *
  * - New keys in the patch object will be added to the source.
  * - Nested objects are recursively merged.
- * - Arrays are replaced entirely rather than merged.
+ * - Arrays behavior depends on `mergeArrays` option:
+ *   - If false: All arrays are replaced entirely.
+ *   - If true: Arrays containing objects are merged index-by-index, primitive arrays are replaced.
+ *   - If string: Arrays are merged by matching the specified key field (e.g., 'id').
+ *   - If function: Arrays are merged by matching the result of the key extractor function (item, index) => key.
  *
  * @template TSource - Type of the source object.
- * @template TPatch - Type of the patch object.
+ * @template TPatch - Type of the patch object (can be any object, not necessarily related to TSource).
  * @param source - The original object to be merged into.
  * @param patch - The object containing updates or new keys to be merged.
  * @param options - Merge options controlling immutability and undefined handling.
  * @returns A new object that is the result of deeply merging the patch into the source.
  */
-export const mergeObject = <TSource extends PlainObject, TPatch extends PlainObject>(
+export const mergeObject = <TSource extends object, TPatch extends object>(
   source: TSource,
   patch: Readonly<TPatch>,
   options: Readonly<{
-    isImmutable?: boolean;
+    immutable?: boolean;
+    mergeArrays?: boolean | string | ((item: unknown, index: number) => unknown);
     replaceIfUndefined?: boolean;
   }> = {},
 ): TSource & TPatch => {
-  const { isImmutable = true, replaceIfUndefined = false } = options;
+  const { immutable = true, mergeArrays = true, replaceIfUndefined = false } = options;
   /**
    * Recursively merges two objects.
    *
@@ -367,7 +372,7 @@ export const mergeObject = <TSource extends PlainObject, TPatch extends PlainObj
    * @returns The merged object.
    */
   const merge = (src: PlainObject, patchObj: PlainObject): PlainObject => {
-    const target = isImmutable ? { ...src } : src; // Create a copy if immutable, or work directly on the source
+    const target = immutable ? { ...src } : src; // Create a copy if immutable, or work directly on the source
 
     for (const [key, patchValue] of Object.entries(patchObj)) {
       const srcValue = target[key];
@@ -379,7 +384,116 @@ export const mergeObject = <TSource extends PlainObject, TPatch extends PlainObj
 
         target[key] = merge(target[key] as PlainObject, patchValue as PlainObject);
       } else if (isArray(patchValue)) {
-        target[key] = [...patchValue]; // Always replace arrays
+        // Handle array merging based on strategy
+        if (mergeArrays && isArray(srcValue) && patchValue.length > 0) {
+          // Check if patch array contains objects (check first element as sample)
+          const hasObjects = patchValue.some((item) => isPlainObject(item));
+
+          if (hasObjects) {
+            // Determine merge strategy based on mergeArrays type
+            if (typeof mergeArrays === 'string' || typeof mergeArrays === 'function') {
+              // Merge by key field or key extractor function
+              const getKey =
+                typeof mergeArrays === 'string'
+                  ? (item: unknown, idx: number) => (isPlainObject(item) ? (item as PlainObject)[mergeArrays] : undefined)
+                  : mergeArrays;
+
+              // Create a map of source items by their key
+              const srcMap = new Map<unknown, unknown>();
+              const srcItemsWithoutKey: unknown[] = [];
+
+              for (let idx = 0; idx < srcValue.length; idx++) {
+                const srcItem = srcValue[idx];
+                if (isPlainObject(srcItem)) {
+                  const key = getKey(srcItem, idx);
+                  if (key !== undefined && key !== null) {
+                    srcMap.set(key, srcItem);
+                  } else {
+                    // Source item has no key, preserve it
+                    srcItemsWithoutKey.push(srcItem);
+                  }
+                } else {
+                  // Non-object source item, preserve it
+                  srcItemsWithoutKey.push(srcItem);
+                }
+              }
+
+              // Merge patch items with source items by key
+              const mergedArray: unknown[] = [];
+              const usedKeys = new Set<unknown>();
+
+              for (let idx = 0; idx < patchValue.length; idx++) {
+                const patchItem = patchValue[idx];
+                if (isPlainObject(patchItem)) {
+                  const key = getKey(patchItem, idx);
+                  if (key !== undefined && key !== null && srcMap.has(key)) {
+                    // Found matching source item, merge them
+                    const srcItem = srcMap.get(key);
+                    mergedArray.push(merge(srcItem as PlainObject, patchItem as PlainObject));
+                    usedKeys.add(key);
+                  } else {
+                    // No matching source item, add patch item
+                    mergedArray.push(isPlainObject(patchItem) ? { ...patchItem } : patchItem);
+                  }
+                } else {
+                  // Patch item is not an object, use it directly
+                  mergedArray.push(patchItem);
+                }
+              }
+
+              // Add remaining source items that weren't matched
+              for (let idx = 0; idx < srcValue.length; idx++) {
+                const srcItem = srcValue[idx];
+                if (isPlainObject(srcItem)) {
+                  const key = getKey(srcItem, idx);
+                  if (key !== undefined && key !== null && !usedKeys.has(key)) {
+                    mergedArray.push(srcItem);
+                  }
+                }
+              }
+
+              // Add source items without keys
+              mergedArray.push(...srcItemsWithoutKey);
+
+              target[key] = mergedArray;
+            } else {
+              // Merge arrays index-by-index for object arrays (mergeArrays === true)
+              const maxLength = Math.max(srcValue.length, patchValue.length);
+              const mergedArray: unknown[] = [];
+
+              for (let idx = 0; idx < maxLength; idx++) {
+                if (idx < patchValue.length) {
+                  const patchItem = patchValue[idx];
+                  const srcItem = idx < srcValue.length ? srcValue[idx] : undefined;
+
+                  if (isPlainObject(patchItem)) {
+                    // Merge objects at this index
+                    if (isPlainObject(srcItem)) {
+                      mergedArray[idx] = merge(srcItem as PlainObject, patchItem as PlainObject);
+                    } else {
+                      // Source doesn't have an object at this index, use patch value
+                      mergedArray[idx] = isPlainObject(patchItem) ? { ...patchItem } : patchItem;
+                    }
+                  } else {
+                    // Patch item is not an object, use it directly
+                    mergedArray[idx] = patchItem;
+                  }
+                } else {
+                  // Patch is shorter, keep source items
+                  mergedArray[idx] = srcValue[idx];
+                }
+              }
+
+              target[key] = mergedArray;
+            }
+          } else {
+            // Primitive array - replace entirely
+            target[key] = [...patchValue];
+          }
+        } else {
+          // mergeArrays disabled or source is not an array - replace entirely
+          target[key] = [...patchValue];
+        }
       } else {
         // Standard merge: If key exists in patch, overwrite source
         // Only skip if patchValue is undefined AND replaceIfUndefined is false
@@ -392,8 +506,46 @@ export const mergeObject = <TSource extends PlainObject, TPatch extends PlainObj
     return target;
   };
 
-  return merge(source, patch) as TSource & TPatch;
+  return merge(source as PlainObject, patch as PlainObject) as TSource & TPatch;
 };
 
 /** @deprecated Use mergeObject instead */
 export const deepMerge = mergeObject;
+
+/**
+ * Creates a new object with only the specified keys from the source object.
+ *
+ * @template T - The type of the source object.
+ * @template K - The keys to pick from the source object.
+ * @param obj - The source object.
+ * @param keys - The keys to include in the result.
+ * @returns A new object containing only the specified keys.
+ */
+export const pick = <T extends object, K extends keyof T>(obj: T, keys: readonly K[]): Pick<T, K> => {
+  const result = {} as Pick<T, K>;
+  for (const key of keys) {
+    if (key in obj) {
+      result[key] = obj[key];
+    }
+  }
+
+  return result;
+};
+
+/**
+ * Creates a new object with all keys from the source object except the specified ones.
+ *
+ * @template T - The type of the source object.
+ * @template K - The keys to omit from the source object.
+ * @param obj - The source object.
+ * @param keys - The keys to exclude from the result.
+ * @returns A new object without the specified keys.
+ */
+export const omit = <T extends object, K extends keyof T>(obj: T, keys: readonly K[]): Omit<T, K> => {
+  const result = { ...obj } as Omit<T, K>;
+  for (const key of keys) {
+    delete (result as T)[key];
+  }
+
+  return result;
+};

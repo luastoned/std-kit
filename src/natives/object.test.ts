@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getValue, setValue, queryObject, filterObject, mapObject, mergeObject } from './object';
+import { getValue, setValue, queryObject, filterObject, mapObject, mergeObject, pick, omit } from './object';
 
 describe('getValue', () => {
   const data = {
@@ -559,10 +559,10 @@ describe('mergeObject', () => {
     expect(result).toEqual({ a: { b: { c: 1, d: 2 } } });
   });
 
-  it('mutates source when isImmutable is false', () => {
+  it('mutates source when immutable is false', () => {
     const source = { a: 1 };
     const patch = { b: 2 };
-    const result = mergeObject(source, patch, { isImmutable: false });
+    const result = mergeObject(source, patch, { immutable: false });
 
     expect(result).toBe(source); // same reference
     expect(source).toEqual({ a: 1, b: 2 });
@@ -606,6 +606,301 @@ describe('mergeObject', () => {
     const result = mergeObject(source, patch);
 
     expect(result.user).toEqual({ name: 'Alice', age: 31, active: true });
+  });
+
+  it('merges nested objects with completely different keys', () => {
+    const source = {
+      nested: {
+        a: 1,
+        b: 2,
+        c: 3,
+      },
+    };
+    const patch = {
+      nested: {
+        x: 7,
+        y: 8,
+        z: 9,
+      },
+    };
+    const result = mergeObject(source, patch);
+
+    expect(result).toEqual({
+      nested: {
+        a: 1,
+        b: 2,
+        c: 3,
+        x: 7,
+        y: 8,
+        z: 9,
+      },
+    });
+  });
+
+  it('merges arrays of objects index-by-index with mergeArrays', () => {
+    const source = {
+      items: [
+        { id: 1, name: 'Alice', age: 30 },
+        { id: 2, name: 'Bob', age: 25 },
+        { id: 3, name: 'Charlie', age: 35 },
+      ],
+    };
+    const patch = {
+      items: [
+        { age: 31 }, // Update Alice's age
+        { name: 'Bobby' }, // Update Bob's name
+      ],
+    };
+    const result = mergeObject(source, patch);
+
+    expect(result.items).toEqual([
+      { id: 1, name: 'Alice', age: 31 }, // Merged
+      { id: 2, name: 'Bobby', age: 25 }, // Merged
+      { id: 3, name: 'Charlie', age: 35 }, // Preserved from source
+    ]);
+  });
+
+  it('replaces primitive arrays entirely with mergeArrays', () => {
+    const source = { tags: ['a', 'b', 'c', 'd'] };
+    const patch = { tags: ['x', 'y'] };
+    const result = mergeObject(source, patch);
+
+    expect(result.tags).toEqual(['x', 'y']); // Replaced, not merged
+  });
+
+  it('replaces arrays when mergeArrays is false', () => {
+    const source = {
+      items: [
+        { id: 1, name: 'Alice' },
+        { id: 2, name: 'Bob' },
+      ],
+    };
+    const patch = {
+      items: [{ id: 3, name: 'Charlie' }],
+    };
+    const result = mergeObject(source, patch, { mergeArrays: false });
+
+    expect(result.items).toEqual([{ id: 3, name: 'Charlie' }]); // Replaced entirely
+  });
+
+  it('handles patch array longer than source array', () => {
+    const source = {
+      items: [{ id: 1, name: 'Alice' }],
+    };
+    const patch = {
+      items: [{ age: 30 }, { id: 2, name: 'Bob' }, { id: 3, name: 'Charlie' }],
+    };
+    const result = mergeObject(source, patch);
+
+    expect(result.items).toEqual([
+      { id: 1, name: 'Alice', age: 30 }, // Merged
+      { id: 2, name: 'Bob' }, // Added
+      { id: 3, name: 'Charlie' }, // Added
+    ]);
+  });
+
+  it('handles source array longer than patch array', () => {
+    const source = {
+      items: [
+        { id: 1, name: 'Alice' },
+        { id: 2, name: 'Bob' },
+        { id: 3, name: 'Charlie' },
+      ],
+    };
+    const patch = {
+      items: [{ age: 30 }],
+    };
+    const result = mergeObject(source, patch);
+
+    expect(result.items).toEqual([
+      { id: 1, name: 'Alice', age: 30 }, // Merged
+      { id: 2, name: 'Bob' }, // Preserved
+      { id: 3, name: 'Charlie' }, // Preserved
+    ]);
+  });
+
+  it('handles mixed object and primitive items in arrays', () => {
+    const source = {
+      items: [{ id: 1 }, 'text', { id: 2 }],
+    };
+    const patch = {
+      items: [{ name: 'Alice' }, 'updated', { name: 'Bob' }],
+    };
+    const result = mergeObject(source, patch);
+
+    expect(result.items).toEqual([
+      { id: 1, name: 'Alice' }, // Object merged
+      'updated', // Primitive replaced
+      { id: 2, name: 'Bob' }, // Object merged
+    ]);
+  });
+
+  it('handles empty arrays in patch', () => {
+    const source = { items: [{ id: 1 }, { id: 2 }] };
+    const patch = { items: [] };
+    const result = mergeObject(source, patch);
+
+    expect(result.items).toEqual([]); // Replaced with empty array
+  });
+
+  it('merges deeply nested arrays of objects', () => {
+    const source = {
+      data: {
+        users: [
+          { id: 1, profile: { name: 'Alice', city: 'NYC' } },
+          { id: 2, profile: { name: 'Bob', city: 'LA' } },
+        ],
+      },
+    };
+    const patch = {
+      data: {
+        users: [{ profile: { city: 'SF' } }, { profile: { age: 30 } }],
+      },
+    };
+    const result = mergeObject(source, patch);
+
+    expect(result.data.users).toEqual([
+      { id: 1, profile: { name: 'Alice', city: 'SF' } }, // Deep merge
+      { id: 2, profile: { name: 'Bob', city: 'LA', age: 30 } }, // Deep merge
+    ]);
+  });
+
+  it('merges arrays by key field (string)', () => {
+    const source = {
+      users: [
+        { id: 1, name: 'Alice', age: 30 },
+        { id: 2, name: 'Bob', age: 25 },
+        { id: 3, name: 'Charlie', age: 35 },
+      ],
+    };
+    const patch = {
+      users: [
+        { id: 2, age: 26 }, // Update Bob
+        { id: 1, active: true }, // Update Alice
+        { id: 4, name: 'Diana', age: 28 }, // Add new user
+      ],
+    };
+    const result = mergeObject(source, patch, { mergeArrays: 'id' });
+
+    expect(result.users).toEqual([
+      { id: 2, name: 'Bob', age: 26 }, // Merged
+      { id: 1, name: 'Alice', age: 30, active: true }, // Merged
+      { id: 4, name: 'Diana', age: 28 }, // Added
+      { id: 3, name: 'Charlie', age: 35 }, // Preserved from source
+    ]);
+  });
+
+  it('merges arrays by key extractor function', () => {
+    const source = {
+      items: [
+        { uid: 'a1', value: 10 },
+        { uid: 'b2', value: 20 },
+        { uid: 'c3', value: 30 },
+      ],
+    };
+    const patch = {
+      items: [
+        { uid: 'b2', value: 25 }, // Update
+        { uid: 'd4', value: 40 }, // Add
+      ],
+    };
+    const result = mergeObject(source, patch, {
+      mergeArrays: (item: any) => item.uid,
+    });
+
+    expect(result.items).toEqual([
+      { uid: 'b2', value: 25 }, // Merged
+      { uid: 'd4', value: 40 }, // Added
+      { uid: 'a1', value: 10 }, // Preserved
+      { uid: 'c3', value: 30 }, // Preserved
+    ]);
+  });
+
+  it('handles arrays with no matching keys when using key-based merge', () => {
+    const source = {
+      items: [
+        { id: 1, name: 'Alice' },
+        { id: 2, name: 'Bob' },
+      ],
+    };
+    const patch = {
+      items: [
+        { id: 3, name: 'Charlie' },
+        { id: 4, name: 'Diana' },
+      ],
+    };
+    const result = mergeObject(source, patch, { mergeArrays: 'id' });
+
+    expect(result.items).toEqual([
+      { id: 3, name: 'Charlie' }, // From patch
+      { id: 4, name: 'Diana' }, // From patch
+      { id: 1, name: 'Alice' }, // From source
+      { id: 2, name: 'Bob' }, // From source
+    ]);
+  });
+
+  it('handles objects without key field in key-based merge', () => {
+    const source = {
+      items: [
+        { id: 1, name: 'Alice' },
+        { name: 'NoId' }, // No id field
+      ],
+    };
+    const patch = {
+      items: [{ id: 1, age: 30 }, { id: 2, name: 'Bob' }],
+    };
+    const result = mergeObject(source, patch, { mergeArrays: 'id' });
+
+    expect(result.items).toEqual([
+      { id: 1, name: 'Alice', age: 30 }, // Merged by id
+      { id: 2, name: 'Bob' }, // Added
+      { name: 'NoId' }, // Preserved (no id to match)
+    ]);
+  });
+
+  it('deeply merges nested objects in key-based array merge', () => {
+    const source = {
+      users: [
+        { id: 1, profile: { name: 'Alice', settings: { theme: 'dark' } } },
+        { id: 2, profile: { name: 'Bob' } },
+      ],
+    };
+    const patch = {
+      users: [
+        { id: 1, profile: { settings: { notifications: true } } },
+        { id: 2, profile: { age: 25 } },
+      ],
+    };
+    const result = mergeObject(source, patch, { mergeArrays: 'id' });
+
+    expect(result.users).toEqual([
+      { id: 1, profile: { name: 'Alice', settings: { theme: 'dark', notifications: true } } },
+      { id: 2, profile: { name: 'Bob', age: 25 } },
+    ]);
+  });
+
+  it('key extractor function receives both item and index', () => {
+    const source = {
+      items: [
+        { name: 'Alice', value: 10 },
+        { name: 'Bob', value: 20 },
+      ],
+    };
+    const patch = {
+      items: [
+        { name: 'Alice Updated', value: 15 }, // Should match index 0
+        { name: 'Charlie', value: 30 }, // New item at index 1
+      ],
+    };
+    // Merge by index since items don't have an id field
+    const result = mergeObject(source, patch, {
+      mergeArrays: (item: any, idx: number) => idx,
+    });
+
+    expect(result.items).toEqual([
+      { name: 'Alice Updated', value: 15 }, // Merged by index
+      { name: 'Charlie', value: 30 }, // Merged by index
+    ]);
   });
 });
 
@@ -1037,5 +1332,61 @@ describe('filterObject (combined key and value filtering)', () => {
         // settings.lineColor is not included because 'settings' is the key checked, not 'lineColor'
       },
     });
+  });
+});
+
+describe('pick', () => {
+  it('should pick specified keys from object', () => {
+    const obj = { a: 1, b: 2, c: 3, d: 4 };
+    expect(pick(obj, ['a', 'c'])).toEqual({ a: 1, c: 3 });
+  });
+
+  it('should handle empty keys array', () => {
+    const obj = { a: 1, b: 2 };
+    expect(pick(obj, [])).toEqual({});
+  });
+
+  it('should handle keys that do not exist', () => {
+    const obj = { a: 1, b: 2 };
+    expect(pick(obj, ['a', 'c' as keyof typeof obj])).toEqual({ a: 1 });
+  });
+
+  it('should preserve value types', () => {
+    const obj = { name: 'Alice', age: 30, active: true };
+    const result = pick(obj, ['name', 'age']);
+    expect(result).toEqual({ name: 'Alice', age: 30 });
+  });
+
+  it('should work with nested objects', () => {
+    const obj = { user: { name: 'Bob' }, settings: { theme: 'dark' }, count: 5 };
+    expect(pick(obj, ['user', 'count'])).toEqual({ user: { name: 'Bob' }, count: 5 });
+  });
+});
+
+describe('omit', () => {
+  it('should omit specified keys from object', () => {
+    const obj = { a: 1, b: 2, c: 3, d: 4 };
+    expect(omit(obj, ['b', 'd'])).toEqual({ a: 1, c: 3 });
+  });
+
+  it('should handle empty keys array', () => {
+    const obj = { a: 1, b: 2 };
+    expect(omit(obj, [])).toEqual({ a: 1, b: 2 });
+  });
+
+  it('should handle keys that do not exist', () => {
+    const obj = { a: 1, b: 2 };
+    expect(omit(obj, ['c' as keyof typeof obj])).toEqual({ a: 1, b: 2 });
+  });
+
+  it('should preserve value types', () => {
+    const obj = { name: 'Alice', age: 30, active: true };
+    const result = omit(obj, ['active']);
+    expect(result).toEqual({ name: 'Alice', age: 30 });
+  });
+
+  it('should work with nested objects', () => {
+    const obj = { user: { name: 'Bob' }, settings: { theme: 'dark' }, count: 5 };
+    expect(omit(obj, ['settings'])).toEqual({ user: { name: 'Bob' }, count: 5 });
   });
 });
