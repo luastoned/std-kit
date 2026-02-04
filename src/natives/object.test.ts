@@ -576,10 +576,10 @@ describe('mergeObject', () => {
     expect(result).toEqual({ a: 1, b: 2, c: 3 }); // b stays as 2
   });
 
-  it('overwrites with undefined when replaceIfUndefined is true', () => {
+  it('overwrites with undefined when applyUndefined is true', () => {
     const source = { a: 1, b: 2 };
     const patch = { b: undefined, c: 3 };
-    const result = mergeObject(source, patch, { replaceIfUndefined: true });
+    const result = mergeObject(source, patch, { applyUndefined: true });
 
     expect(result).toEqual({ a: 1, b: undefined, c: 3 });
   });
@@ -847,7 +847,10 @@ describe('mergeObject', () => {
       ],
     };
     const patch = {
-      items: [{ id: 1, age: 30 }, { id: 2, name: 'Bob' }],
+      items: [
+        { id: 1, age: 30 },
+        { id: 2, name: 'Bob' },
+      ],
     };
     const result = mergeObject(source, patch, { mergeArrays: 'id' });
 
@@ -901,6 +904,211 @@ describe('mergeObject', () => {
       { name: 'Alice Updated', value: 15 }, // Merged by index
       { name: 'Charlie', value: 30 }, // Merged by index
     ]);
+  });
+
+  describe('strict mode', () => {
+    it('does not add new keys from patch in strict mode', () => {
+      const source = { a: 1, b: 2 };
+      const patch = { b: 3, c: 4, d: 5 };
+      const result = mergeObject(source, patch, { strict: true });
+
+      expect(result).toEqual({ a: 1, b: 3 }); // c and d not added
+    });
+
+    it('merges existing nested objects but does not add new keys', () => {
+      const source = { user: { name: 'Alice', age: 30 } };
+      const patch = { user: { age: 31, city: 'NYC' }, extra: 'ignored' };
+      const result = mergeObject(source, patch, { strict: true });
+
+      expect(result).toEqual({ user: { name: 'Alice', age: 31 } });
+      // city not added to nested object, extra key not added to root
+    });
+
+    it('does not add non-matching array items in key-based merge (strict mode)', () => {
+      const source = {
+        users: [
+          { id: 1, name: 'Alice', age: 30 },
+          { id: 2, name: 'Bob', age: 25 },
+        ],
+      };
+      const patch = {
+        users: [
+          { id: 2, age: 26 }, // Matches id 2
+          { id: 3, name: 'Charlie', age: 35 }, // No match, should be ignored
+          { id: 4, name: 'Diana', age: 28 }, // No match, should be ignored
+        ],
+      };
+      const result = mergeObject(source, patch, { mergeArrays: 'id', strict: true });
+
+      expect(result.users).toEqual([
+        { id: 2, name: 'Bob', age: 26 }, // Merged
+        { id: 1, name: 'Alice', age: 30 }, // Preserved
+        // id 3 and 4 not added
+      ]);
+    });
+
+    it('does not add objects at new indices in index-based merge (strict mode)', () => {
+      const source = {
+        items: [{ id: 1, name: 'Alice' }, 'text1'],
+      };
+      const patch = {
+        items: [
+          { id: 1, name: 'Updated Alice' },
+          'text2',
+          { id: 2, name: 'New Object' }, // At index 2 (doesn't exist in source)
+          'text3', // At index 3 (doesn't exist in source)
+        ],
+      };
+      const result = mergeObject(source, patch, { strict: true });
+
+      expect(result.items).toEqual([
+        { id: 1, name: 'Updated Alice' }, // Merged
+        'text2', // Replaced primitive
+        'text3', // Primitive added (allowed)
+        // Object at index 2 not added in strict mode
+      ]);
+    });
+
+    it('merges deeply nested objects respecting strict mode at all levels', () => {
+      const source = {
+        level1: {
+          level2: {
+            existing: 'value',
+          },
+        },
+      };
+      const patch = {
+        level1: {
+          level2: {
+            existing: 'updated',
+            newKey: 'ignored',
+          },
+          newLevel2Key: 'ignored',
+        },
+        newLevel1Key: 'ignored',
+      };
+      const result = mergeObject(source, patch, { strict: true });
+
+      expect(result).toEqual({
+        level1: {
+          level2: {
+            existing: 'updated',
+            // newKey not added
+          },
+          // newLevel2Key not added
+        },
+        // newLevel1Key not added
+      });
+    });
+
+    it('allows primitives at new array indices but not objects in strict mode', () => {
+      const source = {
+        items: [{ value: 1 }],
+      };
+      const patch = {
+        items: [{ value: 10 }, { value: 20 }, 'string', 42, true],
+      };
+      const result = mergeObject(source, patch, { strict: true });
+
+      expect(result.items).toEqual([
+        { value: 10 }, // Merged at index 0
+        'string', // Primitive at index 1
+        42, // Primitive at index 2
+        true, // Primitive at index 3
+        // { value: 20 } at index 1 not added (object at non-existent index)
+      ]);
+    });
+
+    it('strict mode with key extractor function', () => {
+      const source = {
+        items: [
+          { uid: 'a1', value: 10 },
+          { uid: 'b2', value: 20 },
+        ],
+      };
+      const patch = {
+        items: [
+          { uid: 'b2', value: 25 }, // Update existing
+          { uid: 'c3', value: 30 }, // New item, should be ignored
+        ],
+      };
+      const result = mergeObject(source, patch, {
+        mergeArrays: (item: any) => item.uid,
+        strict: true,
+      });
+
+      expect(result.items).toEqual([
+        { uid: 'b2', value: 25 }, // Merged
+        { uid: 'a1', value: 10 }, // Preserved
+        // c3 not added
+      ]);
+    });
+
+    it('strict mode works with immutable false', () => {
+      const source = { a: 1, b: 2 };
+      const patch = { b: 3, c: 4 };
+      const result = mergeObject(source, patch, { strict: true, immutable: false });
+
+      expect(result).toBe(source); // Same reference
+      expect(source).toEqual({ a: 1, b: 3 }); // c not added
+    });
+
+    it('strict mode with applyUndefined', () => {
+      const source = { a: 1, b: 2, c: 3 };
+      const patch = { b: undefined, c: 30, d: undefined };
+      const result = mergeObject(source, patch, { strict: true, applyUndefined: true });
+
+      expect(result).toEqual({ a: 1, b: undefined, c: 30 });
+      // d not added (strict mode), b set to undefined (applyUndefined)
+    });
+
+    it('strict mode preserves source items without matching keys', () => {
+      const source = {
+        items: [
+          { id: 1, name: 'Alice' },
+          { name: 'NoId' }, // No id field
+          { id: 2, name: 'Bob' },
+        ],
+      };
+      const patch = {
+        items: [
+          { id: 1, age: 30 },
+          { id: 3, name: 'Charlie' },
+        ],
+      };
+      const result = mergeObject(source, patch, { mergeArrays: 'id', strict: true });
+
+      expect(result.items).toEqual([
+        { id: 1, name: 'Alice', age: 30 }, // Merged
+        { id: 2, name: 'Bob' }, // Preserved
+        { name: 'NoId' }, // Preserved (no id to match)
+        // id 3 not added (strict mode)
+      ]);
+    });
+
+    it('non-strict mode still adds new keys (default behavior)', () => {
+      const source = { a: 1 };
+      const patch = { b: 2, c: 3 };
+      const result = mergeObject(source, patch, { strict: false });
+
+      expect(result).toEqual({ a: 1, b: 2, c: 3 });
+    });
+
+    it('strict mode with empty source object', () => {
+      const source = {};
+      const patch = { a: 1, b: 2 };
+      const result = mergeObject(source, patch, { strict: true });
+
+      expect(result).toEqual({}); // Nothing added
+    });
+
+    it('strict mode with empty patch object', () => {
+      const source = { a: 1, b: 2 };
+      const patch = {};
+      const result = mergeObject(source, patch, { strict: true });
+
+      expect(result).toEqual({ a: 1, b: 2 }); // Source unchanged
+    });
   });
 });
 

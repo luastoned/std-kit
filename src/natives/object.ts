@@ -190,79 +190,100 @@ export const filterObject = <T>(
 ): DeepPartial<T> | undefined => {
   const { keys, values } = options;
 
-  const recurse = (value: unknown, currentPath: string, parent: unknown): unknown => {
-    // Create key filter function
-    let keyFilter: ((key: string, val: unknown, path: string, par: unknown) => boolean) | undefined;
-    if (keys) {
-      if (Array.isArray(keys)) {
-        keyFilter = (key: string) => keys.includes(key);
-      } else if (typeof keys === 'function') {
-        keyFilter = keys;
+  /**
+   * Creates a key filter function from the keys option.
+   */
+  const createKeyFilter = (): ((key: string, propValue: unknown, path: string, par: unknown) => boolean) | undefined => {
+    if (!keys) return undefined;
+    if (Array.isArray(keys)) return (key: string) => keys.includes(key);
+    if (typeof keys === 'function') return keys;
+    return undefined;
+  };
+
+  const keyFilter = createKeyFilter();
+
+  /**
+   * Checks if a value should be kept based on the value filter.
+   */
+  const shouldKeepValue = (key: string, value: unknown, path: string, parent: unknown): boolean => {
+    return !values || values(key, value, path, parent);
+  };
+
+  /**
+   * Checks if a key should be kept based on the key filter.
+   */
+  const shouldKeepKey = (key: string, propValue: unknown, path: string, parent: unknown): boolean => {
+    return !keyFilter || keyFilter(key, propValue, path, parent);
+  };
+
+  /**
+   * Filters an array, recursing into nested structures.
+   */
+  const filterArray = (arr: unknown[], currentPath: string, parent: unknown): unknown[] | undefined => {
+    const filtered = arr
+      .map((item, index) => {
+        const itemPath = `${currentPath}[${index}]`;
+        return recurse(item, itemPath, arr);
+      })
+      .filter((item) => item !== undefined);
+
+    return filtered.length > 0 ? filtered : undefined;
+  };
+
+  /**
+   * Filters an object, recursing into nested structures.
+   */
+  const filterObjectProps = (obj: Record<string, unknown>, currentPath: string, parent: unknown): Record<string, unknown> | undefined => {
+    const result: Record<string, unknown> = {};
+    let hasMatchingItems = false;
+
+    for (const [key, propValue] of Object.entries(obj)) {
+      const keyPath = currentPath ? `${currentPath}.${key}` : key;
+      const keyMatches = shouldKeepKey(key, propValue, keyPath, parent);
+      const valueMatches = shouldKeepValue(key, propValue, keyPath, parent);
+
+      // Both key and value match - keep as-is
+      if (keyMatches && valueMatches) {
+        result[key] = propValue;
+        hasMatchingItems = true;
+        continue;
+      }
+
+      // Key matches but value doesn't, or key doesn't match - check if it's a container
+      if (isObject(propValue) || Array.isArray(propValue)) {
+        const filteredValue = recurse(propValue, keyPath, parent);
+        if (filteredValue !== undefined) {
+          result[key] = filteredValue;
+          hasMatchingItems = true;
+        }
       }
     }
 
+    return hasMatchingItems ? result : undefined;
+  };
+
+  /**
+   * Recursively filters values based on key and value criteria.
+   */
+  const recurse = (value: unknown, currentPath: string, parent: unknown): unknown => {
     // If the current value matches the value filter, return it as-is (keep entire subtree)
     if (values && values('', value, currentPath, parent)) {
       return value;
     }
 
-    // If no container and doesn't match value filter, exclude it
+    // If not a container and doesn't match value filter, exclude it
     if (!isObject(value) && !isArray(value)) {
       return undefined;
     }
 
-    // Handle arrays - recursively filter children
+    // Handle arrays
     if (Array.isArray(value)) {
-      const filtered = value
-        .map((item, index) => {
-          const itemPath = `${currentPath}[${index}]`;
-          return recurse(item, itemPath, value);
-        })
-        .filter((item) => item !== undefined);
-
-      return filtered.length > 0 ? filtered : undefined;
+      return filterArray(value, currentPath, parent);
     }
 
     // Handle objects
     if (isObject(value)) {
-      const result: Record<string, unknown> = {};
-      let hasMatchingItems = false;
-
-      for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
-        const keyPath = currentPath ? `${currentPath}.${key}` : key;
-
-        // Check if key matches (if key filter exists)
-        const keyMatches = !keyFilter || keyFilter(key, val, keyPath, value);
-
-        if (keyMatches) {
-          // Check if value matches (if value filter exists)
-          const valueMatches = !values || values(key, val, keyPath, value);
-
-          if (valueMatches) {
-            // Both key and value match (or no filter for that dimension)
-            result[key] = val;
-            hasMatchingItems = true;
-          } else if (isObject(val) || Array.isArray(val)) {
-            // Value doesn't match but is a container, recurse into it
-            const filteredValue = recurse(val, keyPath, value);
-            if (filteredValue !== undefined) {
-              result[key] = filteredValue;
-              hasMatchingItems = true;
-            }
-          }
-        } else {
-          // Key doesn't match - if it's a container, still recurse to check children
-          if (isObject(val) || Array.isArray(val)) {
-            const filteredValue = recurse(val, keyPath, value);
-            if (filteredValue !== undefined) {
-              result[key] = filteredValue;
-              hasMatchingItems = true;
-            }
-          }
-        }
-      }
-
-      return hasMatchingItems ? result : undefined;
+      return filterObjectProps(value as Record<string, unknown>, currentPath, parent);
     }
 
     return undefined;
@@ -309,9 +330,9 @@ export const mapObject = <T>(obj: T, mapper: (key: string, value: unknown, path:
   const recurse = (value: unknown, currentPath: string, parent: unknown): unknown => {
     // Handle arrays
     if (Array.isArray(value)) {
-      return value.map((item, index) => {
-        const itemPath = currentPath ? `${currentPath}[${index}]` : `[${index}]`;
-        const transformed = mapper(String(index), item, itemPath, value);
+      return value.map((item, idx) => {
+        const itemPath = currentPath ? `${currentPath}[${idx}]` : `[${idx}]`;
+        const transformed = mapper(String(idx), item, itemPath, value);
         return isObject(transformed) || Array.isArray(transformed) ? recurse(transformed, itemPath, transformed) : transformed;
       });
     }
@@ -324,6 +345,7 @@ export const mapObject = <T>(obj: T, mapper: (key: string, value: unknown, path:
         const transformed = mapper(key, val, keyPath, value);
         result[key] = isObject(transformed) || Array.isArray(transformed) ? recurse(transformed, keyPath, transformed) : transformed;
       }
+
       return result;
     }
 
@@ -346,6 +368,8 @@ export const mapObject = <T>(obj: T, mapper: (key: string, value: unknown, path:
  *   - If true: Arrays containing objects are merged index-by-index, primitive arrays are replaced.
  *   - If string: Arrays are merged by matching the specified key field (e.g., 'id').
  *   - If function: Arrays are merged by matching the result of the key extractor function (item, index) => key.
+ * - Strict mode: When `strict` is true, only keys/items that exist in the source will be merged.
+ *   New keys from the patch and non-matching array items will be ignored.
  *
  * @template TSource - Type of the source object.
  * @template TPatch - Type of the patch object (can be any object, not necessarily related to TSource).
@@ -358,155 +382,196 @@ export const mergeObject = <TSource extends object, TPatch extends object>(
   source: TSource,
   patch: Readonly<TPatch>,
   options: Readonly<{
+    strict?: boolean;
     immutable?: boolean;
     mergeArrays?: boolean | string | ((item: unknown, index: number) => unknown);
-    replaceIfUndefined?: boolean;
+    applyUndefined?: boolean;
   }> = {},
 ): TSource & TPatch => {
-  const { immutable = true, mergeArrays = true, replaceIfUndefined = false } = options;
+  const { immutable = true, mergeArrays = true, applyUndefined = false, strict = false } = options;
+
+  /**
+   * Merges arrays by matching a key field or key extractor function.
+   */
+  const mergeArraysByKey = (
+    srcArray: readonly unknown[],
+    patchArray: readonly unknown[],
+    getKey: (item: unknown, idx: number) => unknown,
+    mergeFn: (src: PlainObject, patch: PlainObject) => PlainObject,
+  ): unknown[] => {
+    // Build source map and collect items without keys
+    const srcMap = new Map<unknown, unknown>();
+    const srcItemsWithoutKey: unknown[] = [];
+
+    for (let idx = 0; idx < srcArray.length; idx++) {
+      const srcItem = srcArray[idx];
+      if (isPlainObject(srcItem)) {
+        const key = getKey(srcItem, idx);
+        if (key !== undefined && key !== null) {
+          srcMap.set(key, srcItem);
+        } else {
+          srcItemsWithoutKey.push(srcItem);
+        }
+      } else {
+        srcItemsWithoutKey.push(srcItem);
+      }
+    }
+
+    // Merge patch items with source items
+    const mergedArray: unknown[] = [];
+    const usedKeys = new Set<unknown>();
+
+    for (let idx = 0; idx < patchArray.length; idx++) {
+      const patchItem = patchArray[idx];
+      if (isPlainObject(patchItem)) {
+        const key = getKey(patchItem, idx);
+        if (key !== undefined && key !== null && srcMap.has(key)) {
+          // Found matching source item, merge them
+          const srcItem = srcMap.get(key);
+          mergedArray.push(mergeFn(srcItem as PlainObject, patchItem as PlainObject));
+          usedKeys.add(key);
+        } else if (!strict) {
+          // No matching source item, add patch item (only if not in strict mode)
+          mergedArray.push(isPlainObject(patchItem) ? { ...patchItem } : patchItem);
+        }
+      } else {
+        // Patch item is not an object, use it directly
+        mergedArray.push(patchItem);
+      }
+    }
+
+    // Add remaining source items that weren't matched
+    for (let idx = 0; idx < srcArray.length; idx++) {
+      const srcItem = srcArray[idx];
+      if (isPlainObject(srcItem)) {
+        const key = getKey(srcItem, idx);
+        if (key !== undefined && key !== null && !usedKeys.has(key)) {
+          mergedArray.push(srcItem);
+        }
+      }
+    }
+
+    // Add source items without keys
+    mergedArray.push(...srcItemsWithoutKey);
+
+    return mergedArray;
+  };
+
+  /**
+   * Merges arrays index-by-index.
+   */
+  const mergeArraysByIndex = (
+    srcArray: readonly unknown[],
+    patchArray: readonly unknown[],
+    mergeFn: (src: PlainObject, patch: PlainObject) => PlainObject,
+  ): unknown[] => {
+    const maxLength = Math.max(srcArray.length, patchArray.length);
+    const mergedArray: unknown[] = [];
+
+    for (let idx = 0; idx < maxLength; idx++) {
+      if (idx < patchArray.length) {
+        const patchItem = patchArray[idx];
+        const srcItem = idx < srcArray.length ? srcArray[idx] : undefined;
+
+        if (isPlainObject(patchItem)) {
+          if (isPlainObject(srcItem)) {
+            // Merge objects at this index
+            mergedArray.push(mergeFn(srcItem as PlainObject, patchItem as PlainObject));
+          } else if (!strict || idx < srcArray.length) {
+            // Source doesn't have an object at this index, use patch value
+            // In strict mode, only add if index exists in source
+            mergedArray.push(isPlainObject(patchItem) ? { ...patchItem } : patchItem);
+          }
+        } else {
+          // Patch item is not an object, use it directly (primitives are allowed even in strict mode)
+          mergedArray.push(patchItem);
+        }
+      } else {
+        // Patch is shorter, keep source items
+        mergedArray.push(srcArray[idx]);
+      }
+    }
+
+    return mergedArray;
+  };
+
+  /**
+   * Merges arrays based on the configured strategy.
+   */
+  const mergeArraysWithStrategy = (
+    srcValue: unknown,
+    patchValue: readonly unknown[],
+    mergeFn: (src: PlainObject, patch: PlainObject) => PlainObject,
+  ): unknown[] => {
+    // If mergeArrays is disabled or source is not an array, replace entirely
+    if (!mergeArrays || !isArray(srcValue) || patchValue.length === 0) {
+      return [...patchValue];
+    }
+
+    // Check if patch array contains objects
+    const hasObjects = patchValue.some((item) => isPlainObject(item));
+    if (!hasObjects) {
+      // Primitive array - replace entirely
+      return [...patchValue];
+    }
+
+    // Merge by key field or key extractor function
+    if (typeof mergeArrays === 'string' || typeof mergeArrays === 'function') {
+      const getKey =
+        typeof mergeArrays === 'string' ? (item: unknown, idx: number) => (isPlainObject(item) ? (item as PlainObject)[mergeArrays] : undefined) : mergeArrays;
+
+      return mergeArraysByKey(srcValue as unknown[], patchValue, getKey, mergeFn);
+    }
+
+    // Merge arrays index-by-index
+    return mergeArraysByIndex(srcValue as unknown[], patchValue, mergeFn);
+  };
+
   /**
    * Recursively merges two objects.
    *
    * @param src - The source object being updated.
    * @param patchObj - The patch object providing updates.
+   * @param isStrictAtThisLevel - Whether to apply strict mode at this level.
    * @returns The merged object.
    */
-  const merge = (src: PlainObject, patchObj: PlainObject): PlainObject => {
-    const target = immutable ? { ...src } : src; // Create a copy if immutable, or work directly on the source
+  const merge = (src: PlainObject, patchObj: PlainObject, isStrictAtThisLevel: boolean): PlainObject => {
+    const target = immutable ? { ...src } : src;
 
     for (const [key, patchValue] of Object.entries(patchObj)) {
+      // In strict mode, skip keys that don't exist in source
+      if (isStrictAtThisLevel && !(key in target)) {
+        continue;
+      }
+
       const srcValue = target[key];
 
+      // Handle nested objects
       if (patchValue !== null && patchValue !== undefined && isPlainObject(patchValue)) {
         if (!isPlainObject(srcValue)) {
-          target[key] = {}; // Initialize as an object if `srcValue` is undefined or not an object
+          target[key] = {};
         }
 
-        target[key] = merge(target[key] as PlainObject, patchValue as PlainObject);
-      } else if (isArray(patchValue)) {
-        // Handle array merging based on strategy
-        if (mergeArrays && isArray(srcValue) && patchValue.length > 0) {
-          // Check if patch array contains objects (check first element as sample)
-          const hasObjects = patchValue.some((item) => isPlainObject(item));
+        target[key] = merge(target[key] as PlainObject, patchValue as PlainObject, isStrictAtThisLevel);
+        continue;
+      }
 
-          if (hasObjects) {
-            // Determine merge strategy based on mergeArrays type
-            if (typeof mergeArrays === 'string' || typeof mergeArrays === 'function') {
-              // Merge by key field or key extractor function
-              const getKey =
-                typeof mergeArrays === 'string'
-                  ? (item: unknown, idx: number) => (isPlainObject(item) ? (item as PlainObject)[mergeArrays] : undefined)
-                  : mergeArrays;
+      // Handle arrays
+      if (isArray(patchValue)) {
+        target[key] = mergeArraysWithStrategy(srcValue, patchValue, (src: PlainObject, patch: PlainObject) => merge(src, patch, false));
+        continue;
+      }
 
-              // Create a map of source items by their key
-              const srcMap = new Map<unknown, unknown>();
-              const srcItemsWithoutKey: unknown[] = [];
-
-              for (let idx = 0; idx < srcValue.length; idx++) {
-                const srcItem = srcValue[idx];
-                if (isPlainObject(srcItem)) {
-                  const key = getKey(srcItem, idx);
-                  if (key !== undefined && key !== null) {
-                    srcMap.set(key, srcItem);
-                  } else {
-                    // Source item has no key, preserve it
-                    srcItemsWithoutKey.push(srcItem);
-                  }
-                } else {
-                  // Non-object source item, preserve it
-                  srcItemsWithoutKey.push(srcItem);
-                }
-              }
-
-              // Merge patch items with source items by key
-              const mergedArray: unknown[] = [];
-              const usedKeys = new Set<unknown>();
-
-              for (let idx = 0; idx < patchValue.length; idx++) {
-                const patchItem = patchValue[idx];
-                if (isPlainObject(patchItem)) {
-                  const key = getKey(patchItem, idx);
-                  if (key !== undefined && key !== null && srcMap.has(key)) {
-                    // Found matching source item, merge them
-                    const srcItem = srcMap.get(key);
-                    mergedArray.push(merge(srcItem as PlainObject, patchItem as PlainObject));
-                    usedKeys.add(key);
-                  } else {
-                    // No matching source item, add patch item
-                    mergedArray.push(isPlainObject(patchItem) ? { ...patchItem } : patchItem);
-                  }
-                } else {
-                  // Patch item is not an object, use it directly
-                  mergedArray.push(patchItem);
-                }
-              }
-
-              // Add remaining source items that weren't matched
-              for (let idx = 0; idx < srcValue.length; idx++) {
-                const srcItem = srcValue[idx];
-                if (isPlainObject(srcItem)) {
-                  const key = getKey(srcItem, idx);
-                  if (key !== undefined && key !== null && !usedKeys.has(key)) {
-                    mergedArray.push(srcItem);
-                  }
-                }
-              }
-
-              // Add source items without keys
-              mergedArray.push(...srcItemsWithoutKey);
-
-              target[key] = mergedArray;
-            } else {
-              // Merge arrays index-by-index for object arrays (mergeArrays === true)
-              const maxLength = Math.max(srcValue.length, patchValue.length);
-              const mergedArray: unknown[] = [];
-
-              for (let idx = 0; idx < maxLength; idx++) {
-                if (idx < patchValue.length) {
-                  const patchItem = patchValue[idx];
-                  const srcItem = idx < srcValue.length ? srcValue[idx] : undefined;
-
-                  if (isPlainObject(patchItem)) {
-                    // Merge objects at this index
-                    if (isPlainObject(srcItem)) {
-                      mergedArray[idx] = merge(srcItem as PlainObject, patchItem as PlainObject);
-                    } else {
-                      // Source doesn't have an object at this index, use patch value
-                      mergedArray[idx] = isPlainObject(patchItem) ? { ...patchItem } : patchItem;
-                    }
-                  } else {
-                    // Patch item is not an object, use it directly
-                    mergedArray[idx] = patchItem;
-                  }
-                } else {
-                  // Patch is shorter, keep source items
-                  mergedArray[idx] = srcValue[idx];
-                }
-              }
-
-              target[key] = mergedArray;
-            }
-          } else {
-            // Primitive array - replace entirely
-            target[key] = [...patchValue];
-          }
-        } else {
-          // mergeArrays disabled or source is not an array - replace entirely
-          target[key] = [...patchValue];
-        }
-      } else {
-        // Standard merge: If key exists in patch, overwrite source
-        // Only skip if patchValue is undefined AND replaceIfUndefined is false
-        if (patchValue !== undefined || replaceIfUndefined) {
-          target[key] = patchValue;
-        }
+      // Handle primitives and null
+      if (patchValue !== undefined || applyUndefined) {
+        target[key] = patchValue;
       }
     }
 
     return target;
   };
 
-  return merge(source as PlainObject, patch as PlainObject) as TSource & TPatch;
+  return merge(source as PlainObject, patch as PlainObject, strict) as TSource & TPatch;
 };
 
 /** @deprecated Use mergeObject instead */
