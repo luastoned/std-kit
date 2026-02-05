@@ -1,13 +1,15 @@
+export * from './natives/array';
+export * from './natives/function';
+export * from './natives/number';
+export * from './natives/object';
+export * from './natives/promise';
+export * from './natives/timer';
+
 export * from './utilities/generic';
 export * from './utilities/guard';
 export * from './utilities/types';
 
-export * from './natives/array';
-export * from './natives/buffer';
-export * from './natives/function';
-export * from './natives/number';
-export * from './natives/object';
-export * from './natives/timer';
+// buffer.ts is Node.js-specific - import from 'std-kit/node' instead
 
 // https://radashi.js.org
 // https://moderndash.io

@@ -1,6 +1,6 @@
 {
   "name": "std-kit",
-  "version": "2.6.4",
+  "version": "2.6.5",
   "description": "NodeJS Standard Library Additions",
   "keywords": [
     "std",
@@ -15,6 +15,7 @@
     "url": "git+https://github.com/luastoned/std-kit.git"
   },
   "author": "LuaStoned <npm@luastoned.com>",
+  "homepage": "https://github.com/luastoned/std-kit",
   "license": "MIT",
   "private": false,
   "files": [
@@ -24,18 +25,29 @@
   "module": "./lib/index.mjs",
   "types": "./lib/index.d.ts",
   "exports": {
-    ".": "./lib/index.mjs",
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.cjs"
+    },
+    "./node": {
+      "types": "./lib/node.d.ts",
+      "import": "./lib/node.mjs",
+      "require": "./lib/node.cjs"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "yarn clean && yarn build:tsup",
-    "build:tsup": "tsup",
+    "build": "yarn build:tsdown",
+    "build:tsup": "yarn clean && tsup",
     "build:tsdown": "tsdown",
     "build:code": "tsc --project tsconfig.build.json",
     "build:types": "tsc --project tsconfig.build.json --declaration --emitDeclarationOnly",
     "clean": "rimraf coverage dist docs lib",
-    "docs": "typedoc",
-    "test": "vitest",
+    "docs": "yarn docs:typedoc && yarn docs:transform",
+    "docs:transform": "tsx scripts/transform-docs.ts",
+    "docs:typedoc": "typedoc --json docs/documentation.json",
+    "test": "vitest --run",
     "typecheck": "tsc --noEmit",
     "release": "release-it"
   },
@@ -45,12 +57,10 @@
     "esbuild": "^0.27.2",
     "release-it": "^19.2.4",
     "rimraf": "^6.1.2",
-    "tsdown": "^0.20.1",
-    "tsup": "^8.5.1",
+    "tsdown": "^0.20.3",
     "tsx": "^4.21.0",
     "typedoc": "^0.28.16",
     "typedoc-plugin-markdown": "^4.9.0",
-    "typedoc-plugin-merge-modules": "^7.0.0",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vite-tsconfig-paths": "^6.0.5",

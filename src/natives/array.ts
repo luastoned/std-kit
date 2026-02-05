@@ -95,7 +95,15 @@ export const chunk = <T>(array: readonly T[], size = 2): T[][] => {
   return chunks;
 };
 
-/** @deprecated Use chunk instead */
+/**
+ * Splits an array into chunks of a specified size.
+ *
+ * @deprecated Use chunk instead.
+ * @template T - The type of the array elements.
+ * @param array - The array to be chunked.
+ * @param size - The size of each chunk.
+ * @returns An array of chunks.
+ */
 export const cluster = chunk;
 
 /**

@@ -11,21 +11,6 @@ import { isPromise } from '~/utilities/generic';
  *   If not provided, all errors are caught and undefined is returned.
  * @returns The result of the function, or undefined if an error is caught.
  *   For async functions, returns a Promise that resolves to the result or undefined.
- *
- * @example
- * // Synchronous function
- * const result = guard(() => JSON.parse('invalid')); // returns undefined
- *
- * @example
- * // Asynchronous function
- * const data = await guard(async () => await fetch('/api')); // returns Response or undefined
- *
- * @example
- * // Selective error guarding
- * const value = guard(
- *   () => someOperation(),
- *   (err) => err instanceof TypeError // only catch TypeError, re-throw others
- * );
  */
 export const guard = <F extends (...args: never[]) => unknown>(
   fn: F,

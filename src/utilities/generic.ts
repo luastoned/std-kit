@@ -17,13 +17,14 @@ export const isBoolean = (item: unknown): item is boolean => typeof item === 'bo
 /**
  * Checks if the given item is a Date object.
  *
- * @param item The item to check.
+ * @param item - The item to check.
  * @returns `true` if the item is a Date object, `false` otherwise.
  */
 export const isDate = (item: unknown): item is Date => item instanceof Date;
 
 /**
  * Checks if the given item is defined.
+ *
  * @param item - The item to check.
  * @returns A boolean indicating whether the item is defined or not.
  */
@@ -48,6 +49,7 @@ export const isFunction = (item: unknown): item is Function => typeof item === '
 
 /**
  * Checks if the given item is an infinity number.
+ *
  * @param item - The item to be checked.
  * @returns A boolean indicating whether the item is an infinity number.
  */
@@ -66,7 +68,7 @@ export const isMap = <K = unknown, V = unknown>(item: unknown): item is Map<K, V
 /**
  * Checks if the given item is null.
  *
- * @param item The item to check.
+ * @param item - The item to check.
  * @returns `true` if the item is null, `false` otherwise.
  */
 export const isNull = (item: unknown): item is null => item === null;

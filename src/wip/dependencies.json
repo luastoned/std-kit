@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "deepmerge-ts": "^7.1.0",
-    "merge-deep-ts": "^1.2.12",
-    "ts-deepmerge": "^7.0.1"
-  }
-}

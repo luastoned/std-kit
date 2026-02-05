@@ -37,14 +37,16 @@ export const randomNum = (min: number, max: number): number => Math.random() * (
 
 /**
  * Converts degrees to radians.
- * @param degrees The number of degrees to convert.
+ *
+ * @param degrees - The number of degrees to convert.
  * @returns The equivalent value in radians.
  */
 export const deg2rad = (degrees: number): number => degrees * (Math.PI / 180);
 
 /**
  * Converts radians to degrees.
- * @param radians The value in radians to be converted.
+ *
+ * @param radians - The value in radians to be converted.
  * @returns The value in degrees.
  */
 export const rad2deg = (radians: number): number => radians * (180 / Math.PI);

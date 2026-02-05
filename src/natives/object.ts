@@ -48,6 +48,7 @@ export const getValue = <TData, TPath extends string, TDefault = GetFieldType<TD
  * @param path - The string path specifying the property to set.
  * Supports dot notation (e.g., 'user.name') and bracket notation (e.g., 'user.posts[0]').
  * @param value - The value to set at the specified path.
+ * @returns Nothing.
  */
 export const setValue = <TData, TPath extends string, TValue>(data: TData, path: TPath, value: TValue): void => {
   const keys = path.split(/[\.\[\]]/).filter(Boolean); // Split by dot or brackets, remove empty parts
@@ -78,8 +79,6 @@ export const setValue = <TData, TPath extends string, TValue>(data: TData, path:
   }
 };
 
-type SearchResult<T, P extends boolean> = P extends true ? { path: string; value: T } : T;
-
 /**
  * Recursively searches through an object or array tree, finding all values that match the filter function.
  * Returns a flat array of matching values, optionally with their paths.
@@ -100,11 +99,16 @@ export const queryObject = <R = unknown, T = unknown, P extends boolean = false>
   obj: unknown,
   filter: (key: string, value: T, path: string, parent: unknown) => boolean,
   path: P = false as P,
-): Array<SearchResult<R, P>> => {
-  const results: Array<SearchResult<R, P>> = [];
+): Array<P extends true ? { path: string; value: R } : R> => {
+  const results: Array<P extends true ? { path: string; value: R } : R> = [];
 
   /**
    * Helper function to build the new path based on the current path, key, and parent type.
+   *
+   * @param currentPath - The current traversal path.
+   * @param key - The next key segment.
+   * @param isParentArray - Whether the parent container is an array.
+   * @returns The next path string.
    */
   const buildPath = (currentPath: string, key: string, isParentArray: boolean): string => {
     if (isParentArray) {
@@ -116,14 +120,20 @@ export const queryObject = <R = unknown, T = unknown, P extends boolean = false>
 
   /**
    * Recursive traversal function to iterate over the object or array.
+   *
+   * @param value - The current value being visited.
+   * @param currentPath - The current traversal path.
+   * @param currentKey - The key for the current value.
+   * @param parent - The parent container.
+   * @returns Nothing.
    */
   const traverse = (value: unknown, currentPath = '', currentKey = '', parent: unknown = null): void => {
     // Check if the current node matches criteria
     if (filter(currentKey, value as T, currentPath, parent)) {
       if (path) {
-        results.push({ path: currentPath, value: value as T } as SearchResult<R, P>);
+        results.push({ path: currentPath, value: value as R } as P extends true ? { path: string; value: R } : R);
       } else {
-        results.push(value as SearchResult<R, P>);
+        results.push(value as P extends true ? { path: string; value: R } : R);
       }
     }
 
@@ -157,29 +167,6 @@ export const queryObject = <R = unknown, T = unknown, P extends boolean = false>
  *   - `values`: Function to test values with access to both key and value
  *   If both are provided, both conditions must be satisfied.
  * @returns A new object/array with the same structure, containing only matching items.
- *
- * @example
- * // Keep only specific keys
- * filterTree(obj, { keys: ['color', 'background'] })
- *
- * @example
- * // Keep only string values
- * filterTree(obj, { values: (key, value) => typeof value === 'string' })
- *
- * @example
- * // Keep keys containing 'color' in parent objects with type 'theme'
- * filterTree(obj, {
- *   keys: (key, value, path, parent) =>
- *     key.includes('color') && parent?.type === 'theme'
- * })
- *
- * @example
- * // Combine both filters with path awareness
- * filterObject(obj, {
- *   keys: ['color', 'name'],
- *   values: (key, value, path) =>
- *     typeof value === 'string' && !path.includes('internal')
- * })
  */
 export const filterObject = <T>(
   obj: Readonly<T>,
@@ -192,6 +179,9 @@ export const filterObject = <T>(
 
   /**
    * Creates a key filter function from the keys option.
+   *
+   * @param _ - Not applicable.
+   * @returns A key predicate or undefined.
    */
   const createKeyFilter = (): ((key: string, propValue: unknown, path: string, par: unknown) => boolean) | undefined => {
     if (!keys) return undefined;
@@ -204,6 +194,12 @@ export const filterObject = <T>(
 
   /**
    * Checks if a value should be kept based on the value filter.
+   *
+   * @param key - The property key.
+   * @param value - The value to check.
+   * @param path - The current path.
+   * @param parent - The parent container.
+   * @returns Whether the value should be kept.
    */
   const shouldKeepValue = (key: string, value: unknown, path: string, parent: unknown): boolean => {
     return !values || values(key, value, path, parent);
@@ -211,6 +207,12 @@ export const filterObject = <T>(
 
   /**
    * Checks if a key should be kept based on the key filter.
+   *
+   * @param key - The property key.
+   * @param propValue - The property value.
+   * @param path - The current path.
+   * @param parent - The parent container.
+   * @returns Whether the key should be kept.
    */
   const shouldKeepKey = (key: string, propValue: unknown, path: string, parent: unknown): boolean => {
     return !keyFilter || keyFilter(key, propValue, path, parent);
@@ -218,6 +220,11 @@ export const filterObject = <T>(
 
   /**
    * Filters an array, recursing into nested structures.
+   *
+   * @param arr - The array to filter.
+   * @param currentPath - The current path.
+   * @param parent - The parent container.
+   * @returns The filtered array or undefined.
    */
   const filterArray = (arr: unknown[], currentPath: string, parent: unknown): unknown[] | undefined => {
     const filtered = arr
@@ -232,6 +239,11 @@ export const filterObject = <T>(
 
   /**
    * Filters an object, recursing into nested structures.
+   *
+   * @param obj - The object to filter.
+   * @param currentPath - The current path.
+   * @param parent - The parent container.
+   * @returns The filtered object or undefined.
    */
   const filterObjectProps = (obj: Record<string, unknown>, currentPath: string, parent: unknown): Record<string, unknown> | undefined => {
     const result: Record<string, unknown> = {};
@@ -264,6 +276,11 @@ export const filterObject = <T>(
 
   /**
    * Recursively filters values based on key and value criteria.
+   *
+   * @param value - The current value.
+   * @param currentPath - The current path.
+   * @param parent - The parent container.
+   * @returns The filtered subtree or undefined.
    */
   const recurse = (value: unknown, currentPath: string, parent: unknown): unknown => {
     // If the current value matches the value filter, return it as-is (keep entire subtree)
@@ -303,28 +320,6 @@ export const filterObject = <T>(
  *   - value: The current value
  *   - path: The full path to this value (e.g., 'user.settings.theme' or 'users[0].name')
  * @returns A new object/array with the same structure but transformed values.
- *
- * @example
- * // Double all numbers
- * mapTree({ a: 1, b: { c: 2 } }, (key, value) =>
- *   typeof value === 'number' ? value * 2 : value
- * )
- *
- * @example
- * // Uppercase all strings, with path and parent context
- * mapTree(obj, (key, value, path, parent) => {
- *   console.log(`At ${path}: ${value}`);
- *   return typeof value === 'string' ? value.toUpperCase() : value;
- * })
- *
- * @example
- * // Format values based on sibling properties in parent
- * mapTree(obj, (key, value, path, parent) => {
- *   if (key === 'amount' && parent?.currency === 'EUR') {
- *     return `€${value}`;
- *   }
- *   return value;
- * })
  */
 export const mapObject = <T>(obj: T, mapper: (key: string, value: unknown, path: string, parent: unknown) => unknown): T => {
   const recurse = (value: unknown, currentPath: string, parent: unknown): unknown => {
@@ -392,6 +387,12 @@ export const mergeObject = <TSource extends object, TPatch extends object>(
 
   /**
    * Merges arrays by matching a key field or key extractor function.
+   *
+   * @param srcArray - The source array.
+   * @param patchArray - The patch array.
+   * @param getKey - Function to extract a merge key.
+   * @param mergeFn - Merge function for object entries.
+   * @returns The merged array.
    */
   const mergeArraysByKey = (
     srcArray: readonly unknown[],
@@ -459,6 +460,11 @@ export const mergeObject = <TSource extends object, TPatch extends object>(
 
   /**
    * Merges arrays index-by-index.
+   *
+   * @param srcArray - The source array.
+   * @param patchArray - The patch array.
+   * @param mergeFn - Merge function for object entries.
+   * @returns The merged array.
    */
   const mergeArraysByIndex = (
     srcArray: readonly unknown[],
@@ -497,6 +503,11 @@ export const mergeObject = <TSource extends object, TPatch extends object>(
 
   /**
    * Merges arrays based on the configured strategy.
+   *
+   * @param srcValue - The source value.
+   * @param patchValue - The patch array.
+   * @param mergeFn - Merge function for object entries.
+   * @returns The merged array.
    */
   const mergeArraysWithStrategy = (
     srcValue: unknown,
@@ -574,7 +585,17 @@ export const mergeObject = <TSource extends object, TPatch extends object>(
   return merge(source as PlainObject, patch as PlainObject, strict) as TSource & TPatch;
 };
 
-/** @deprecated Use mergeObject instead */
+/**
+ * Deeply merges a patch object into a source object.
+ *
+ * @deprecated Use mergeObject instead.
+ * @template TSource - Type of the source object.
+ * @template TPatch - Type of the patch object.
+ * @param source - The original object to be merged into.
+ * @param patch - The object containing updates or new keys to be merged.
+ * @param options - Merge options controlling immutability and undefined handling.
+ * @returns A new object that is the result of deeply merging the patch into the source.
+ */
 export const deepMerge = mergeObject;
 
 /**

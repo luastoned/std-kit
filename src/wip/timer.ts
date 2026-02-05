@@ -1,11 +1,11 @@
-const debounce3 = (fn: Function, ms = 300) => {
-  let timeoutId: ReturnType<typeof setTimeout>;
-  return function (this: any, ...args: any[]) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => fn.apply(this, args), ms);
-  };
-};
-
+/**
+ * Creates a debounced function that resolves with the callback result.
+ *
+ * @template T - The callback type.
+ * @param callback - The callback to debounce.
+ * @param delay - The delay in milliseconds.
+ * @returns A debounced function returning a promise for the callback result.
+ */
 export function debounce2<T extends (...args: Parameters<T>) => ReturnType<T>>(callback: T, delay: number) {
   let timer: ReturnType<typeof setTimeout>;
   return (...args: Parameters<T>) => {
@@ -27,6 +27,14 @@ export function debounce2<T extends (...args: Parameters<T>) => ReturnType<T>>(c
   };
 }
 
+/**
+ * Creates a debounced promise-returning function.
+ *
+ * @template F - The callback type.
+ * @param callback - The callback to debounce.
+ * @param waitFor - The delay in milliseconds.
+ * @returns A debounced function returning a promise for the callback result.
+ */
 export const debouncePromise = <F extends (...args: any[]) => any>(callback: F, waitFor: number): ((...args: Parameters<F>) => Promise<ReturnType<F>>) => {
   let timeout: NodeJS.Timeout | undefined;
 
@@ -39,6 +47,15 @@ export const debouncePromise = <F extends (...args: any[]) => any>(callback: F, 
   };
 };
 
+/**
+ * Creates a throttled function with a cancel hook.
+ *
+ * @template R - The return type.
+ * @template A - The argument tuple type.
+ * @param fn - The function to throttle.
+ * @param delay - The delay in milliseconds.
+ * @returns A tuple with the throttled function and a cancel function.
+ */
 export const throttleB = <R, A extends any[]>(fn: (...args: A) => R, delay: number): [(...args: A) => R | undefined, () => void] => {
   let wait = false;
   let timeout: number | NodeJS.Timeout;
@@ -65,166 +82,3 @@ export const throttleB = <R, A extends any[]>(fn: (...args: A) => R, delay: numb
     },
   ];
 };
-
-export type DebounceOption<Result> = {
-  immediate?: boolean;
-  maxWait?: number;
-  callback?: (data: Result) => void;
-};
-
-export type ThrottleOption<Result> = {
-  immediate?: boolean;
-  callback?: (data: Result) => void;
-};
-
-export type Func<Args extends any[], F extends (...args: Args) => any> = {
-  (this: ThisParameterType<F>, ...args: Args & Parameters<F>): Promise<ReturnType<F>>;
-  cancel: (reason?: any) => void;
-};
-
-export type Promises<FuncReturn> = {
-  resolve: (result: FuncReturn) => void;
-  reject: (reason?: any) => void;
-};
-
-export function debounce<Args extends any[], F extends (...args: Args) => any>(
-  func: F,
-  delay: number = 100,
-  options?: DebounceOption<ReturnType<F>>,
-): Func<Args, F> {
-  let timeoutId: ReturnType<typeof setTimeout> | undefined;
-  const isImmediate = options?.immediate ?? false;
-  const maxWait = options?.maxWait;
-  const callback = options?.callback ?? false;
-  let lastInvokeTime = Date.now();
-
-  let promises: Promises<ReturnType<F>>[] = [];
-
-  const nextInvokeDelay = () => {
-    if (maxWait !== undefined) {
-      const timeSinceLastInvoke = Date.now() - lastInvokeTime;
-      const timeUtilNextInvoke = maxWait - timeSinceLastInvoke;
-
-      // timeUtilNextInvoke may be less than zero
-      return Math.max(timeUtilNextInvoke, 0);
-    }
-
-    return delay;
-  };
-
-  const debouncedFunction = function (this: ThisParameterType<F>, ...args: Parameters<F>) {
-    const context = this;
-    return new Promise<ReturnType<F>>((resolve, reject) => {
-      const invokeFunction = () => {
-        timeoutId = undefined;
-        lastInvokeTime = Date.now();
-        if (!isImmediate) {
-          const result = func.apply(context, args);
-          callback && callback(result);
-          for (const { resolve } of promises) {
-            resolve(result);
-          }
-          promises = [];
-        }
-      };
-
-      const shouldCallNow = isImmediate && timeoutId === undefined;
-
-      if (timeoutId !== undefined) {
-        clearTimeout(timeoutId);
-      }
-
-      timeoutId = setTimeout(invokeFunction, nextInvokeDelay());
-
-      if (shouldCallNow) {
-        const result = func.apply(context, args);
-        callback && callback(result);
-        return resolve(result);
-      }
-      promises.push({ resolve, reject });
-    });
-  };
-
-  debouncedFunction.cancel = (reason?: any) => {
-    if (timeoutId !== undefined) {
-      clearTimeout(timeoutId);
-    }
-
-    for (const { reject } of promises) {
-      reject(reason);
-    }
-
-    promises = [];
-  };
-
-  return debouncedFunction;
-}
-
-export function throttle<Args extends any[], F extends (...args: Args) => any>(
-  func: F,
-  delay: number = 100,
-  options?: ThrottleOption<ReturnType<F>>,
-): Func<Args, F> {
-  let timeoutId: ReturnType<typeof setTimeout> | undefined;
-  const isImmediate = options?.immediate ?? false;
-  const callback = options?.callback ?? false;
-  // const trailing = options?.trailing ?? false;
-  let lastInvokeTime = Date.now();
-
-  let promises: Promises<ReturnType<F>>[] = [];
-
-  const nextInvokeDelay = () => {
-    const timeSinceLastInvoke = Date.now() - lastInvokeTime;
-    const timeUtilNextInvoke = delay - timeSinceLastInvoke;
-
-    // timeUtilNextInvoke may be less than zero
-    return Math.max(timeUtilNextInvoke, 0);
-  };
-
-  const throttledFunction = function (this: ThisParameterType<F>, ...args: Parameters<F>) {
-    const context = this;
-    return new Promise<ReturnType<F>>((resolve, reject) => {
-      const invokeFunction = () => {
-        timeoutId = undefined;
-        lastInvokeTime = Date.now();
-        if (!isImmediate) {
-          const result = func.apply(context, args);
-          callback && callback(result);
-          for (const { resolve } of promises) {
-            resolve(result);
-          }
-          promises = [];
-        }
-      };
-
-      const shouldCallNow = isImmediate && timeoutId === undefined;
-
-      if (timeoutId !== undefined) {
-        clearTimeout(timeoutId);
-      }
-
-      timeoutId = setTimeout(invokeFunction, nextInvokeDelay());
-
-      if (shouldCallNow) {
-        const result = func.apply(context, args);
-        callback && callback(result);
-        return resolve(result);
-      }
-      promises.push({ resolve, reject });
-    });
-  };
-
-  throttledFunction.cancel = (reason?: any) => {
-    if (timeoutId !== undefined) {
-      clearTimeout(timeoutId);
-    }
-
-    for (const { reject } of promises) {
-      reject(reason);
-    }
-
-    promises = [];
-  };
-
-  return throttledFunction;
-}
