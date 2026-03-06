@@ -10,16 +10,19 @@ export const sleep = (ms: number): Promise<void> => new Promise((resolve) => set
  * Creates a debounced version of the provided callback function.
  * The debounced function will delay invoking the callback until after a specified amount of time has passed since the last time it was invoked.
  *
- * @template F - The type of the original callback function.
+ * @template Args - The argument tuple type.
+ * @template Ret - The callback return type.
  * @param callback - The original callback function to debounce.
  * @param waitFor - The amount of time (in milliseconds) to wait before invoking the debounced callback.
  * @returns The debounced callback function.
  */
-export const debounce = <F extends (...args: never[]) => unknown>(callback: F, waitFor: number): ((...args: Parameters<F>) => void) => {
-  let timeout: NodeJS.Timeout;
+export const debounce = <Args extends unknown[], Ret>(callback: (...args: Args) => Ret, waitFor: number): ((...args: Args) => void) => {
+  let timeout: ReturnType<typeof setTimeout> | undefined;
 
-  return (...args: Parameters<F>): void => {
-    clearTimeout(timeout);
+  return (...args: Args): void => {
+    if (timeout !== undefined) {
+      clearTimeout(timeout);
+    }
     timeout = setTimeout(() => callback(...args), waitFor);
   };
 };
@@ -28,34 +31,46 @@ export const debounce = <F extends (...args: never[]) => unknown>(callback: F, w
  * Throttles a function and returns a promise that resolves with the result of the function.
  * The function will be called at most once within the specified time interval.
  *
- * @template F - The type of the function to throttle.
+ * @template Args - The argument tuple type.
+ * @template Ret - The callback return type.
  * @param callback - The function to throttle.
  * @param waitFor - The time interval in milliseconds.
  * @returns A throttled function that returns a promise.
  */
-export const throttle = <F extends (...args: never[]) => ReturnType<F>>(callback: F, waitFor: number): ((...args: Parameters<F>) => Promise<ReturnType<F>>) => {
+export const throttle = <Args extends unknown[], Ret>(
+  callback: (...args: Args) => Ret,
+  waitFor: number,
+): ((...args: Args) => Promise<Awaited<Ret>>) => {
   const now = (): number => Date.now();
   const resetStartTime = (): void => {
     startTime = now();
   };
 
-  let timeout: number | NodeJS.Timeout;
+  let timeout: ReturnType<typeof setTimeout> | undefined;
   let startTime: number = now() - waitFor;
 
-  return (...args: Parameters<F>): Promise<ReturnType<F>> =>
-    new Promise((resolve) => {
+  return (...args: Args): Promise<Awaited<Ret>> =>
+    new Promise((resolve, reject) => {
       const timeLeft = startTime + waitFor - now();
-      if (timeout) {
+      if (timeout !== undefined) {
         clearTimeout(timeout);
       }
 
       if (startTime + waitFor <= now()) {
         resetStartTime();
-        resolve(callback(...args));
+        try {
+          resolve(callback(...args) as Awaited<Ret>);
+        } catch (error) {
+          reject(error);
+        }
       } else {
         timeout = setTimeout(() => {
           resetStartTime();
-          resolve(callback(...args));
+          try {
+            resolve(callback(...args) as Awaited<Ret>);
+          } catch (error) {
+            reject(error);
+          }
         }, timeLeft);
       }
     });

@@ -1,18 +1,34 @@
+/**
+ * A deferred async task that resolves to `T` when executed.
+ *
+ * @template T - Resolved result type.
+ */
 export type DeferredTask<T> = () => Promise<T>;
 
 /**
  * Wraps a function call so it can be executed later as a promise task.
  *
  * @template Args - The argument tuple type for the function.
- * @template R - The return type of the function.
+ * @template Ret - The return type of the function.
  * @param fn - The function to wrap.
  * @param args - Arguments to apply when the task runs.
  * @returns A deferred task that resolves to the function result.
  */
-export const defer = <Args extends readonly unknown[], R>(fn: (...args: Args) => R | Promise<R>, ...args: Args): DeferredTask<Awaited<R>> => {
-  return () => Promise.resolve(fn(...args)) as Promise<Awaited<R>>;
+export const defer = <Args extends readonly unknown[], Ret>(
+  fn: (...args: Args) => Ret | Promise<Ret>,
+  ...args: Args
+): DeferredTask<Awaited<Ret>> => {
+  return () => Promise.resolve(fn(...args)) as Promise<Awaited<Ret>>;
 };
 
+/**
+ * Normalizes a parallelism value to a safe runtime limit.
+ * Preserves `Infinity`, and clamps invalid or non-positive values to `1`.
+ *
+ * @internal
+ * @param parallel - Raw parallelism input.
+ * @returns A normalized parallelism value.
+ */
 const normalizeParallel = (parallel: number): number => {
   if (parallel === Number.POSITIVE_INFINITY) {
     return parallel;

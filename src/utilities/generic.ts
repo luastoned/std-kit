@@ -1,3 +1,5 @@
+import type { Container, MutableContainer } from '~/utilities/types';
+
 /**
  * Checks if the given item is an array.
  *
@@ -44,8 +46,7 @@ export const isError = (item: unknown): item is Error => item instanceof Error;
  * @param item - The item to check.
  * @returns `true` if the item is a function, `false` otherwise.
  */
-// biome-ignore lint/complexity/noBannedTypes: Allow Function for Type
-export const isFunction = (item: unknown): item is Function => typeof item === 'function';
+export const isFunction = (item: unknown): item is (...args: unknown[]) => unknown => typeof item === 'function';
 
 /**
  * Checks if the given item is an infinity number.
@@ -88,6 +89,22 @@ export const isNumber = (item: unknown): item is number => typeof item === 'numb
  * @returns `true` if the item is an object, `false` otherwise.
  */
 export const isObject = (item: unknown): item is Record<PropertyKey, unknown> => typeof item === 'object' && !Array.isArray(item) && item !== null;
+
+/**
+ * Checks if the given item is an object or array container.
+ *
+ * @param item - The item to check.
+ * @returns `true` if the item is an object or array container.
+ */
+export const isContainer = (item: unknown): item is Container => isObject(item) || isArray(item);
+
+/**
+ * Checks if the given item can be treated as a mutable container.
+ *
+ * @param item - The item to check.
+ * @returns `true` if the item is an object or array suitable for mutation.
+ */
+export const isMutableContainer = (item: unknown): item is MutableContainer => isContainer(item);
 
 /**
  * Checks if the given item is a plain object.

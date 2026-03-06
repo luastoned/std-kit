@@ -139,7 +139,7 @@ filterObject(data, { keys: ['name', 'age'] });
 Control async execution flow:
 
 ```typescript
-import { threads, defer, sleep, retry } from 'std-kit';
+import { threads, defer, sleep } from 'std-kit';
 
 // Limit concurrent promises
 const tasks = urls.map((url) => defer(fetch, url));
@@ -149,11 +149,6 @@ const results = await threads(3, tasks); // Max 3 concurrent requests
 await sleep(1000); // 1 second
 await sleep(500); // 500ms
 
-// Retry with exponential backoff
-const data = await retry(
-  async () => fetch('/api/data'),
-  { attempts: 3, delay: 1000 }
-);
 ```
 
 ### 🔢 Numbers
@@ -161,7 +156,7 @@ const data = await retry(
 Clamp, format, and manipulate numbers:
 
 ```typescript
-import { clamp, range, random, round } from 'std-kit';
+import { clamp, range, randomInt, randomNum, roundTo } from 'std-kit';
 
 // Constrain to range
 clamp(150, 0, 100); // 100
@@ -172,10 +167,11 @@ range(1, 5); // [1, 2, 3, 4, 5]
 range(0, 10, 2); // [0, 2, 4, 6, 8, 10]
 
 // Random numbers
-random(1, 100); // Random integer between 1-100
+randomInt(1, 100); // Random integer between 1-100
+randomNum(1, 100); // Random float between 1-100
 
 // Precise rounding
-round(3.14159, 2); // 3.14
+roundTo(3.14159, 2); // 3.14
 ```
 
 ### 🛡️ Type Guards
@@ -240,7 +236,7 @@ const buffer = await streamToBuffer(readableStream);
 | [📋 array](docs/natives/array.md) | Array manipulation, grouping, sorting, and transformations |
 | [🎯 object](docs/natives/object.md) | Deep access, merge, filter, map, and query objects |
 | [🔢 number](docs/natives/number.md) | Number operations, ranges, rounding, and formatting |
-| [⚡ promise](docs/natives/promise.md) | Async control flow, concurrency, retry, and timing |
+| [⚡ promise](docs/natives/promise.md) | Async control flow, concurrency, and timing |
 | [⏱️ timer](docs/natives/timer.md) | Sleep, delay, timeout, and interval utilities |
 | [⚙️ function](docs/natives/function.md) | Function composition, memoization, and helpers |
 

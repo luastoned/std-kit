@@ -39,14 +39,13 @@
   },
   "scripts": {
     "build": "yarn build:tsdown",
-    "build:tsup": "yarn clean && tsup",
     "build:tsdown": "tsdown",
     "build:code": "tsc --project tsconfig.build.json",
     "build:types": "tsc --project tsconfig.build.json --declaration --emitDeclarationOnly",
     "clean": "rimraf coverage dist docs lib",
     "docs": "yarn docs:typedoc && yarn docs:transform",
     "docs:transform": "tsx scripts/transform-docs.ts",
-    "docs:typedoc": "typedoc --json docs/documentation.json",
+    "docs:typedoc": "typedoc --excludeInternal --intentionallyNotExported KeySelector --intentionallyNotExported GetNestedField --intentionallyNotExported GetDirectOrIndexedField --json docs/documentation.json",
     "test": "vitest --run",
     "typecheck": "tsc --noEmit",
     "release": "release-it"

@@ -195,6 +195,16 @@ describe('findInTree', () => {
 
     expect(result).toEqual(['Alice', 'Charlie']);
   });
+
+  it('handles cyclic object graphs without infinite recursion', () => {
+    type CyclicNode = { id: number; self?: CyclicNode; items?: CyclicNode[] };
+    const root: CyclicNode = { id: 1 };
+    root.self = root;
+    root.items = [root];
+
+    const result = queryObject(root, (key) => key === 'id');
+    expect(result).toEqual([1]);
+  });
 });
 
 describe('mapObject', () => {
@@ -514,6 +524,18 @@ describe('mapObject', () => {
     });
 
     expect(rootParent).toBe(null);
+  });
+
+  it('preserves cyclic references without infinite recursion', () => {
+    type CyclicNode = { name: string; value: number; self?: CyclicNode; list?: CyclicNode[] };
+    const root: CyclicNode = { name: 'root', value: 1 };
+    root.self = root;
+    root.list = [root];
+
+    const result = mapObject(root, (_key, value) => (typeof value === 'number' ? value + 1 : value));
+    expect(result.value).toBe(2);
+    expect(result.self).toBe(result);
+    expect(result.list?.[0]).toBe(result);
   });
 });
 
@@ -1259,6 +1281,19 @@ describe('filterObject (value filtering)', () => {
     expect(result).toEqual({
       branch1: {
         leaf1: { keep: true },
+      },
+    });
+  });
+
+  it('handles cyclic object graphs without infinite recursion', () => {
+    type CyclicNode = { name: string; flag?: boolean; child?: CyclicNode };
+    const root: CyclicNode = { name: 'root' };
+    root.child = { name: 'child', flag: true, child: root };
+
+    const result = filterObject(root, { values: (key, value) => key === 'flag' || value === true });
+    expect(result).toEqual({
+      child: {
+        flag: true,
       },
     });
   });

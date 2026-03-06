@@ -143,6 +143,13 @@ describe('chunk', () => {
   it('should return empty array when input is empty', () => {
     expect(chunk([])).toEqual([]);
   });
+
+  it('should clamp invalid size values to 1', () => {
+    expect(chunk([1, 2, 3], 0)).toEqual([[1], [2], [3]]);
+    expect(chunk([1, 2, 3], -2)).toEqual([[1], [2], [3]]);
+    expect(chunk([1, 2, 3], 0.5)).toEqual([[1], [2], [3]]);
+    expect(chunk([1, 2, 3], Number.NaN)).toEqual([[1], [2], [3]]);
+  });
 });
 
 describe('cluster (deprecated)', () => {

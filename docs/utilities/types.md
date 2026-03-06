@@ -6,41 +6,53 @@
 
 ## Types
 
-- `type Constructor<T = unknown> = (args: unknown[]) => T`
+- `type Constructor<T = unknown> = (...args: unknown[]) => T`
+- `type Container = GenericObject | readonly unknown[]`
 - `type DeepPartial<T> = unknown`
 - `type DeepReadonly<T> = unknown`
 - `type DeepRequired<T> = unknown`
-- `type GenericFn<T> = (args: T[]) => unknown`
-- `type GenericFunction<TFunc> = (args: Parameters) => ReturnType`
-- `type GenericObject = Record`
+- `type GenericFn<T> = (...args: T[]) => unknown`
+- `type GenericFunction<TFunc> = (...args: Parameters<TFunc>) => ReturnType<TFunc>`
+- `type GenericObject = Record<PropertyKey, unknown>`
 - `type GetFieldType<T, Path> = unknown`
 - `type KeyFn<T> = (arg: T) => keyof T`
 - `type Maybe<T> = T | null | undefined`
-- `type Merge<T, U> = unknown`
+- `type Merge<T, U> = Omit<T, keyof U> & U`
 - `type Mutable<T> = unknown`
-- `type NonEmptyArray<T> = unknown`
+- `type MutableContainer = Record<string, unknown> | unknown[]`
+- `type NonEmptyArray<T> = [T, unknown]`
 - `type Nullable<T> = T | null`
-- `type OmitByValue<T, ValueType> = Pick`
+- `type OmitByValue<T, ValueType> = Pick<T, unknown[keyof T]>`
 - `type Optional<T> = T | undefined`
-- `type OptionalKeys<T> = unknown`
-- `type PickByValue<T, ValueType> = Pick`
-- `type PlainObject = Record`
-- `type Prettify<T> = unknown`
-- `type RequiredKeys<T> = unknown`
-- `type SetOptional<T, K> = unknown`
-- `type SetRequired<T, K> = unknown`
-- `type Simplify<T> = unknown`
-- `type ValueOf<T> = unknown`
+- `type OptionalKeys<T> = unknown[keyof T]`
+- `type PickByValue<T, ValueType> = Pick<T, unknown[keyof T]>`
+- `type PlainObject = Record<string, unknown>`
+- `type Prettify<T> = unknown & object`
+- `type RequiredKeys<T> = unknown[keyof T]`
+- `type SetOptional<T, K> = Omit<T, K> & Partial<Pick<T, K>>`
+- `type SetRequired<T, K> = T & Required<Pick<T, K>>`
+- `type Simplify<T> = unknown & object`
+- `type ValueOf<T> = T[keyof T]`
 
 ---
 
 ## Constructor
 
 ```typescript
-type Constructor<T = unknown> = (args: unknown[]) => T
+type Constructor<T = unknown> = (...args: unknown[]) => T
 ```
 
 Represents a constructor function type.
+
+---
+
+## Container
+
+```typescript
+type Container = GenericObject | readonly unknown[]
+```
+
+Represents an object or array container.
 
 ---
 
@@ -92,7 +104,7 @@ Makes all properties in T and nested objects required recursively.
 ## GenericFn
 
 ```typescript
-type GenericFn<T> = (args: T[]) => unknown
+type GenericFn<T> = (...args: T[]) => unknown
 ```
 
 Represents a generic function type.
@@ -102,7 +114,7 @@ Represents a generic function type.
 ## GenericFunction
 
 ```typescript
-type GenericFunction<TFunc> = (args: Parameters) => ReturnType
+type GenericFunction<TFunc> = (...args: Parameters<TFunc>) => ReturnType<TFunc>
 ```
 
 Represents a generic function type with preserved signature.
@@ -112,7 +124,7 @@ Represents a generic function type with preserved signature.
 ## GenericObject
 
 ```typescript
-type GenericObject = Record
+type GenericObject = Record<PropertyKey, unknown>
 ```
 
 Represents a generic object with dynamic keys and unknown values.
@@ -128,6 +140,12 @@ Represents a generic object with dynamic keys and unknown values.
 ```typescript
 type GetFieldType<T, Path> = unknown
 ```
+
+Infers the type at a dot/bracket path.
+
+
+**Returns:** The inferred value type for the path.
+
 
 ---
 
@@ -159,7 +177,7 @@ Represents a type that can be either a value of type T, null, or undefined.
 ## Merge
 
 ```typescript
-type Merge<T, U> = unknown
+type Merge<T, U> = Omit<T, keyof U> & U
 ```
 
 Merges two object types, with U's properties taking precedence over T's.
@@ -187,10 +205,20 @@ Removes readonly modifiers from all properties in a type.
 
 ---
 
+## MutableContainer
+
+```typescript
+type MutableContainer = Record<string, unknown> | unknown[]
+```
+
+Represents a mutable container used for nested assignments.
+
+---
+
 ## NonEmptyArray
 
 ```typescript
-type NonEmptyArray<T> = unknown
+type NonEmptyArray<T> = [T, unknown]
 ```
 
 Represents an array that is guaranteed to have at least one element.
@@ -220,7 +248,7 @@ Represents a type that can be either a value of type T or null.
 ## OmitByValue
 
 ```typescript
-type OmitByValue<T, ValueType> = Pick
+type OmitByValue<T, ValueType> = Pick<T, unknown[keyof T]>
 ```
 
 Omits properties from T where the value type extends ValueType.
@@ -251,7 +279,7 @@ Represents a type that can be either a value of type T or undefined.
 ## OptionalKeys
 
 ```typescript
-type OptionalKeys<T> = unknown
+type OptionalKeys<T> = unknown[keyof T]
 ```
 
 Extracts the union of all optional keys from a type.
@@ -266,7 +294,7 @@ Extracts the union of all optional keys from a type.
 ## PickByValue
 
 ```typescript
-type PickByValue<T, ValueType> = Pick
+type PickByValue<T, ValueType> = Pick<T, unknown[keyof T]>
 ```
 
 Picks properties from T where the value type extends ValueType.
@@ -282,7 +310,7 @@ Picks properties from T where the value type extends ValueType.
 ## PlainObject
 
 ```typescript
-type PlainObject = Record
+type PlainObject = Record<string, unknown>
 ```
 
 Represents a plain object with string keys and unknown values.
@@ -296,7 +324,7 @@ Represents a plain object with string keys and unknown values.
 ## Prettify
 
 ```typescript
-type Prettify<T> = unknown
+type Prettify<T> = unknown & object
 ```
 
 Represents a type that prettifies another type by preserving its properties.
@@ -312,7 +340,7 @@ Useful for improving type display in IDE tooltips.
 ## RequiredKeys
 
 ```typescript
-type RequiredKeys<T> = unknown
+type RequiredKeys<T> = unknown[keyof T]
 ```
 
 Extracts the union of all required keys from a type.
@@ -327,7 +355,7 @@ Extracts the union of all required keys from a type.
 ## SetOptional
 
 ```typescript
-type SetOptional<T, K> = unknown
+type SetOptional<T, K> = Omit<T, K> & Partial<Pick<T, K>>
 ```
 
 Makes specified keys optional in a type.
@@ -343,7 +371,7 @@ Makes specified keys optional in a type.
 ## SetRequired
 
 ```typescript
-type SetRequired<T, K> = unknown
+type SetRequired<T, K> = T & Required<Pick<T, K>>
 ```
 
 Makes specified keys required in a type.
@@ -359,7 +387,7 @@ Makes specified keys required in a type.
 ## Simplify
 
 ```typescript
-type Simplify<T> = unknown
+type Simplify<T> = unknown & object
 ```
 
 Simplifies a type by forcing TypeScript to evaluate it.
@@ -375,7 +403,7 @@ Often provides better IntelliSense than Prettify for complex types.
 ## ValueOf
 
 ```typescript
-type ValueOf<T> = unknown
+type ValueOf<T> = T[keyof T]
 ```
 
 Extracts the union of all property values from a type.

@@ -4,7 +4,7 @@ import { isPromise } from '~/utilities/generic';
  * Wraps a function to safely execute it and catch any errors.
  * Works with both synchronous and asynchronous functions.
  *
- * @template F - The type of the function to guard.
+ * @template T - The result type of the guarded function.
  * @param fn - The function to execute safely.
  * @param shouldGuard - Optional predicate to determine if an error should be caught.
  *   If provided and returns false for an error, the error will be re-thrown.
@@ -12,10 +12,9 @@ import { isPromise } from '~/utilities/generic';
  * @returns The result of the function, or undefined if an error is caught.
  *   For async functions, returns a Promise that resolves to the result or undefined.
  */
-export const guard = <F extends (...args: never[]) => unknown>(
-  fn: F,
-  shouldGuard?: (error: unknown) => boolean,
-): ReturnType<F> extends Promise<infer T> ? Promise<T | undefined> : ReturnType<F> | undefined => {
+export function guard<T>(fn: () => Promise<T>, shouldGuard?: (error: unknown) => boolean): Promise<T | undefined>;
+export function guard<T>(fn: () => T, shouldGuard?: (error: unknown) => boolean): T | undefined;
+export function guard<T>(fn: () => T | Promise<T>, shouldGuard?: (error: unknown) => boolean): T | Promise<T | undefined> | undefined {
   const handleError = (error: unknown): undefined => {
     if (shouldGuard && !shouldGuard(error)) {
       throw error;
@@ -28,11 +27,11 @@ export const guard = <F extends (...args: never[]) => unknown>(
     const result = fn();
 
     if (isPromise(result)) {
-      return result.catch(handleError) as ReturnType<F> extends Promise<infer T> ? Promise<T | undefined> : never;
+      return result.catch(handleError);
     }
 
-    return result as ReturnType<F> | undefined as ReturnType<F> extends Promise<infer T> ? Promise<T | undefined> : ReturnType<F> | undefined;
+    return result;
   } catch (error) {
-    return handleError(error) as ReturnType<F> extends Promise<infer T> ? Promise<T | undefined> : ReturnType<F> | undefined;
+    return handleError(error);
   }
-};
+}

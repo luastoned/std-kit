@@ -11,6 +11,12 @@ describe('streamToBuffer', () => {
     expect(result.toString()).toBe('Hello World');
   });
 
+  it('converts string chunks to a buffer correctly', async () => {
+    const stream = Readable.from(['Hello', ' ', 'World']);
+    const result = await streamToBuffer(stream);
+    expect(result.toString()).toBe('Hello World');
+  });
+
   it('handles stream error', async () => {
     const errorStream = new Readable({
       read() {
@@ -27,6 +33,12 @@ describe('pipeToBuffer', () => {
     const input = ['foo', 'bar', 'baz'];
     const stream = Readable.from(input.map((s) => Buffer.from(s)));
 
+    const result = await pipeToBuffer(stream);
+    expect(result.toString()).toBe('foobarbaz');
+  });
+
+  it('pipes string chunks to a buffer correctly', async () => {
+    const stream = Readable.from(['foo', 'bar', 'baz']);
     const result = await pipeToBuffer(stream);
     expect(result.toString()).toBe('foobarbaz');
   });

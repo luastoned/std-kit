@@ -6,14 +6,14 @@
 
 ## Functions
 
-- `deepMerge<TSource, TPatch>(source: TSource, patch: Readonly, options: Readonly = {}): unknown` ~~(deprecated)~~
-- `filterObject<T>(obj: Readonly, options: Readonly): DeepPartial | undefined`
-- `getValue<TData, TPath, TDefault = GetFieldType>(data: Readonly, path: TPath, defaultValue: TDefault): TDefault | GetFieldType`
+- `deepMerge<TSource, TPatch>(source: TSource, patch: Readonly<TPatch>, options: Readonly<object> = {}): TSource & TPatch` ~~(deprecated)~~
+- `filterObject<T>(obj: Readonly<T>, options: Readonly<object>): DeepPartial<T> | undefined`
+- `getValue<TData, TPath, TDefault = GetFieldType<TData, TPath>>(data: Readonly<TData>, path: TPath, defaultValue?: TDefault): TDefault | GetFieldType<TData, TPath>`
 - `mapObject<T>(obj: T, mapper: (key: string, value: unknown, path: string, parent: unknown) => unknown): T`
-- `mergeObject<TSource, TPatch>(source: TSource, patch: Readonly, options: Readonly = {}): unknown`
-- `omit<T, K>(obj: T, keys: readonly K[]): Omit`
-- `pick<T, K>(obj: T, keys: readonly K[]): Pick`
-- `queryObject<R = unknown, T = unknown, P = false>(obj: unknown, filter: (key: string, value: T, path: string, parent: unknown) => boolean, path: P = ...): unknown[]`
+- `mergeObject<TSource, TPatch>(source: TSource, patch: Readonly<TPatch>, options: Readonly<object> = {}): TSource & TPatch`
+- `omit<T, K>(obj: T, keys: readonly K[]): Omit<T, K>`
+- `pick<T, K>(obj: T, keys: readonly K[]): Pick<T, K>`
+- `queryObject<Ret = unknown, T = unknown, P = false>(obj: unknown, filter: (key: string, value: T, path: string, parent: unknown) => boolean, path: P = ...): unknown[]`
 - `setValue<TData, TPath, TValue>(data: TData, path: TPath, value: TValue): void`
 
 ---
@@ -21,7 +21,7 @@
 ## deepMerge
 
 ```typescript
-deepMerge<TSource, TPatch>(source: TSource, patch: Readonly, options: Readonly = {}): unknown
+deepMerge<TSource, TPatch>(source: TSource, patch: Readonly<TPatch>, options: Readonly<object> = {}): TSource & TPatch
 ```
 
 Deeply merges a patch object into a source object.
@@ -42,7 +42,7 @@ Deeply merges a patch object into a source object.
 ## filterObject
 
 ```typescript
-filterObject<T>(obj: Readonly, options: Readonly): DeepPartial | undefined
+filterObject<T>(obj: Readonly<T>, options: Readonly<object>): DeepPartial<T> | undefined
 ```
 
 Recursively filters an object or array tree, preserving the original structure but only keeping
@@ -57,7 +57,7 @@ items that match the specified key and/or value filters.
 ## getValue
 
 ```typescript
-getValue<TData, TPath, TDefault = GetFieldType>(data: Readonly, path: TPath, defaultValue: TDefault): TDefault | GetFieldType
+getValue<TData, TPath, TDefault = GetFieldType<TData, TPath>>(data: Readonly<TData>, path: TPath, defaultValue?: TDefault): TDefault | GetFieldType<TData, TPath>
 ```
 
 Retrieves a value from a nested object or array using a dot/bracket notation path.
@@ -89,7 +89,7 @@ of each value while preserving the structure.
 ## mergeObject
 
 ```typescript
-mergeObject<TSource, TPatch>(source: TSource, patch: Readonly, options: Readonly = {}): unknown
+mergeObject<TSource, TPatch>(source: TSource, patch: Readonly<TPatch>, options: Readonly<object> = {}): TSource & TPatch
 ```
 
 Deeply merges a patch object into a source object.
@@ -113,7 +113,7 @@ Deeply merges a patch object into a source object.
 ## omit
 
 ```typescript
-omit<T, K>(obj: T, keys: readonly K[]): Omit
+omit<T, K>(obj: T, keys: readonly K[]): Omit<T, K>
 ```
 
 Creates a new object with all keys from the source object except the specified ones.
@@ -127,7 +127,7 @@ Creates a new object with all keys from the source object except the specified o
 ## pick
 
 ```typescript
-pick<T, K>(obj: T, keys: readonly K[]): Pick
+pick<T, K>(obj: T, keys: readonly K[]): Pick<T, K>
 ```
 
 Creates a new object with only the specified keys from the source object.
@@ -141,7 +141,7 @@ Creates a new object with only the specified keys from the source object.
 ## queryObject
 
 ```typescript
-queryObject<R = unknown, T = unknown, P = false>(obj: unknown, filter: (key: string, value: T, path: string, parent: unknown) => boolean, path: P = ...): unknown[]
+queryObject<Ret = unknown, T = unknown, P = false>(obj: unknown, filter: (key: string, value: T, path: string, parent: unknown) => boolean, path: P = ...): unknown[]
 ```
 
 Recursively searches through an object or array tree, finding all values that match the filter function.

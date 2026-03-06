@@ -6,14 +6,14 @@
 
 ## Functions
 
-- `guard<F>(fn: F, shouldGuard: (error: unknown) => boolean): unknown`
+- `guard<T>(fn: () => Promise<T>, shouldGuard?: (error: unknown) => boolean): Promise<T | undefined>`
 
 ---
 
 ## guard
 
 ```typescript
-guard<F>(fn: F, shouldGuard: (error: unknown) => boolean): unknown
+guard<T>(fn: () => Promise<T>, shouldGuard?: (error: unknown) => boolean): Promise<T | undefined>
 ```
 
 Wraps a function to safely execute it and catch any errors.

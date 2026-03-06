@@ -63,7 +63,6 @@ export type KeyFn<T> = (arg: T) => keyof T;
 /**
  * Represents a generic function type.
  * @template T - The type of arguments accepted by the function.
- * @param T - The type of arguments accepted by the function.
  * @returns The generic function type.
  */
 export type GenericFn<T> = (...args: T[]) => unknown;
@@ -71,7 +70,6 @@ export type GenericFn<T> = (...args: T[]) => unknown;
 /**
  * Represents a generic function type with preserved signature.
  * @template TFunc - The type of the function.
- * @param TFunc - The type of the function.
  * @returns The generic function type.
  */
 export type GenericFunction<TFunc extends (...args: unknown[]) => unknown> = (...args: Parameters<TFunc>) => ReturnType<TFunc>;
@@ -79,7 +77,6 @@ export type GenericFunction<TFunc extends (...args: unknown[]) => unknown> = (..
 /**
  * Represents a constructor function type.
  * @template T - The type that the constructor creates.
- * @param T - The type that the constructor creates.
  * @returns The constructor type.
  */
 export type Constructor<T = unknown> = new (...args: unknown[]) => T;
@@ -95,10 +92,20 @@ export type Constructor<T = unknown> = new (...args: unknown[]) => T;
 export type GenericObject = Record<PropertyKey, unknown>;
 
 /**
+ * Represents an object or array container.
+ */
+export type Container = GenericObject | readonly unknown[];
+
+/**
  * Represents a plain object with string keys and unknown values.
  * @returns The plain object type.
  */
 export type PlainObject = Record<string, unknown>;
+
+/**
+ * Represents a mutable container used for nested assignments.
+ */
+export type MutableContainer = Record<string, unknown> | unknown[];
 
 // =============================================================================
 // Property Manipulation
@@ -232,36 +239,52 @@ export type NonEmptyArray<T> = [T, ...T[]];
 // =============================================================================
 // Path & Field Access Utilities
 // =============================================================================
-type GetIndexedField<T, Idx> = T extends readonly unknown[] | unknown[]
-  ? T[number] // Safely access array or tuple element by number
-  : undefined;
+/**
+ * Resolves indexed access for arrays and tuples.
+ * @internal
+ */
+type GetIndexedField<T, Idx> = T extends readonly unknown[] | unknown[] ? T[number] : undefined;
 
-// Utility to handle direct object field access
+/**
+ * Resolves direct property access.
+ * @internal
+ */
 type GetDirectField<T, Path extends keyof T> = T[Path];
 
-// Utility to handle undefined or potentially missing properties
-type FieldOrUndefined<T, Key> = Key extends keyof T
-  ? T[Key] | Extract<T, undefined> // Handle field or undefined
-  : undefined;
+/**
+ * Resolves a property type and preserves undefined when applicable.
+ * @internal
+ */
+type FieldOrUndefined<T, Key> = Key extends keyof T ? T[Key] | Extract<T, undefined> : undefined;
 
-// Main recursive type to infer the type from a dot notation or array path
-// export type GetFieldType<T, Path> = Path extends `${infer Left}.${infer Right}` ? GetNestedField<T, Left, Right> : GetDirectOrIndexedField<T, Path>;
+/**
+ * Infers the type at a dot/bracket path.
+ * @template T - The source object type.
+ * @template Path - Dot/bracket path.
+ * @returns The inferred value type for the path.
+ */
 export type GetFieldType<T, Path> = Path extends ''
   ? T
   : Path extends `${infer Left}.${infer Right}`
     ? GetNestedField<T, Left, Right>
     : GetDirectOrIndexedField<T, Path>;
 
-// Handle direct field access or array indexing (e.g., 'user.name' or 'user.posts[0]')
+/**
+ * Handles direct and indexed path segments.
+ * @internal
+ */
 type GetDirectOrIndexedField<T, Path> = Path extends `${infer FieldKey}[${infer IdxKey}]`
   ? FieldKey extends keyof T
     ? GetIndexedField<T[FieldKey], IdxKey>
     : undefined
   : Path extends keyof T
-    ? GetDirectField<T, Path> // Direct object field access
+    ? GetDirectField<T, Path>
     : undefined;
 
-// Handle nested fields, i.e., recursively process the path (e.g., 'user.posts[0].title')
+/**
+ * Recursively resolves nested path segments.
+ * @internal
+ */
 type GetNestedField<T, Left extends string, Right extends string> = Left extends `${infer FieldKey}[${infer IdxKey}]`
   ? FieldKey extends keyof T
     ? GetFieldType<GetIndexedField<T[FieldKey], IdxKey>, Right>

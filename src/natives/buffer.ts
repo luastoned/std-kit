@@ -1,6 +1,15 @@
 import { type Readable, Writable } from 'node:stream';
 
 /**
+ * Normalizes stream chunks into buffers.
+ *
+ * @internal
+ * @param chunk - Raw stream chunk.
+ * @returns A buffer representation of the chunk.
+ */
+const toBuffer = (chunk: string | Buffer | Uint8Array): Buffer => (Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+
+/**
  * Converts a readable stream into a buffer.
  *
  * @param stream - The readable stream to convert.
@@ -10,7 +19,7 @@ export const streamToBuffer = (stream: Readable): Promise<Buffer> => {
   return new Promise<Buffer>((resolve, reject) => {
     const chunks: Buffer[] = [];
 
-    stream.on('data', (chunk) => chunks.push(chunk));
+    stream.on('data', (chunk: string | Buffer | Uint8Array) => chunks.push(toBuffer(chunk)));
     stream.on('end', () => resolve(Buffer.concat(chunks)));
     stream.on('error', reject);
   });
@@ -27,8 +36,8 @@ export const pipeToBuffer = (stream: Readable): Promise<Buffer> => {
     const chunks: Buffer[] = [];
 
     const writable = new Writable({
-      write(chunk, encoding, callback) {
-        chunks.push(chunk);
+      write(chunk: string | Buffer | Uint8Array, encoding, callback) {
+        chunks.push(toBuffer(chunk));
         callback();
       },
     });

@@ -6,15 +6,15 @@
 
 ## Functions
 
-- `memoize<F>(fn: F, options: object = {}): (args: Parameters) => ReturnType`
-- `once<F>(fn: F): (args: Parameters) => ReturnType | undefined`
+- `memoize<Args, Ret>(fn: (...args: Args) => Ret, options: object = {}): (...args: Args) => Ret`
+- `once<Args, Ret>(fn: (...args: Args) => Ret): (...args: Args) => Ret | undefined`
 
 ---
 
 ## memoize
 
 ```typescript
-memoize<F>(fn: F, options: object = {}): (args: Parameters) => ReturnType
+memoize<Args, Ret>(fn: (...args: Args) => Ret, options: object = {}): (...args: Args) => Ret
 ```
 
 Creates a memoized version of a function that caches results based on arguments.
@@ -29,7 +29,7 @@ Uses a Map to store cached results with the serialized arguments as the key.
 ## once
 
 ```typescript
-once<F>(fn: F): (args: Parameters) => ReturnType | undefined
+once<Args, Ret>(fn: (...args: Args) => Ret): (...args: Args) => Ret | undefined
 ```
 
 Creates a function that can only be called once.

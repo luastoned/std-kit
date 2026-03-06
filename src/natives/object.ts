@@ -1,5 +1,27 @@
-import type { DeepPartial, GetFieldType, PlainObject } from '~/utilities/types';
-import { isArray, isObject, isPlainObject } from '~/utilities/generic';
+import type { DeepPartial, GetFieldType, MutableContainer, PlainObject } from '~/utilities/types';
+import { isArray, isContainer, isMutableContainer, isObject, isPlainObject } from '~/utilities/generic';
+
+/**
+ * Path segments that are blocked to prevent prototype pollution.
+ * @internal
+ */
+const FORBIDDEN_PATH_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
+/**
+ * Splits a dot/bracket path into normalized key segments.
+ * @internal
+ * @param path - The raw path (for example `user.posts[0].title`).
+ * @returns A list of path segments.
+ */
+const tokenizePath = (path: string): string[] => path.split(/[\.\[\]]/).filter(Boolean);
+
+/**
+ * Checks whether a parsed path includes forbidden keys.
+ * @internal
+ * @param keys - Parsed path segments.
+ * @returns `true` when the path contains blocked keys.
+ */
+const hasForbiddenPathKeys = (keys: readonly string[]): boolean => keys.some((key) => FORBIDDEN_PATH_KEYS.has(key));
 
 /**
  * Retrieves a value from a nested object or array using a dot/bracket notation path.
@@ -21,7 +43,7 @@ export const getValue = <TData, TPath extends string, TDefault = GetFieldType<TD
   path: TPath,
   defaultValue?: TDefault,
 ): GetFieldType<TData, TPath> | TDefault => {
-  const keys = path.split(/[\.\[\]]/).filter(Boolean); // Split by dot or brackets, remove empty parts
+  const keys = tokenizePath(path);
 
   let result: unknown = data; // Use `unknown` to ensure strict type checking
   for (const key of keys) {
@@ -51,30 +73,39 @@ export const getValue = <TData, TPath extends string, TDefault = GetFieldType<TD
  * @returns Nothing.
  */
 export const setValue = <TData, TPath extends string, TValue>(data: TData, path: TPath, value: TValue): void => {
-  const keys = path.split(/[\.\[\]]/).filter(Boolean); // Split by dot or brackets, remove empty parts
+  const keys = tokenizePath(path);
+  if (hasForbiddenPathKeys(keys)) {
+    return;
+  }
 
-  // biome-ignore lint/suspicious/noExplicitAny: current is unknown territory, this is fine
-  let current: any = data; // Start at the root object
+  if (!isMutableContainer(data)) {
+    return;
+  }
+
+  let current: MutableContainer = data;
   for (let idx = 0; idx < keys.length; idx++) {
     const key = keys[idx];
-
-    // SECURITY: Prevent prototype pollution
-    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
-      return;
-    }
+    const currentRecord = current as Record<string, unknown>;
 
     // If we are at the last key, assign the value
     if (idx === keys.length - 1) {
-      current[key] = value;
+      currentRecord[key] = value;
     } else {
+      let nextValue = currentRecord[key];
+
       // Check if the current key exists and is an object or array
-      if (current[key] === null || current[key] === undefined || typeof current[key] !== 'object') {
+      if (!isMutableContainer(nextValue)) {
         // Create an empty object or array if the next key is a number (array-like access)
         const nextKey = keys[idx + 1];
-        current[key] = /^\d+$/.test(nextKey) ? [] : {};
+        nextValue = /^\d+$/.test(nextKey) ? [] : {};
+        currentRecord[key] = nextValue;
       }
 
-      current = current[key]; // Move to the next level
+      if (!isMutableContainer(nextValue)) {
+        return;
+      }
+
+      current = nextValue; // Move to the next level
     }
   }
 };
@@ -86,7 +117,7 @@ export const setValue = <TData, TPath extends string, TValue>(data: TData, path:
  * The return type is inferred dynamically based on the `path` argument. If `path: true`, the return type includes
  * both the path and the value. Otherwise, it returns just the values.
  *
- * @template R - The expected return type of matching values.
+ * @template Ret - The expected return type of matching values.
  * @template T - The type of values being filtered in the tree.
  * @template P - A boolean, controlling whether the path should be included in the return type.
  * @param obj - The object or array to search through.
@@ -95,12 +126,13 @@ export const setValue = <TData, TPath extends string, TValue>(data: TData, path:
  * If `true`, the path to the matching value is returned alongside the result.
  * @returns A flat array of matching values or matching values with paths (if `path` is true).
  */
-export const queryObject = <R = unknown, T = unknown, P extends boolean = false>(
+export const queryObject = <Ret = unknown, T = unknown, P extends boolean = false>(
   obj: unknown,
   filter: (key: string, value: T, path: string, parent: unknown) => boolean,
   path: P = false as P,
-): Array<P extends true ? { path: string; value: R } : R> => {
-  const results: Array<P extends true ? { path: string; value: R } : R> = [];
+): Array<P extends true ? { path: string; value: Ret } : Ret> => {
+  const results: Array<P extends true ? { path: string; value: Ret } : Ret> = [];
+  const visiting = new WeakSet<object>();
 
   /**
    * Helper function to build the new path based on the current path, key, and parent type.
@@ -128,28 +160,43 @@ export const queryObject = <R = unknown, T = unknown, P extends boolean = false>
    * @returns Nothing.
    */
   const traverse = (value: unknown, currentPath = '', currentKey = '', parent: unknown = null): void => {
-    // Check if the current node matches criteria
-    if (filter(currentKey, value as T, currentPath, parent)) {
-      if (path) {
-        results.push({ path: currentPath, value: value as R } as P extends true ? { path: string; value: R } : R);
-      } else {
-        results.push(value as P extends true ? { path: string; value: R } : R);
+    const container = isContainer(value);
+    if (container) {
+      const containerRef = value as object;
+      if (visiting.has(containerRef)) {
+        return;
       }
+      visiting.add(containerRef);
     }
 
-    if (typeof value === 'object' && value !== null) {
-      // Determine if current container is an array to format child paths correctly
-      const isArrayContainer = Array.isArray(value);
+    // Check if the current node matches criteria
+    try {
+      if (filter(currentKey, value as T, currentPath, parent)) {
+        if (path) {
+          results.push({ path: currentPath, value: value as Ret } as P extends true ? { path: string; value: Ret } : Ret);
+        } else {
+          results.push(value as P extends true ? { path: string; value: Ret } : Ret);
+        }
+      }
 
-      for (const [key, childValue] of Object.entries(value)) {
-        const newPath = buildPath(currentPath, key, isArrayContainer);
-        traverse(childValue, newPath, key, value);
+      if (container) {
+        // Determine if current container is an array to format child paths correctly
+        const isArrayContainer = isArray(value);
+
+        for (const [key, childValue] of Object.entries(value)) {
+          const newPath = buildPath(currentPath, key, isArrayContainer);
+          traverse(childValue, newPath, key, value);
+        }
+      }
+    } finally {
+      if (container) {
+        visiting.delete(value as object);
       }
     }
   };
 
   // Early return for non-object values
-  if (isArray(obj) || isObject(obj)) {
+  if (isContainer(obj)) {
     traverse(obj);
   }
 
@@ -176,6 +223,7 @@ export const filterObject = <T>(
   }>,
 ): DeepPartial<T> | undefined => {
   const { keys, values } = options;
+  const visiting = new WeakSet<object>();
 
   /**
    * Creates a key filter function from the keys option.
@@ -226,7 +274,7 @@ export const filterObject = <T>(
    * @param parent - The parent container.
    * @returns The filtered array or undefined.
    */
-  const filterArray = (arr: unknown[], currentPath: string, parent: unknown): unknown[] | undefined => {
+  const filterArray = (arr: readonly unknown[], currentPath: string, parent: unknown): unknown[] | undefined => {
     const filtered = arr
       .map((item, index) => {
         const itemPath = `${currentPath}[${index}]`;
@@ -262,7 +310,7 @@ export const filterObject = <T>(
       }
 
       // Key matches but value doesn't, or key doesn't match - check if it's a container
-      if (isObject(propValue) || Array.isArray(propValue)) {
+      if (isContainer(propValue)) {
         const filteredValue = recurse(propValue, keyPath, parent);
         if (filteredValue !== undefined) {
           result[key] = filteredValue;
@@ -289,21 +337,31 @@ export const filterObject = <T>(
     }
 
     // If not a container and doesn't match value filter, exclude it
-    if (!isObject(value) && !isArray(value)) {
+    const container = isContainer(value);
+    if (!container) {
       return undefined;
     }
 
-    // Handle arrays
-    if (Array.isArray(value)) {
-      return filterArray(value, currentPath, parent);
+    if (visiting.has(value as object)) {
+      return undefined;
     }
+    visiting.add(value as object);
 
-    // Handle objects
-    if (isObject(value)) {
-      return filterObjectProps(value as Record<string, unknown>, currentPath, parent);
+    try {
+      // Handle arrays
+      if (isArray(value)) {
+        return filterArray(value, currentPath, parent);
+      }
+
+      // Handle objects
+      if (isObject(value)) {
+        return filterObjectProps(value as Record<string, unknown>, currentPath, parent);
+      }
+
+      return undefined;
+    } finally {
+      visiting.delete(value as object);
     }
-
-    return undefined;
   };
 
   return recurse(obj, '', null) as DeepPartial<T> | undefined;
@@ -322,23 +380,39 @@ export const filterObject = <T>(
  * @returns A new object/array with the same structure but transformed values.
  */
 export const mapObject = <T>(obj: T, mapper: (key: string, value: unknown, path: string, parent: unknown) => unknown): T => {
+  const mappedContainers = new WeakMap<object, unknown>();
+
   const recurse = (value: unknown, currentPath: string, parent: unknown): unknown => {
     // Handle arrays
-    if (Array.isArray(value)) {
-      return value.map((item, idx) => {
+    if (isArray(value)) {
+      if (mappedContainers.has(value)) {
+        return mappedContainers.get(value) as unknown[];
+      }
+
+      const mappedArray: unknown[] = [];
+      mappedContainers.set(value, mappedArray);
+
+      value.forEach((item, idx) => {
         const itemPath = currentPath ? `${currentPath}[${idx}]` : `[${idx}]`;
         const transformed = mapper(String(idx), item, itemPath, value);
-        return isObject(transformed) || Array.isArray(transformed) ? recurse(transformed, itemPath, transformed) : transformed;
+        mappedArray[idx] = isContainer(transformed) ? recurse(transformed, itemPath, transformed) : transformed;
       });
+
+      return mappedArray;
     }
 
     // Handle objects
     if (isObject(value)) {
+      if (mappedContainers.has(value)) {
+        return mappedContainers.get(value) as Record<string, unknown>;
+      }
+
       const result: Record<string, unknown> = {};
+      mappedContainers.set(value, result);
       for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
         const keyPath = currentPath ? `${currentPath}.${key}` : key;
         const transformed = mapper(key, val, keyPath, value);
-        result[key] = isObject(transformed) || Array.isArray(transformed) ? recurse(transformed, keyPath, transformed) : transformed;
+        result[key] = isContainer(transformed) ? recurse(transformed, keyPath, transformed) : transformed;
       }
 
       return result;

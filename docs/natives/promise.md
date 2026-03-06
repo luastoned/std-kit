@@ -6,27 +6,29 @@
 
 ## Functions
 
-- `defer<Args, R>(fn: (args: Args) => R | Promise, args: Args): DeferredTask`
-- `threads<T>(parallel: number, tasks: readonly DeferredTask[]): Promise`
+- `defer<Args, Ret>(fn: (...args: Args) => Ret | Promise<Ret>, ...args: Args): DeferredTask<Awaited<Ret>>`
+- `threads<T>(parallel: number, tasks: readonly DeferredTask<T>[]): Promise<T[]>`
 
 ## Types
 
-- `type DeferredTask<T> = () => Promise`
+- `type DeferredTask<T> = () => Promise<T>`
 
 ---
 
 ## DeferredTask
 
 ```typescript
-type DeferredTask<T> = () => Promise
+type DeferredTask<T> = () => Promise<T>
 ```
+
+A deferred async task that resolves to `T` when executed.
 
 ---
 
 ## defer
 
 ```typescript
-defer<Args, R>(fn: (args: Args) => R | Promise, args: Args): DeferredTask
+defer<Args, Ret>(fn: (...args: Args) => Ret | Promise<Ret>, ...args: Args): DeferredTask<Awaited<Ret>>
 ```
 
 Wraps a function call so it can be executed later as a promise task.
@@ -40,7 +42,7 @@ Wraps a function call so it can be executed later as a promise task.
 ## threads
 
 ```typescript
-threads<T>(parallel: number, tasks: readonly DeferredTask[]): Promise
+threads<T>(parallel: number, tasks: readonly DeferredTask<T>[]): Promise<T[]>
 ```
 
 Runs promise-returning tasks with a concurrency limit.

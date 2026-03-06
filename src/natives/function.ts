@@ -2,18 +2,19 @@
  * Creates a function that can only be called once.
  * Subsequent calls return the result of the first invocation.
  *
- * @template F - The type of the function to wrap.
+ * @template Args - The argument tuple type.
+ * @template Ret - The return type.
  * @param fn - The function to execute once.
  * @returns A new function that executes the original function only on the first call.
  */
-export const once = <F extends (...args: never[]) => unknown>(fn: F): ((...args: Parameters<F>) => ReturnType<F> | undefined) => {
+export const once = <Args extends unknown[], Ret>(fn: (...args: Args) => Ret): ((...args: Args) => Ret | undefined) => {
   let called = false;
-  let result: ReturnType<F>;
+  let result: Ret;
 
-  return (...args: Parameters<F>): ReturnType<F> | undefined => {
+  return (...args: Args): Ret | undefined => {
     if (!called) {
       called = true;
-      result = fn(...args) as ReturnType<F>;
+      result = fn(...args);
       return result;
     }
     return result;
@@ -24,29 +25,30 @@ export const once = <F extends (...args: never[]) => unknown>(fn: F): ((...args:
  * Creates a memoized version of a function that caches results based on arguments.
  * Uses a Map to store cached results with the serialized arguments as the key.
  *
- * @template F - The type of the function to memoize.
+ * @template Args - The argument tuple type.
+ * @template Ret - The return type.
  * @param fn - The function to memoize.
  * @param options - Memoization options.
  * @param options.keyFn - Optional function to generate cache key from arguments. Defaults to JSON.stringify.
  * @returns A memoized version of the function.
  */
-export const memoize = <F extends (...args: never[]) => unknown>(
-  fn: F,
+export const memoize = <Args extends unknown[], Ret>(
+  fn: (...args: Args) => Ret,
   options: {
-    keyFn?: (...args: Parameters<F>) => string;
+    keyFn?: (...args: Args) => string;
   } = {},
-): ((...args: Parameters<F>) => ReturnType<F>) => {
-  const cache = new Map<string, ReturnType<F>>();
-  const keyFn = options.keyFn || ((...args: Parameters<F>): string => JSON.stringify(args));
+): ((...args: Args) => Ret) => {
+  const cache = new Map<string, Ret>();
+  const keyFn = options.keyFn || ((...args: Args): string => JSON.stringify(args));
 
-  return (...args: Parameters<F>): ReturnType<F> => {
+  return (...args: Args): Ret => {
     const key = keyFn(...args);
 
     if (cache.has(key)) {
-      return cache.get(key) as ReturnType<F>;
+      return cache.get(key) as Ret;
     }
 
-    const result = fn(...args) as ReturnType<F>;
+    const result = fn(...args);
     cache.set(key, result);
     return result;
   };

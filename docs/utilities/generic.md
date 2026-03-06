@@ -7,26 +7,28 @@
 ## Functions
 
 - `cloneObject<T>(item: T): unknown`
-- `isArray<T = unknown>(item: unknown): unknown`
-- `isBoolean(item: unknown): unknown`
-- `isDate(item: unknown): unknown`
-- `isDefined<T = unknown>(item: T): unknown`
-- `isError(item: unknown): unknown`
-- `isFunction(item: unknown): unknown`
-- `isInfinity(item: unknown): unknown`
-- `isMap<K = unknown, V = unknown>(item: unknown): unknown`
-- `isNull(item: unknown): unknown`
-- `isNumber(item: unknown): unknown`
-- `isObject(item: unknown): unknown`
-- `isPlainObject(item: unknown): unknown`
-- `isPromise<T = unknown>(item: unknown): unknown`
-- `isRegExp(item: unknown): unknown`
-- `isSet<T = unknown>(item: unknown): unknown`
-- `isString(item: unknown): unknown`
-- `isSymbol(item: unknown): unknown`
-- `isUndefined(item: unknown): unknown`
-- `isWeakMap<K, V = unknown>(item: unknown): unknown`
-- `isWeakSet<T>(item: unknown): unknown`
+- `isArray<T = unknown>(item: unknown): item is T[] | readonly T[]`
+- `isBoolean(item: unknown): item is boolean`
+- `isContainer(item: unknown): item is Container`
+- `isDate(item: unknown): item is Date`
+- `isDefined<T = unknown>(item: T): item is Exclude<T, undefined>`
+- `isError(item: unknown): item is Error`
+- `isFunction(item: unknown): item is (...args: unknown[]) => unknown`
+- `isInfinity(item: unknown): item is number`
+- `isMap<K = unknown, V = unknown>(item: unknown): item is Map<K, V>`
+- `isMutableContainer(item: unknown): item is MutableContainer`
+- `isNull(item: unknown): item is null`
+- `isNumber(item: unknown): item is number`
+- `isObject(item: unknown): item is Record<PropertyKey, unknown>`
+- `isPlainObject(item: unknown): item is Record<PropertyKey, unknown>`
+- `isPromise<T = unknown>(item: unknown): item is Promise<T>`
+- `isRegExp(item: unknown): item is RegExp`
+- `isSet<T = unknown>(item: unknown): item is Set<T>`
+- `isString(item: unknown): item is string`
+- `isSymbol(item: unknown): item is symbol`
+- `isUndefined(item: unknown): item is undefined`
+- `isWeakMap<K, V = unknown>(item: unknown): item is WeakMap<K, V>`
+- `isWeakSet<T>(item: unknown): item is WeakSet<T>`
 
 ---
 
@@ -50,7 +52,7 @@ For more complex cloning needs, consider using structuredClone() which supports 
 ## isArray
 
 ```typescript
-isArray<T = unknown>(item: unknown): unknown
+isArray<T = unknown>(item: unknown): item is T[] | readonly T[]
 ```
 
 Checks if the given item is an array.
@@ -64,7 +66,7 @@ Checks if the given item is an array.
 ## isBoolean
 
 ```typescript
-isBoolean(item: unknown): unknown
+isBoolean(item: unknown): item is boolean
 ```
 
 Checks if the given item is a boolean.
@@ -75,10 +77,24 @@ Checks if the given item is a boolean.
 
 ---
 
+## isContainer
+
+```typescript
+isContainer(item: unknown): item is Container
+```
+
+Checks if the given item is an object or array container.
+
+
+**Returns:** `true` if the item is an object or array container.
+
+
+---
+
 ## isDate
 
 ```typescript
-isDate(item: unknown): unknown
+isDate(item: unknown): item is Date
 ```
 
 Checks if the given item is a Date object.
@@ -92,7 +108,7 @@ Checks if the given item is a Date object.
 ## isDefined
 
 ```typescript
-isDefined<T = unknown>(item: T): unknown
+isDefined<T = unknown>(item: T): item is Exclude<T, undefined>
 ```
 
 Checks if the given item is defined.
@@ -106,7 +122,7 @@ Checks if the given item is defined.
 ## isError
 
 ```typescript
-isError(item: unknown): unknown
+isError(item: unknown): item is Error
 ```
 
 Checks if the given item is an instance of the Error class.
@@ -120,7 +136,7 @@ Checks if the given item is an instance of the Error class.
 ## isFunction
 
 ```typescript
-isFunction(item: unknown): unknown
+isFunction(item: unknown): item is (...args: unknown[]) => unknown
 ```
 
 Checks if the given item is a function.
@@ -134,7 +150,7 @@ Checks if the given item is a function.
 ## isInfinity
 
 ```typescript
-isInfinity(item: unknown): unknown
+isInfinity(item: unknown): item is number
 ```
 
 Checks if the given item is an infinity number.
@@ -148,7 +164,7 @@ Checks if the given item is an infinity number.
 ## isMap
 
 ```typescript
-isMap<K = unknown, V = unknown>(item: unknown): unknown
+isMap<K = unknown, V = unknown>(item: unknown): item is Map<K, V>
 ```
 
 Checks if the given item is an instance of Map.
@@ -159,10 +175,24 @@ Checks if the given item is an instance of Map.
 
 ---
 
+## isMutableContainer
+
+```typescript
+isMutableContainer(item: unknown): item is MutableContainer
+```
+
+Checks if the given item can be treated as a mutable container.
+
+
+**Returns:** `true` if the item is an object or array suitable for mutation.
+
+
+---
+
 ## isNull
 
 ```typescript
-isNull(item: unknown): unknown
+isNull(item: unknown): item is null
 ```
 
 Checks if the given item is null.
@@ -176,7 +206,7 @@ Checks if the given item is null.
 ## isNumber
 
 ```typescript
-isNumber(item: unknown): unknown
+isNumber(item: unknown): item is number
 ```
 
 Checks if the given item is a number.
@@ -190,7 +220,7 @@ Checks if the given item is a number.
 ## isObject
 
 ```typescript
-isObject(item: unknown): unknown
+isObject(item: unknown): item is Record<PropertyKey, unknown>
 ```
 
 Checks if the given item is an object.
@@ -204,7 +234,7 @@ Checks if the given item is an object.
 ## isPlainObject
 
 ```typescript
-isPlainObject(item: unknown): unknown
+isPlainObject(item: unknown): item is Record<PropertyKey, unknown>
 ```
 
 Checks if the given item is a plain object.
@@ -218,7 +248,7 @@ Checks if the given item is a plain object.
 ## isPromise
 
 ```typescript
-isPromise<T = unknown>(item: unknown): unknown
+isPromise<T = unknown>(item: unknown): item is Promise<T>
 ```
 
 Checks if the given item is a Promise.
@@ -232,7 +262,7 @@ Checks if the given item is a Promise.
 ## isRegExp
 
 ```typescript
-isRegExp(item: unknown): unknown
+isRegExp(item: unknown): item is RegExp
 ```
 
 Checks if the given item is a regular expression.
@@ -246,7 +276,7 @@ Checks if the given item is a regular expression.
 ## isSet
 
 ```typescript
-isSet<T = unknown>(item: unknown): unknown
+isSet<T = unknown>(item: unknown): item is Set<T>
 ```
 
 Checks if the given item is a Set.
@@ -260,7 +290,7 @@ Checks if the given item is a Set.
 ## isString
 
 ```typescript
-isString(item: unknown): unknown
+isString(item: unknown): item is string
 ```
 
 Checks if the given item is a string.
@@ -274,7 +304,7 @@ Checks if the given item is a string.
 ## isSymbol
 
 ```typescript
-isSymbol(item: unknown): unknown
+isSymbol(item: unknown): item is symbol
 ```
 
 Checks if the given item is a symbol.
@@ -288,7 +318,7 @@ Checks if the given item is a symbol.
 ## isUndefined
 
 ```typescript
-isUndefined(item: unknown): unknown
+isUndefined(item: unknown): item is undefined
 ```
 
 Checks if the given item is undefined.
@@ -302,7 +332,7 @@ Checks if the given item is undefined.
 ## isWeakMap
 
 ```typescript
-isWeakMap<K, V = unknown>(item: unknown): unknown
+isWeakMap<K, V = unknown>(item: unknown): item is WeakMap<K, V>
 ```
 
 Checks if the given item is an instance of WeakMap.
@@ -316,7 +346,7 @@ Checks if the given item is an instance of WeakMap.
 ## isWeakSet
 
 ```typescript
-isWeakSet<T>(item: unknown): unknown
+isWeakSet<T>(item: unknown): item is WeakSet<T>
 ```
 
 Checks if the given item is a WeakSet.

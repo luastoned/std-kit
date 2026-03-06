@@ -1,6 +1,19 @@
 import { isArray, isFunction } from '~/utilities/generic';
 
 /**
+ * Internal helper type for key selection by property name or selector function.
+ * @internal
+ */
+type KeySelector<T, K extends PropertyKey> = K | ((item: T) => K);
+
+/**
+ * Builds a normalized key selector function.
+ * @internal
+ */
+const toKeyFn = <T, K extends PropertyKey>(key: KeySelector<T, K>): ((item: T) => K) =>
+  isFunction(key) ? (key as (item: T) => K) : (item: T): K => item[key as keyof T & K] as K;
+
+/**
  * Returns a new array with unique elements from the input array.
  *
  * @template T - The type of elements in the array.
@@ -87,9 +100,10 @@ export const fill = <T>(size: number, value: T): T[] => Array(size).fill(value);
  * @returns An array of chunks, each containing elements from the original array.
  */
 export const chunk = <T>(array: readonly T[], size = 2): T[][] => {
+  const normalizedSize = size <= 0 || !Number.isFinite(size) ? 1 : Math.max(1, Math.floor(size));
   const chunks: T[][] = [];
-  for (let idx = 0; idx < array.length; idx += size) {
-    chunks.push([...array.slice(idx, idx + size)]);
+  for (let idx = 0; idx < array.length; idx += normalizedSize) {
+    chunks.push([...array.slice(idx, idx + normalizedSize)]);
   }
 
   return chunks;
@@ -117,8 +131,8 @@ export const cluster = chunk;
  * @param key - The key used for counting. Can be a property name or a function that returns the key.
  * @returns An object that maps each unique key to its count.
  */
-export const countBy = <T, K extends PropertyKey>(array: readonly T[], key: K | ((item: T) => K)): Record<K, number> => {
-  const keyFn = isFunction(key) ? key : (item: T): K => item[key as keyof T & K] as K;
+export const countBy = <T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): Record<K, number> => {
+  const keyFn = toKeyFn(key);
   return array.reduce(
     (acc, item) => {
       const itemKey = keyFn(item);
@@ -140,9 +154,9 @@ export const countBy = <T, K extends PropertyKey>(array: readonly T[], key: K | 
  * @param key - The key used for grouping. Can be a property name or a function that returns the key.
  * @returns An object where the keys are the grouped values and the values are arrays of elements that belong to each group.
  */
-export const groupBy = <T, K extends PropertyKey>(array: readonly T[], key: K | ((item: T) => K)): Record<K, T[]> => {
+export const groupBy = <T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): Record<K, T[]> => {
   const result = {} as Record<K, T[]>;
-  const keyFn = isFunction(key) ? key : (item: T): K => item[key as keyof T & K] as K;
+  const keyFn = toKeyFn(key);
 
   for (const item of array) {
     const itemKey = keyFn(item);
@@ -171,11 +185,11 @@ export const groupBy = <T, K extends PropertyKey>(array: readonly T[], key: K | 
  */
 export const orderBy = <T, K extends string | number>(
   array: readonly T[],
-  keys: ReadonlyArray<K | ((item: T) => K)>,
+  keys: ReadonlyArray<KeySelector<T, K>>,
   orders: ReadonlyArray<'asc' | 'desc'>,
   inPlace = false,
 ): T[] => {
-  const keyFns = keys.map((key) => (isFunction(key) ? key : (item: T): K => item[key as keyof T & K] as K));
+  const keyFns = keys.map((key) => toKeyFn(key));
   const result: T[] = inPlace ? (array as T[]) : [...array];
   return result.sort((a, b) => {
     for (let idx = 0; idx < keys.length; idx++) {
@@ -212,9 +226,9 @@ export const orderBy = <T, K extends string | number>(
  * @param key - The key property or function used to extract the key from each element.
  * @returns A new array containing unique elements based on the specified key.
  */
-export const uniqueBy = <T, K extends PropertyKey>(array: readonly T[], key: K | ((item: T) => K)): T[] => {
+export const uniqueBy = <T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): T[] => {
   const itemMap = new Map<K, T>();
-  const keyFn = isFunction(key) ? key : (item: T): K => item[key as keyof T & K] as K;
+  const keyFn = toKeyFn(key);
 
   for (const item of array) {
     itemMap.set(keyFn(item), item);
