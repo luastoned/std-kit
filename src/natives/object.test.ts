@@ -1158,6 +1158,13 @@ describe('filterObject (value filtering)', () => {
     });
   });
 
+  it('supports direct predicate callback syntax', () => {
+    const fromOptions = filterObject(data, { values: (_key, value: any) => typeof value === 'boolean' });
+    const fromPredicate = filterObject(data, (_key, value) => typeof value === 'boolean');
+
+    expect(fromPredicate).toEqual(fromOptions);
+  });
+
   it('preserves nested structure when filtering', () => {
     const result = filterObject(data, { values: (key, obj: any) => obj === true });
 

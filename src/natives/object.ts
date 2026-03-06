@@ -1,27 +1,52 @@
-import type { DeepPartial, GetFieldType, MutableContainer, PlainObject } from '~/utilities/types';
-import { isArray, isContainer, isMutableContainer, isObject, isPlainObject } from '~/utilities/generic';
+import type { Container, DeepPartial, GetFieldType, MutableContainer, PlainObject } from '~/utilities/types';
+import { isArray, isContainer, isMutableContainer, isObject } from '~/utilities/generic';
+import { mergePlainObjects, normalizeMergeOptions } from '~/natives/object/merge.internal';
+import {
+  buildChildPath,
+  forEachContainerEntry,
+  hasForbiddenPathKeys,
+  isArrayIndexSegment,
+  normalizeFilterPredicates,
+  tokenizePath,
+} from '~/natives/object/shared.internal';
 
 /**
- * Path segments that are blocked to prevent prototype pollution.
- * @internal
+ * Creates a new object with only the specified keys from the source object.
+ *
+ * @template T - The type of the source object.
+ * @template K - The keys to pick from the source object.
+ * @param obj - The source object.
+ * @param keys - The keys to include in the result.
+ * @returns A new object containing only the specified keys.
  */
-const FORBIDDEN_PATH_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+export const pick = <T extends object, K extends keyof T>(obj: T, keys: readonly K[]): Pick<T, K> => {
+  const result = {} as Pick<T, K>;
+  for (const key of keys) {
+    if (key in obj) {
+      result[key] = obj[key];
+    }
+  }
+
+  return result;
+};
 
 /**
- * Splits a dot/bracket path into normalized key segments.
- * @internal
- * @param path - The raw path (for example `user.posts[0].title`).
- * @returns A list of path segments.
+ * Creates a new object with all keys from the source object except the specified ones.
+ *
+ * @template T - The type of the source object.
+ * @template K - The keys to omit from the source object.
+ * @param obj - The source object.
+ * @param keys - The keys to exclude from the result.
+ * @returns A new object without the specified keys.
  */
-const tokenizePath = (path: string): string[] => path.split(/[\.\[\]]/).filter(Boolean);
+export const omit = <T extends object, K extends keyof T>(obj: T, keys: readonly K[]): Omit<T, K> => {
+  const result = { ...obj } as Omit<T, K>;
+  for (const key of keys) {
+    delete (result as T)[key];
+  }
 
-/**
- * Checks whether a parsed path includes forbidden keys.
- * @internal
- * @param keys - Parsed path segments.
- * @returns `true` when the path contains blocked keys.
- */
-const hasForbiddenPathKeys = (keys: readonly string[]): boolean => keys.some((key) => FORBIDDEN_PATH_KEYS.has(key));
+  return result;
+};
 
 /**
  * Retrieves a value from a nested object or array using a dot/bracket notation path.
@@ -97,7 +122,7 @@ export const setValue = <TData, TPath extends string, TValue>(data: TData, path:
       if (!isMutableContainer(nextValue)) {
         // Create an empty object or array if the next key is a number (array-like access)
         const nextKey = keys[idx + 1];
-        nextValue = /^\d+$/.test(nextKey) ? [] : {};
+        nextValue = isArrayIndexSegment(nextKey) ? [] : {};
         currentRecord[key] = nextValue;
       }
 
@@ -135,22 +160,6 @@ export const queryObject = <Ret = unknown, T = unknown, P extends boolean = fals
   const visiting = new WeakSet<object>();
 
   /**
-   * Helper function to build the new path based on the current path, key, and parent type.
-   *
-   * @param currentPath - The current traversal path.
-   * @param key - The next key segment.
-   * @param isParentArray - Whether the parent container is an array.
-   * @returns The next path string.
-   */
-  const buildPath = (currentPath: string, key: string, isParentArray: boolean): string => {
-    if (isParentArray) {
-      return `${currentPath}[${key}]`;
-    }
-
-    return currentPath ? `${currentPath}.${key}` : key;
-  };
-
-  /**
    * Recursive traversal function to iterate over the object or array.
    *
    * @param value - The current value being visited.
@@ -180,13 +189,9 @@ export const queryObject = <Ret = unknown, T = unknown, P extends boolean = fals
       }
 
       if (container) {
-        // Determine if current container is an array to format child paths correctly
-        const isArrayContainer = isArray(value);
-
-        for (const [key, childValue] of Object.entries(value)) {
-          const newPath = buildPath(currentPath, key, isArrayContainer);
-          traverse(childValue, newPath, key, value);
-        }
+        forEachContainerEntry(value as Container, currentPath, (key, childValue, childPath) => {
+          traverse(childValue, childPath, key, value);
+        });
       }
     } finally {
       if (container) {
@@ -205,40 +210,46 @@ export const queryObject = <Ret = unknown, T = unknown, P extends boolean = fals
 
 /**
  * Recursively filters an object or array tree, preserving the original structure but only keeping
+ * items that match the provided predicate.
+ *
+ * @template T - The type of the object or array to filter.
+ * @param obj - The object or array to filter.
+ * @param filter - Predicate called with `(key, value, path, parent)`.
+ * @returns A new object/array with the same structure, containing only matching items.
+ */
+export function filterObject<T>(obj: Readonly<T>, filter: (key: string, value: unknown, path: string, parent: unknown) => boolean): DeepPartial<T> | undefined;
+
+/**
+ * Recursively filters an object or array tree, preserving the original structure but only keeping
  * items that match the specified key and/or value filters.
  *
  * @template T - The type of the object or array to filter.
  * @param obj - The object or array to filter.
  * @param options - Filter options:
- *   - `keys`: Array of key names to keep, or a function to test keys with access to both key and value
- *   - `values`: Function to test values with access to both key and value
+ *   - `keys`: Array of key names to keep, or a predicate to test keys.
+ *   - `values`: Predicate to test values.
  *   If both are provided, both conditions must be satisfied.
  * @returns A new object/array with the same structure, containing only matching items.
  */
-export const filterObject = <T>(
+export function filterObject<T>(
   obj: Readonly<T>,
   options: Readonly<{
     keys?: readonly string[] | ((key: string, value: unknown, path: string, parent: unknown) => boolean);
     values?: (key: string, value: unknown, path: string, parent: unknown) => boolean;
   }>,
-): DeepPartial<T> | undefined => {
-  const { keys, values } = options;
+): DeepPartial<T> | undefined;
+
+export function filterObject<T>(
+  obj: Readonly<T>,
+  filterOrOptions:
+    | ((key: string, value: unknown, path: string, parent: unknown) => boolean)
+    | Readonly<{
+        keys?: readonly string[] | ((key: string, value: unknown, path: string, parent: unknown) => boolean);
+        values?: (key: string, value: unknown, path: string, parent: unknown) => boolean;
+      }>,
+): DeepPartial<T> | undefined {
+  const { keyFilter, valueFilter } = normalizeFilterPredicates(filterOrOptions);
   const visiting = new WeakSet<object>();
-
-  /**
-   * Creates a key filter function from the keys option.
-   *
-   * @param _ - Not applicable.
-   * @returns A key predicate or undefined.
-   */
-  const createKeyFilter = (): ((key: string, propValue: unknown, path: string, par: unknown) => boolean) | undefined => {
-    if (!keys) return undefined;
-    if (Array.isArray(keys)) return (key: string) => keys.includes(key);
-    if (typeof keys === 'function') return keys;
-    return undefined;
-  };
-
-  const keyFilter = createKeyFilter();
 
   /**
    * Checks if a value should be kept based on the value filter.
@@ -250,7 +261,7 @@ export const filterObject = <T>(
    * @returns Whether the value should be kept.
    */
   const shouldKeepValue = (key: string, value: unknown, path: string, parent: unknown): boolean => {
-    return !values || values(key, value, path, parent);
+    return !valueFilter || valueFilter(key, value, path, parent);
   };
 
   /**
@@ -275,12 +286,7 @@ export const filterObject = <T>(
    * @returns The filtered array or undefined.
    */
   const filterArray = (arr: readonly unknown[], currentPath: string, parent: unknown): unknown[] | undefined => {
-    const filtered = arr
-      .map((item, index) => {
-        const itemPath = `${currentPath}[${index}]`;
-        return recurse(item, itemPath, arr);
-      })
-      .filter((item) => item !== undefined);
+    const filtered = arr.map((item, index) => recurse(item, buildChildPath(currentPath, String(index), true), arr)).filter((item) => item !== undefined);
 
     return filtered.length > 0 ? filtered : undefined;
   };
@@ -298,7 +304,7 @@ export const filterObject = <T>(
     let hasMatchingItems = false;
 
     for (const [key, propValue] of Object.entries(obj)) {
-      const keyPath = currentPath ? `${currentPath}.${key}` : key;
+      const keyPath = buildChildPath(currentPath, key, false);
       const keyMatches = shouldKeepKey(key, propValue, keyPath, parent);
       const valueMatches = shouldKeepValue(key, propValue, keyPath, parent);
 
@@ -332,7 +338,7 @@ export const filterObject = <T>(
    */
   const recurse = (value: unknown, currentPath: string, parent: unknown): unknown => {
     // If the current value matches the value filter, return it as-is (keep entire subtree)
-    if (values && values('', value, currentPath, parent)) {
+    if (valueFilter && valueFilter('', value, currentPath, parent)) {
       return value;
     }
 
@@ -365,7 +371,7 @@ export const filterObject = <T>(
   };
 
   return recurse(obj, '', null) as DeepPartial<T> | undefined;
-};
+}
 
 /**
  * Recursively maps over all values in an object or array tree, allowing transformation
@@ -393,7 +399,7 @@ export const mapObject = <T>(obj: T, mapper: (key: string, value: unknown, path:
       mappedContainers.set(value, mappedArray);
 
       value.forEach((item, idx) => {
-        const itemPath = currentPath ? `${currentPath}[${idx}]` : `[${idx}]`;
+        const itemPath = buildChildPath(currentPath, String(idx), true);
         const transformed = mapper(String(idx), item, itemPath, value);
         mappedArray[idx] = isContainer(transformed) ? recurse(transformed, itemPath, transformed) : transformed;
       });
@@ -410,7 +416,7 @@ export const mapObject = <T>(obj: T, mapper: (key: string, value: unknown, path:
       const result: Record<string, unknown> = {};
       mappedContainers.set(value, result);
       for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
-        const keyPath = currentPath ? `${currentPath}.${key}` : key;
+        const keyPath = buildChildPath(currentPath, key, false);
         const transformed = mapper(key, val, keyPath, value);
         result[key] = isContainer(transformed) ? recurse(transformed, keyPath, transformed) : transformed;
       }
@@ -457,206 +463,17 @@ export const mergeObject = <TSource extends object, TPatch extends object>(
     applyUndefined?: boolean;
   }> = {},
 ): TSource & TPatch => {
-  const { immutable = true, mergeArrays = true, applyUndefined = false, strict = false } = options;
+  const normalizedOptions = normalizeMergeOptions(options);
+  const merge = (src: PlainObject, patchObj: PlainObject, isStrictAtThisLevel: boolean): PlainObject =>
+    mergePlainObjects({
+      src,
+      patch: patchObj,
+      options: normalizedOptions,
+      isStrictAtThisLevel,
+      mergeNested: merge,
+    });
 
-  /**
-   * Merges arrays by matching a key field or key extractor function.
-   *
-   * @param srcArray - The source array.
-   * @param patchArray - The patch array.
-   * @param getKey - Function to extract a merge key.
-   * @param mergeFn - Merge function for object entries.
-   * @returns The merged array.
-   */
-  const mergeArraysByKey = (
-    srcArray: readonly unknown[],
-    patchArray: readonly unknown[],
-    getKey: (item: unknown, idx: number) => unknown,
-    mergeFn: (src: PlainObject, patch: PlainObject) => PlainObject,
-  ): unknown[] => {
-    // Build source map and collect items without keys
-    const srcMap = new Map<unknown, unknown>();
-    const srcItemsWithoutKey: unknown[] = [];
-
-    for (let idx = 0; idx < srcArray.length; idx++) {
-      const srcItem = srcArray[idx];
-      if (isPlainObject(srcItem)) {
-        const key = getKey(srcItem, idx);
-        if (key !== undefined && key !== null) {
-          srcMap.set(key, srcItem);
-        } else {
-          srcItemsWithoutKey.push(srcItem);
-        }
-      } else {
-        srcItemsWithoutKey.push(srcItem);
-      }
-    }
-
-    // Merge patch items with source items
-    const mergedArray: unknown[] = [];
-    const usedKeys = new Set<unknown>();
-
-    for (let idx = 0; idx < patchArray.length; idx++) {
-      const patchItem = patchArray[idx];
-      if (isPlainObject(patchItem)) {
-        const key = getKey(patchItem, idx);
-        if (key !== undefined && key !== null && srcMap.has(key)) {
-          // Found matching source item, merge them
-          const srcItem = srcMap.get(key);
-          mergedArray.push(mergeFn(srcItem as PlainObject, patchItem as PlainObject));
-          usedKeys.add(key);
-        } else if (!strict) {
-          // No matching source item, add patch item (only if not in strict mode)
-          mergedArray.push(isPlainObject(patchItem) ? { ...patchItem } : patchItem);
-        }
-      } else {
-        // Patch item is not an object, use it directly
-        mergedArray.push(patchItem);
-      }
-    }
-
-    // Add remaining source items that weren't matched
-    for (let idx = 0; idx < srcArray.length; idx++) {
-      const srcItem = srcArray[idx];
-      if (isPlainObject(srcItem)) {
-        const key = getKey(srcItem, idx);
-        if (key !== undefined && key !== null && !usedKeys.has(key)) {
-          mergedArray.push(srcItem);
-        }
-      }
-    }
-
-    // Add source items without keys
-    mergedArray.push(...srcItemsWithoutKey);
-
-    return mergedArray;
-  };
-
-  /**
-   * Merges arrays index-by-index.
-   *
-   * @param srcArray - The source array.
-   * @param patchArray - The patch array.
-   * @param mergeFn - Merge function for object entries.
-   * @returns The merged array.
-   */
-  const mergeArraysByIndex = (
-    srcArray: readonly unknown[],
-    patchArray: readonly unknown[],
-    mergeFn: (src: PlainObject, patch: PlainObject) => PlainObject,
-  ): unknown[] => {
-    const maxLength = Math.max(srcArray.length, patchArray.length);
-    const mergedArray: unknown[] = [];
-
-    for (let idx = 0; idx < maxLength; idx++) {
-      if (idx < patchArray.length) {
-        const patchItem = patchArray[idx];
-        const srcItem = idx < srcArray.length ? srcArray[idx] : undefined;
-
-        if (isPlainObject(patchItem)) {
-          if (isPlainObject(srcItem)) {
-            // Merge objects at this index
-            mergedArray.push(mergeFn(srcItem as PlainObject, patchItem as PlainObject));
-          } else if (!strict || idx < srcArray.length) {
-            // Source doesn't have an object at this index, use patch value
-            // In strict mode, only add if index exists in source
-            mergedArray.push(isPlainObject(patchItem) ? { ...patchItem } : patchItem);
-          }
-        } else {
-          // Patch item is not an object, use it directly (primitives are allowed even in strict mode)
-          mergedArray.push(patchItem);
-        }
-      } else {
-        // Patch is shorter, keep source items
-        mergedArray.push(srcArray[idx]);
-      }
-    }
-
-    return mergedArray;
-  };
-
-  /**
-   * Merges arrays based on the configured strategy.
-   *
-   * @param srcValue - The source value.
-   * @param patchValue - The patch array.
-   * @param mergeFn - Merge function for object entries.
-   * @returns The merged array.
-   */
-  const mergeArraysWithStrategy = (
-    srcValue: unknown,
-    patchValue: readonly unknown[],
-    mergeFn: (src: PlainObject, patch: PlainObject) => PlainObject,
-  ): unknown[] => {
-    // If mergeArrays is disabled or source is not an array, replace entirely
-    if (!mergeArrays || !isArray(srcValue) || patchValue.length === 0) {
-      return [...patchValue];
-    }
-
-    // Check if patch array contains objects
-    const hasObjects = patchValue.some((item) => isPlainObject(item));
-    if (!hasObjects) {
-      // Primitive array - replace entirely
-      return [...patchValue];
-    }
-
-    // Merge by key field or key extractor function
-    if (typeof mergeArrays === 'string' || typeof mergeArrays === 'function') {
-      const getKey =
-        typeof mergeArrays === 'string' ? (item: unknown, idx: number) => (isPlainObject(item) ? (item as PlainObject)[mergeArrays] : undefined) : mergeArrays;
-
-      return mergeArraysByKey(srcValue as unknown[], patchValue, getKey, mergeFn);
-    }
-
-    // Merge arrays index-by-index
-    return mergeArraysByIndex(srcValue as unknown[], patchValue, mergeFn);
-  };
-
-  /**
-   * Recursively merges two objects.
-   *
-   * @param src - The source object being updated.
-   * @param patchObj - The patch object providing updates.
-   * @param isStrictAtThisLevel - Whether to apply strict mode at this level.
-   * @returns The merged object.
-   */
-  const merge = (src: PlainObject, patchObj: PlainObject, isStrictAtThisLevel: boolean): PlainObject => {
-    const target = immutable ? { ...src } : src;
-
-    for (const [key, patchValue] of Object.entries(patchObj)) {
-      // In strict mode, skip keys that don't exist in source
-      if (isStrictAtThisLevel && !(key in target)) {
-        continue;
-      }
-
-      const srcValue = target[key];
-
-      // Handle nested objects
-      if (patchValue !== null && patchValue !== undefined && isPlainObject(patchValue)) {
-        if (!isPlainObject(srcValue)) {
-          target[key] = {};
-        }
-
-        target[key] = merge(target[key] as PlainObject, patchValue as PlainObject, isStrictAtThisLevel);
-        continue;
-      }
-
-      // Handle arrays
-      if (isArray(patchValue)) {
-        target[key] = mergeArraysWithStrategy(srcValue, patchValue, (src: PlainObject, patch: PlainObject) => merge(src, patch, false));
-        continue;
-      }
-
-      // Handle primitives and null
-      if (patchValue !== undefined || applyUndefined) {
-        target[key] = patchValue;
-      }
-    }
-
-    return target;
-  };
-
-  return merge(source as PlainObject, patch as PlainObject, strict) as TSource & TPatch;
+  return merge(source as PlainObject, patch as PlainObject, normalizedOptions.strict) as TSource & TPatch;
 };
 
 /**
@@ -671,41 +488,3 @@ export const mergeObject = <TSource extends object, TPatch extends object>(
  * @returns A new object that is the result of deeply merging the patch into the source.
  */
 export const deepMerge = mergeObject;
-
-/**
- * Creates a new object with only the specified keys from the source object.
- *
- * @template T - The type of the source object.
- * @template K - The keys to pick from the source object.
- * @param obj - The source object.
- * @param keys - The keys to include in the result.
- * @returns A new object containing only the specified keys.
- */
-export const pick = <T extends object, K extends keyof T>(obj: T, keys: readonly K[]): Pick<T, K> => {
-  const result = {} as Pick<T, K>;
-  for (const key of keys) {
-    if (key in obj) {
-      result[key] = obj[key];
-    }
-  }
-
-  return result;
-};
-
-/**
- * Creates a new object with all keys from the source object except the specified ones.
- *
- * @template T - The type of the source object.
- * @template K - The keys to omit from the source object.
- * @param obj - The source object.
- * @param keys - The keys to exclude from the result.
- * @returns A new object without the specified keys.
- */
-export const omit = <T extends object, K extends keyof T>(obj: T, keys: readonly K[]): Omit<T, K> => {
-  const result = { ...obj } as Omit<T, K>;
-  for (const key of keys) {
-    delete (result as T)[key];
-  }
-
-  return result;
-};

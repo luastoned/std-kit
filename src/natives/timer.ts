@@ -37,10 +37,7 @@ export const debounce = <Args extends unknown[], Ret>(callback: (...args: Args) 
  * @param waitFor - The time interval in milliseconds.
  * @returns A throttled function that returns a promise.
  */
-export const throttle = <Args extends unknown[], Ret>(
-  callback: (...args: Args) => Ret,
-  waitFor: number,
-): ((...args: Args) => Promise<Awaited<Ret>>) => {
+export const throttle = <Args extends unknown[], Ret>(callback: (...args: Args) => Ret, waitFor: number): ((...args: Args) => Promise<Awaited<Ret>>) => {
   const now = (): number => Date.now();
   const resetStartTime = (): void => {
     startTime = now();

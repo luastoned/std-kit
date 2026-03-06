@@ -7,7 +7,7 @@
 ## Functions
 
 - `deepMerge<TSource, TPatch>(source: TSource, patch: Readonly<TPatch>, options: Readonly<object> = {}): TSource & TPatch` ~~(deprecated)~~
-- `filterObject<T>(obj: Readonly<T>, options: Readonly<object>): DeepPartial<T> | undefined`
+- `filterObject<T>(obj: Readonly<T>, filter: (key: string, value: unknown, path: string, parent: unknown) => boolean): DeepPartial<T> | undefined`
 - `getValue<TData, TPath, TDefault = GetFieldType<TData, TPath>>(data: Readonly<TData>, path: TPath, defaultValue?: TDefault): TDefault | GetFieldType<TData, TPath>`
 - `mapObject<T>(obj: T, mapper: (key: string, value: unknown, path: string, parent: unknown) => unknown): T`
 - `mergeObject<TSource, TPatch>(source: TSource, patch: Readonly<TPatch>, options: Readonly<object> = {}): TSource & TPatch`
@@ -42,11 +42,11 @@ Deeply merges a patch object into a source object.
 ## filterObject
 
 ```typescript
-filterObject<T>(obj: Readonly<T>, options: Readonly<object>): DeepPartial<T> | undefined
+filterObject<T>(obj: Readonly<T>, filter: (key: string, value: unknown, path: string, parent: unknown) => boolean): DeepPartial<T> | undefined
 ```
 
 Recursively filters an object or array tree, preserving the original structure but only keeping
-items that match the specified key and/or value filters.
+items that match the provided predicate.
 
 
 **Returns:** A new object/array with the same structure, containing only matching items.

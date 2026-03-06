@@ -14,10 +14,7 @@ export type DeferredTask<T> = () => Promise<T>;
  * @param args - Arguments to apply when the task runs.
  * @returns A deferred task that resolves to the function result.
  */
-export const defer = <Args extends readonly unknown[], Ret>(
-  fn: (...args: Args) => Ret | Promise<Ret>,
-  ...args: Args
-): DeferredTask<Awaited<Ret>> => {
+export const defer = <Args extends readonly unknown[], Ret>(fn: (...args: Args) => Ret | Promise<Ret>, ...args: Args): DeferredTask<Awaited<Ret>> => {
   return () => Promise.resolve(fn(...args)) as Promise<Awaited<Ret>>;
 };
 
