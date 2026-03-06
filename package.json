@@ -1,6 +1,6 @@
 {
   "name": "std-kit",
-  "version": "2.6.5",
+  "version": "2.7.1",
   "description": "NodeJS Standard Library Additions",
   "keywords": [
     "std",
@@ -21,17 +21,17 @@
   "files": [
     "lib"
   ],
-  "main": "./lib/index.cjs",
+  "main": "./lib/index.js",
   "module": "./lib/index.mjs",
   "types": "./lib/index.d.ts",
   "exports": {
     ".": {
       "types": "./lib/index.d.ts",
       "import": "./lib/index.mjs",
-      "require": "./lib/index.cjs"
+      "require": "./lib/index.js"
     },
     "./node": {
-      "types": "./lib/node.d.ts",
+      "types": "./lib/node.d.cts",
       "import": "./lib/node.mjs",
       "require": "./lib/node.cjs"
     },
@@ -54,16 +54,16 @@
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^24.10.9",
-    "esbuild": "^0.27.2",
+    "esbuild": "^0.27.3",
     "release-it": "^19.2.4",
-    "rimraf": "^6.1.2",
-    "tsdown": "^0.20.3",
+    "rimraf": "^6.1.3",
+    "tsdown": "^0.21.0",
     "tsx": "^4.21.0",
-    "typedoc": "^0.28.16",
-    "typedoc-plugin-markdown": "^4.9.0",
+    "typedoc": "^0.28.17",
+    "typedoc-plugin-markdown": "^4.10.0",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
-    "vite-tsconfig-paths": "^6.0.5",
+    "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.0.18"
   }
 }

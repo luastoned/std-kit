@@ -4,6 +4,13 @@
 ### STD Kit ###
 lib
 
+### AI ###
+.ai
+.claude
+.gemini
+.github
+CLAUDE.md
+
 ### Node ###
 # Logs
 logs
