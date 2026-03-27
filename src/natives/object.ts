@@ -62,6 +62,19 @@ export const omit = <T extends object, K extends keyof T>(obj: T, keys: readonly
  * Supports dot notation (e.g., 'user.name') and bracket notation (e.g., 'user.posts[0]').
  * @param defaultValue - The value to return if the specified path does not exist or is undefined.
  * @returns The value at the specified path, or the default value if the path does not exist.
+ *
+ * @example
+ * ```ts
+ * import { getValue } from 'std-kit';
+ *
+ * const settings = { ui: { theme: 'dark' } };
+ *
+ * getValue(settings, 'ui.theme', 'light');
+ * // 'dark'
+ *
+ * getValue(settings, 'ui.locale', 'en');
+ * // 'en'
+ * ```
  */
 export const getValue = <TData, TPath extends string, TDefault = GetFieldType<TData, TPath>>(
   data: Readonly<TData>,
@@ -96,6 +109,18 @@ export const getValue = <TData, TPath extends string, TDefault = GetFieldType<TD
  * Supports dot notation (e.g., 'user.name') and bracket notation (e.g., 'user.posts[0]').
  * @param value - The value to set at the specified path.
  * @returns Nothing.
+ *
+ * @example
+ * ```ts
+ * import { setValue } from 'std-kit';
+ *
+ * const data = { user: { profile: { name: 'Ada' } } };
+ * setValue(data, 'user.profile.name', 'Grace');
+ * setValue(data, 'user.settings.theme', 'dark');
+ *
+ * data;
+ * // { user: { profile: { name: 'Grace' }, settings: { theme: 'dark' } } }
+ * ```
  */
 export const setValue = <TData, TPath extends string, TValue>(data: TData, path: TPath, value: TValue): void => {
   const keys = tokenizePath(path);
@@ -110,6 +135,10 @@ export const setValue = <TData, TPath extends string, TValue>(data: TData, path:
   let current: MutableContainer = data;
   for (let idx = 0; idx < keys.length; idx++) {
     const key = keys[idx];
+    if (key === undefined) {
+      return;
+    }
+
     const currentRecord = current as Record<string, unknown>;
 
     // If we are at the last key, assign the value
@@ -122,6 +151,10 @@ export const setValue = <TData, TPath extends string, TValue>(data: TData, path:
       if (!isMutableContainer(nextValue)) {
         // Create an empty object or array if the next key is a number (array-like access)
         const nextKey = keys[idx + 1];
+        if (nextKey === undefined) {
+          return;
+        }
+
         nextValue = isArrayIndexSegment(nextKey) ? [] : {};
         currentRecord[key] = nextValue;
       }
@@ -150,6 +183,18 @@ export const setValue = <TData, TPath extends string, TValue>(data: TData, path:
  * @param path - Whether to include the path in the result.
  * If `true`, the path to the matching value is returned alongside the result.
  * @returns A flat array of matching values or matching values with paths (if `path` is true).
+ *
+ * @example
+ * ```ts
+ * import { queryObject } from 'std-kit';
+ *
+ * queryObject(
+ *   { users: [{ id: 1, active: true }, { id: 2, active: false }] },
+ *   (_key, value) => typeof value === 'object' && value !== null && 'active' in value && value.active === true,
+ *   true,
+ * );
+ * // [{ path: 'users[0]', value: { id: 1, active: true } }]
+ * ```
  */
 export const queryObject = <Ret = unknown, T = unknown, P extends boolean = false>(
   obj: unknown,
@@ -216,6 +261,17 @@ export const queryObject = <Ret = unknown, T = unknown, P extends boolean = fals
  * @param obj - The object or array to filter.
  * @param filter - Predicate called with `(key, value, path, parent)`.
  * @returns A new object/array with the same structure, containing only matching items.
+ *
+ * @example
+ * ```ts
+ * import { filterObject } from 'std-kit';
+ *
+ * filterObject(
+ *   { user: { id: 1, profile: { name: 'Ada', age: 36 } } },
+ *   (key) => key === 'name' || key === 'profile',
+ * );
+ * // { user: { profile: { name: 'Ada' } } }
+ * ```
  */
 export function filterObject<T>(obj: Readonly<T>, filter: (key: string, value: unknown, path: string, parent: unknown) => boolean): DeepPartial<T> | undefined;
 
@@ -282,10 +338,9 @@ export function filterObject<T>(
    *
    * @param arr - The array to filter.
    * @param currentPath - The current path.
-   * @param parent - The parent container.
    * @returns The filtered array or undefined.
    */
-  const filterArray = (arr: readonly unknown[], currentPath: string, parent: unknown): unknown[] | undefined => {
+  const filterArray = (arr: readonly unknown[], currentPath: string): unknown[] | undefined => {
     const filtered = arr.map((item, index) => recurse(item, buildChildPath(currentPath, String(index), true), arr)).filter((item) => item !== undefined);
 
     return filtered.length > 0 ? filtered : undefined;
@@ -356,7 +411,7 @@ export function filterObject<T>(
     try {
       // Handle arrays
       if (isArray(value)) {
-        return filterArray(value, currentPath, parent);
+        return filterArray(value, currentPath);
       }
 
       // Handle objects
@@ -384,11 +439,22 @@ export function filterObject<T>(
  *   - value: The current value
  *   - path: The full path to this value (e.g., 'user.settings.theme' or 'users[0].name')
  * @returns A new object/array with the same structure but transformed values.
+ *
+ * @example
+ * ```ts
+ * import { mapObject } from 'std-kit';
+ *
+ * mapObject(
+ *   { prices: [{ amount: 10 }, { amount: 15 }] },
+ *   (key, value) => (key === 'amount' && typeof value === 'number' ? value * 100 : value),
+ * );
+ * // { prices: [{ amount: 1000 }, { amount: 1500 }] }
+ * ```
  */
 export const mapObject = <T>(obj: T, mapper: (key: string, value: unknown, path: string, parent: unknown) => unknown): T => {
   const mappedContainers = new WeakMap<object, unknown>();
 
-  const recurse = (value: unknown, currentPath: string, parent: unknown): unknown => {
+  const recurse = (value: unknown, currentPath: string): unknown => {
     // Handle arrays
     if (isArray(value)) {
       if (mappedContainers.has(value)) {
@@ -401,7 +467,7 @@ export const mapObject = <T>(obj: T, mapper: (key: string, value: unknown, path:
       value.forEach((item, idx) => {
         const itemPath = buildChildPath(currentPath, String(idx), true);
         const transformed = mapper(String(idx), item, itemPath, value);
-        mappedArray[idx] = isContainer(transformed) ? recurse(transformed, itemPath, transformed) : transformed;
+        mappedArray[idx] = isContainer(transformed) ? recurse(transformed, itemPath) : transformed;
       });
 
       return mappedArray;
@@ -418,7 +484,7 @@ export const mapObject = <T>(obj: T, mapper: (key: string, value: unknown, path:
       for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
         const keyPath = buildChildPath(currentPath, key, false);
         const transformed = mapper(key, val, keyPath, value);
-        result[key] = isContainer(transformed) ? recurse(transformed, keyPath, transformed) : transformed;
+        result[key] = isContainer(transformed) ? recurse(transformed, keyPath) : transformed;
       }
 
       return result;
@@ -430,7 +496,7 @@ export const mapObject = <T>(obj: T, mapper: (key: string, value: unknown, path:
 
   // Start recursion
   const transformed = mapper('', obj, '', null);
-  return recurse(transformed, '', transformed) as T;
+  return recurse(transformed, '') as T;
 };
 
 /**
@@ -452,6 +518,17 @@ export const mapObject = <T>(obj: T, mapper: (key: string, value: unknown, path:
  * @param patch - The object containing updates or new keys to be merged.
  * @param options - Merge options controlling immutability and undefined handling.
  * @returns A new object that is the result of deeply merging the patch into the source.
+ *
+ * @example
+ * ```ts
+ * import { mergeObject } from 'std-kit';
+ *
+ * mergeObject(
+ *   { user: { name: 'Ada', tags: ['admin'] } },
+ *   { user: { name: 'Grace', tags: ['editor'] } },
+ * );
+ * // { user: { name: 'Grace', tags: ['editor'] } }
+ * ```
  */
 export const mergeObject = <TSource extends object, TPatch extends object>(
   source: TSource,

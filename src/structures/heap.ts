@@ -71,7 +71,10 @@ function createDefaultCompare<T>(direction: 'min' | 'max'): HeapCompare<T> {
  * @returns Nothing.
  */
 function swapHeapItems<T>(items: T[], leftIndex: number, rightIndex: number): void {
-  [items[leftIndex], items[rightIndex]] = [items[rightIndex], items[leftIndex]];
+  const leftItem = items[leftIndex];
+  const rightItem = items[rightIndex];
+  items[leftIndex] = rightItem as T;
+  items[rightIndex] = leftItem as T;
 }
 
 /**
@@ -89,7 +92,9 @@ function siftUp<T>(items: T[], startIndex: number, compare: HeapCompare<T>): num
 
   while (index > 0) {
     const parentIndex = Math.floor((index - 1) / 2);
-    if (compare(items[index], items[parentIndex]) >= 0) {
+    const currentItem = items[index];
+    const parentItem = items[parentIndex];
+    if (compare(currentItem as T, parentItem as T) >= 0) {
       break;
     }
 
@@ -118,11 +123,11 @@ function siftDown<T>(items: T[], startIndex: number, compare: HeapCompare<T>): n
     const rightChildIndex = leftChildIndex + 1;
     let nextIndex = index;
 
-    if (leftChildIndex < items.length && compare(items[leftChildIndex], items[nextIndex]) < 0) {
+    if (leftChildIndex < items.length && compare(items[leftChildIndex] as T, items[nextIndex] as T) < 0) {
       nextIndex = leftChildIndex;
     }
 
-    if (rightChildIndex < items.length && compare(items[rightChildIndex], items[nextIndex]) < 0) {
+    if (rightChildIndex < items.length && compare(items[rightChildIndex] as T, items[nextIndex] as T) < 0) {
       nextIndex = rightChildIndex;
     }
 
@@ -158,6 +163,23 @@ function heapify<T>(items: T[], compare: HeapCompare<T>): void {
  * @template T - The heap item type.
  * @param options - Heap creation options.
  * @returns A stateful heap API.
+ *
+ * @example
+ * ```ts
+ * import { createHeap } from 'std-kit';
+ *
+ * const jobs = createHeap({
+ *   items: [
+ *     { id: 'deploy', priority: 30 },
+ *     { id: 'backup', priority: 10 },
+ *     { id: 'reindex', priority: 20 },
+ *   ],
+ *   compare: (a, b) => a.priority - b.priority,
+ * });
+ *
+ * jobs.pop();
+ * // { id: 'backup', priority: 10 }
+ * ```
  */
 export function createHeap<T>(options: Readonly<HeapOptions<T>>): Heap<T> {
   const items = options.items ? [...options.items] : [];
@@ -213,14 +235,15 @@ export function createHeap<T>(options: Readonly<HeapOptions<T>>): Heap<T> {
         return item;
       }
 
-      if (compare(item, items[0]) <= 0) {
+      const topItem = items[0];
+      if (compare(item, topItem as T) <= 0) {
         return item;
       }
 
       const top = items[0];
       items[0] = item;
       siftDown(items, 0, compare);
-      return top;
+      return top as T;
     },
     toArray(): T[] {
       return [...items];
@@ -234,12 +257,21 @@ export function createHeap<T>(options: Readonly<HeapOptions<T>>): Heap<T> {
  * @template T - The heap item type.
  * @param options - Optional initial items and comparator override.
  * @returns A min-heap instance.
+ *
+ * @example
+ * ```ts
+ * import { createMinHeap } from 'std-kit';
+ *
+ * const queue = createMinHeap<number>({ items: [8, 3, 5] });
+ * queue.push(1);
+ *
+ * queue.pop();
+ * // 1
+ * ```
  */
 export function createMinHeap<T>(options: Readonly<Partial<HeapOptions<T>>> = {}): Heap<T> {
-  return createHeap({
-    compare: options.compare ?? createDefaultCompare<T>('min'),
-    items: options.items,
-  });
+  const compare = options.compare ?? createDefaultCompare<T>('min');
+  return options.items !== undefined ? createHeap({ compare, items: options.items }) : createHeap({ compare });
 }
 
 /**
@@ -248,10 +280,19 @@ export function createMinHeap<T>(options: Readonly<Partial<HeapOptions<T>>> = {}
  * @template T - The heap item type.
  * @param options - Optional initial items and comparator override.
  * @returns A max-heap instance.
+ *
+ * @example
+ * ```ts
+ * import { createMaxHeap } from 'std-kit';
+ *
+ * const scoreboard = createMaxHeap<number>({ items: [12, 42, 7] });
+ * scoreboard.push(30);
+ *
+ * scoreboard.peek();
+ * // 42
+ * ```
  */
 export function createMaxHeap<T>(options: Readonly<Partial<HeapOptions<T>>> = {}): Heap<T> {
-  return createHeap({
-    compare: options.compare ?? createDefaultCompare<T>('max'),
-    items: options.items,
-  });
+  const compare = options.compare ?? createDefaultCompare<T>('max');
+  return options.items !== undefined ? createHeap({ compare, items: options.items }) : createHeap({ compare });
 }

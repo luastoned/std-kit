@@ -166,7 +166,7 @@ describe('countBy', () => {
 
   it('should count by function result', () => {
     const items = ['apple', 'banana', 'apricot', 'blueberry'];
-    expect(countBy(items, (item) => item[0])).toEqual({ a: 2, b: 2 });
+    expect(countBy(items, (item) => item.charAt(0))).toEqual({ a: 2, b: 2 });
   });
 
   it('should count numbers correctly', () => {
@@ -251,7 +251,7 @@ describe('uniqueBy', () => {
 
   it('should return unique items by function result', () => {
     const items = ['apple', 'apricot', 'banana', 'blueberry'];
-    expect(uniqueBy(items, (item) => item[0])).toEqual(['apricot', 'blueberry']);
+    expect(uniqueBy(items, (item) => item.charAt(0))).toEqual(['apricot', 'blueberry']);
   });
 });
 

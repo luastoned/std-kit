@@ -3,6 +3,13 @@
  *
  * @param ms - The number of milliseconds to sleep.
  * @returns A promise that resolves after the specified number of milliseconds.
+ *
+ * @example
+ * ```ts
+ * import { sleep } from 'std-kit';
+ *
+ * await sleep(250);
+ * ```
  */
 export const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -15,6 +22,16 @@ export const sleep = (ms: number): Promise<void> => new Promise((resolve) => set
  * @param callback - The original callback function to debounce.
  * @param waitFor - The amount of time (in milliseconds) to wait before invoking the debounced callback.
  * @returns The debounced callback function.
+ *
+ * @example
+ * ```ts
+ * import { debounce } from 'std-kit';
+ *
+ * const save = debounce((value: string) => console.log(value), 200);
+ * save('draft');
+ * save('draft updated');
+ * // only the last call runs after 200ms
+ * ```
  */
 export const debounce = <Args extends unknown[], Ret>(callback: (...args: Args) => Ret, waitFor: number): ((...args: Args) => void) => {
   let timeout: ReturnType<typeof setTimeout> | undefined;
@@ -36,6 +53,16 @@ export const debounce = <Args extends unknown[], Ret>(callback: (...args: Args) 
  * @param callback - The function to throttle.
  * @param waitFor - The time interval in milliseconds.
  * @returns A throttled function that returns a promise.
+ *
+ * @example
+ * ```ts
+ * import { throttle } from 'std-kit';
+ *
+ * const search = throttle((term: string) => term.toUpperCase(), 100);
+ *
+ * await search('a');
+ * // 'A'
+ * ```
  */
 export const throttle = <Args extends unknown[], Ret>(callback: (...args: Args) => Ret, waitFor: number): ((...args: Args) => Promise<Awaited<Ret>>) => {
   const now = (): number => Date.now();

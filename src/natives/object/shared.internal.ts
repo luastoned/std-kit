@@ -37,8 +37,17 @@ export const normalizeFilterPredicates = (
 
   const keys = filterOrOptions.keys;
   const keyFilter = typeof keys === 'function' ? keys : isArray(keys) ? (key: string): boolean => keys.includes(key) : undefined;
+  const normalized: { keyFilter?: ObjectTraversalPredicate; valueFilter?: ObjectTraversalPredicate } = {};
 
-  return { keyFilter, valueFilter: filterOrOptions.values };
+  if (keyFilter !== undefined) {
+    normalized.keyFilter = keyFilter;
+  }
+
+  if (filterOrOptions.values !== undefined) {
+    normalized.valueFilter = filterOrOptions.values;
+  }
+
+  return normalized;
 };
 
 /**
@@ -47,7 +56,7 @@ export const normalizeFilterPredicates = (
  * @param path - The raw path (for example `user.posts[0].title`).
  * @returns A list of path segments.
  */
-export const tokenizePath = (path: string): string[] => path.split(/[\.\[\]]/).filter(Boolean);
+export const tokenizePath = (path: string): string[] => path.split(/[.[\]]/).filter(Boolean);
 
 /**
  * Checks whether a parsed path includes forbidden keys.

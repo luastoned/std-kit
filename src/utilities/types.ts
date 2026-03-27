@@ -168,6 +168,18 @@ export type OmitByValue<T, ValueType> = Pick<T, { [K in keyof T]: T[K] extends V
  * @template T - The type to make deeply partial.
  * @param T - The type to make deeply partial.
  * @returns The deeply partial type.
+ *
+ * @example
+ * ```ts
+ * import type { DeepPartial } from 'std-kit';
+ *
+ * type User = {
+ *   profile: { name: string; age: number };
+ * };
+ *
+ * type UserPatch = DeepPartial<User>;
+ * // { profile?: { name?: string; age?: number } }
+ * ```
  */
 export type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
 
@@ -233,6 +245,14 @@ export type Merge<T, U> = Omit<T, keyof U> & U;
  * @template T - The type of array elements.
  * @param T - The type of array elements.
  * @returns The non-empty array type.
+ *
+ * @example
+ * ```ts
+ * import type { NonEmptyArray } from 'std-kit';
+ *
+ * const values: NonEmptyArray<number> = [1, 2, 3];
+ * // cannot be []
+ * ```
  */
 export type NonEmptyArray<T> = [T, ...T[]];
 
@@ -243,7 +263,7 @@ export type NonEmptyArray<T> = [T, ...T[]];
  * Resolves indexed access for arrays and tuples.
  * @internal
  */
-type GetIndexedField<T, Idx> = T extends readonly unknown[] | unknown[] ? T[number] : undefined;
+type GetIndexedField<T> = T extends readonly unknown[] | unknown[] ? T[number] : undefined;
 
 /**
  * Resolves direct property access.
@@ -262,6 +282,19 @@ type FieldOrUndefined<T, Key> = Key extends keyof T ? T[Key] | Extract<T, undefi
  * @template T - The source object type.
  * @template Path - Dot/bracket path.
  * @returns The inferred value type for the path.
+ *
+ * @example
+ * ```ts
+ * import type { GetFieldType } from 'std-kit';
+ *
+ * type User = { profile: { name: string }; posts: { title: string }[] };
+ *
+ * type Name = GetFieldType<User, 'profile.name'>;
+ * // string
+ *
+ * type Title = GetFieldType<User, 'posts[0].title'>;
+ * // string
+ * ```
  */
 export type GetFieldType<T, Path> = Path extends ''
   ? T
@@ -273,9 +306,9 @@ export type GetFieldType<T, Path> = Path extends ''
  * Handles direct and indexed path segments.
  * @internal
  */
-type GetDirectOrIndexedField<T, Path> = Path extends `${infer FieldKey}[${infer IdxKey}]`
+type GetDirectOrIndexedField<T, Path> = Path extends `${infer FieldKey}[${infer _IdxKey}]`
   ? FieldKey extends keyof T
-    ? GetIndexedField<T[FieldKey], IdxKey>
+    ? GetIndexedField<T[FieldKey]>
     : undefined
   : Path extends keyof T
     ? GetDirectField<T, Path>
@@ -285,8 +318,8 @@ type GetDirectOrIndexedField<T, Path> = Path extends `${infer FieldKey}[${infer 
  * Recursively resolves nested path segments.
  * @internal
  */
-type GetNestedField<T, Left extends string, Right extends string> = Left extends `${infer FieldKey}[${infer IdxKey}]`
+type GetNestedField<T, Left extends string, Right extends string> = Left extends `${infer FieldKey}[${infer _IdxKey}]`
   ? FieldKey extends keyof T
-    ? GetFieldType<GetIndexedField<T[FieldKey], IdxKey>, Right>
+    ? GetFieldType<GetIndexedField<T[FieldKey]>, Right>
     : undefined
   : GetFieldType<FieldOrUndefined<T, Left>, Right>;

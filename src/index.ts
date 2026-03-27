@@ -1,3 +1,31 @@
+/**
+ * `std-kit` public entrypoint.
+ *
+ * Small focused utilities for arrays, objects, promises, trees, heaps, and reusable TypeScript helpers.
+ *
+ * @example
+ * ```ts
+ * import { chunk, getValue, createMinHeap, flattenTree } from 'std-kit';
+ *
+ * const pages = chunk(['a', 'b', 'c', 'd'], 2);
+ * // [['a', 'b'], ['c', 'd']]
+ *
+ * const settings = { ui: { theme: 'light' } };
+ * const theme = getValue(settings, 'ui.theme', 'dark');
+ * // 'light'
+ *
+ * const heap = createMinHeap<number>({ items: [5, 2, 9] });
+ * heap.pop();
+ * // 2
+ *
+ * const tree = {
+ *   id: 'root',
+ *   children: [{ id: 'a' }, { id: 'b', children: [{ id: 'b1' }] }],
+ * };
+ * flattenTree(tree).map((node) => node.id);
+ * // ['root', 'a', 'b', 'b1']
+ * ```
+ */
 export * from './natives/array';
 export * from './natives/function';
 export * from './natives/number';
@@ -11,25 +39,3 @@ export * from './structures/tree';
 export * from './utilities/generic';
 export * from './utilities/guard';
 export * from './utilities/types';
-
-// buffer.ts is Node.js-specific - import from 'std-kit/node' instead
-
-// https://radashi.js.org
-// https://moderndash.io
-// https://es-toolkit.slash.page
-
-// https://www.npmjs.com/package/rfc4648
-
-// https://github.com/denoland/std
-
-// https://github.com/voodoocreation/ts-deepmerge
-// export { merge as mergeDeep1 } from 'ts-deepmerge';
-
-// https://github.com/RebeccaStevens/deepmerge-ts
-// export { deepmerge as mergeDeep2 } from 'deepmerge-ts';
-
-// https://github.com/ichernetskii/merge-deep-ts
-// export { default as mergeDeep3 } from 'merge-deep-ts';
-
-// https://github.com/toss/es-toolkit/blob/main/src/object/merge.ts
-// https://github.com/Maggi64/moderndash/blob/main/package/src/object/merge.ts

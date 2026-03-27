@@ -5,6 +5,14 @@ import type { Container, MutableContainer } from '~/utilities/types';
  *
  * @param item - The item to check.
  * @returns `true` if the item is an array, `false` otherwise.
+ *
+ * @example
+ * ```ts
+ * import { isArray } from 'std-kit';
+ *
+ * isArray([1, 2, 3]);
+ * // true
+ * ```
  */
 export const isArray = <T = unknown>(item: unknown): item is T[] | readonly T[] => typeof item === 'object' && Array.isArray(item);
 
@@ -87,6 +95,14 @@ export const isNumber = (item: unknown): item is number => typeof item === 'numb
  *
  * @param item - The item to check.
  * @returns `true` if the item is an object, `false` otherwise.
+ *
+ * @example
+ * ```ts
+ * import { isObject } from 'std-kit';
+ *
+ * isObject({ name: 'Ada' });
+ * // true
+ * ```
  */
 export const isObject = (item: unknown): item is Record<PropertyKey, unknown> => typeof item === 'object' && !Array.isArray(item) && item !== null;
 
@@ -95,6 +111,14 @@ export const isObject = (item: unknown): item is Record<PropertyKey, unknown> =>
  *
  * @param item - The item to check.
  * @returns `true` if the item is an object or array container.
+ *
+ * @example
+ * ```ts
+ * import { isContainer } from 'std-kit';
+ *
+ * isContainer(['a', 'b']);
+ * // true
+ * ```
  */
 export const isContainer = (item: unknown): item is Container => isObject(item) || isArray(item);
 
@@ -119,6 +143,14 @@ export const isPlainObject = (item: unknown): item is Record<PropertyKey, unknow
  *
  * @param item - The item to check.
  * @returns `true` if the item is a Promise, `false` otherwise.
+ *
+ * @example
+ * ```ts
+ * import { isPromise } from 'std-kit';
+ *
+ * isPromise(Promise.resolve(42));
+ * // true
+ * ```
  */
 export const isPromise = <T = unknown>(item: unknown): item is Promise<T> => item instanceof Promise;
 
@@ -189,6 +221,17 @@ export const isWeakSet = <T extends WeakKey>(item: unknown): item is WeakSet<T> 
  *
  * @param item - The item to clone.
  * @returns The cloned item or undefined if the input is undefined.
+ *
+ * @example
+ * ```ts
+ * import { cloneObject } from 'std-kit';
+ *
+ * const original = { user: { name: 'Ada' } };
+ * const cloned = cloneObject(original);
+ *
+ * cloned.user.name = 'Grace';
+ * // original.user.name is still 'Ada'
+ * ```
  */
 export const cloneObject = <T>(item: T): T extends undefined ? undefined : T =>
   (item !== undefined ? JSON.parse(JSON.stringify(item)) : undefined) as T extends undefined ? undefined : T;

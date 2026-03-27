@@ -117,8 +117,8 @@ describe('mapTree', () => {
       label: node.label.toUpperCase(),
     }));
 
-    expect(result.children?.[0].label).toBe('A');
-    expect(result.children?.[1].children?.[0].label).toBe('B1');
+    expect(result.children?.[0]?.label).toBe('A');
+    expect(result.children?.[1]?.children?.[0]?.label).toBe('B1');
     expect(result).not.toBe(tree);
     expect(result.children?.[0]).not.toBe(tree.children?.[0]);
   });
@@ -157,8 +157,8 @@ describe('updateTreeNode', () => {
       }),
     );
 
-    expect(result.children?.[0].label).toBe('A!');
-    expect(result.children?.[0].children?.[0].label).toBe('A1');
+    expect(result.children?.[0]?.label).toBe('A!');
+    expect(result.children?.[0]?.children?.[0]?.label).toBe('A1');
   });
 
   it('returns the original tree when no node matches', () => {
@@ -182,7 +182,7 @@ describe('replaceTreeNode', () => {
     const replacement: ItemTreeNode = { id: 'b1x', label: 'B1X' };
     const result = replaceTreeNode(tree, [1, 0], replacement);
 
-    expect(result.children?.[1].children?.[0]).toEqual({ id: 'b1x', label: 'B1X' });
+    expect(result.children?.[1]?.children?.[0]).toEqual({ id: 'b1x', label: 'B1X' });
   });
 });
 
@@ -191,7 +191,7 @@ describe('removeTreeNode', () => {
     const tree = sampleTree();
     const result = removeTreeNode(tree, (node) => node.id === 'a1');
 
-    expect(result?.children?.[0].children).toEqual([{ id: 'a2', label: 'A2' }]);
+    expect(result?.children?.[0]?.children).toEqual([{ id: 'a2', label: 'A2' }]);
   });
 
   it('returns undefined when removing the root node', () => {
@@ -206,7 +206,7 @@ describe('insertTreeNode', () => {
     const insertedNode: ItemTreeNode = { id: 'a0', label: 'A0' };
     const result = insertTreeNode(tree, (node) => node.id === 'a', insertedNode, { position: 'prepend' });
 
-    expect(result.children?.[0].children?.map((node: ItemTreeNode) => node.id)).toEqual(['a0', 'a1', 'a2']);
+    expect(result.children?.[0]?.children?.map((node: ItemTreeNode) => node.id)).toEqual(['a0', 'a1', 'a2']);
   });
 
   it('supports custom child keys during insertion', () => {

@@ -6,6 +6,17 @@
  * @template Ret - The return type.
  * @param fn - The function to execute once.
  * @returns A new function that executes the original function only on the first call.
+ *
+ * @example
+ * ```ts
+ * import { once } from 'std-kit';
+ *
+ * const initialize = once(() => Math.random());
+ *
+ * const first = initialize();
+ * const second = initialize();
+ * // `first` and `second` are the same value
+ * ```
  */
 export const once = <Args extends unknown[], Ret>(fn: (...args: Args) => Ret): ((...args: Args) => Ret | undefined) => {
   let called = false;
@@ -31,6 +42,16 @@ export const once = <Args extends unknown[], Ret>(fn: (...args: Args) => Ret): (
  * @param options - Memoization options.
  * @param options.keyFn - Optional function to generate cache key from arguments. Defaults to JSON.stringify.
  * @returns A memoized version of the function.
+ *
+ * @example
+ * ```ts
+ * import { memoize } from 'std-kit';
+ *
+ * const square = memoize((value: number) => value * value);
+ *
+ * square(4);
+ * // 16
+ * ```
  */
 export const memoize = <Args extends unknown[], Ret>(
   fn: (...args: Args) => Ret,

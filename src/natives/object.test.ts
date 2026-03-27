@@ -128,14 +128,14 @@ describe('findInTree', () => {
   it('generates correct paths for nested objects', () => {
     const result = queryObject(data, (key, value: any) => value === 'dark', true);
     expect(result).toHaveLength(1);
-    expect(result[0].path).toBe('config.settings.theme');
+    expect(result[0]?.path).toBe('config.settings.theme');
   });
 
   it('generates correct paths for array elements', () => {
     const result = queryObject(data, (key, value: any) => typeof value?.id === 'number', true);
     expect(result).toHaveLength(2);
-    expect(result[0].path).toBe('users[0]');
-    expect(result[1].path).toBe('users[1]');
+    expect(result[0]?.path).toBe('users[0]');
+    expect(result[1]?.path).toBe('users[1]');
   });
 
   it('returns empty array when no matches', () => {
@@ -461,7 +461,7 @@ describe('mapObject', () => {
       product2: { name: 'Gadget', price: 50, currency: 'EUR' },
     };
 
-    const result = mapObject(data, (key, value, path, parent) => {
+    const result = mapObject(data, (key, value, _path, parent) => {
       if (key === 'price' && typeof value === 'number' && typeof parent === 'object' && parent !== null) {
         const p = parent as Record<string, unknown>;
         const symbol = p.currency === 'EUR' ? '€' : '$';
@@ -499,7 +499,7 @@ describe('mapObject', () => {
       items: [{ id: 1 }, { id: 2 }],
     };
 
-    const result = mapObject(data, (key, value, path, parent) => {
+    const result = mapObject(data, (key, value, path, _parent) => {
       // When key is 'id', parent is the object containing it: {id: 1}
       // To check if we're in an array, need to check if parent's parent was an array
       // or check the path pattern

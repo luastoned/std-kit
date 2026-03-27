@@ -5,6 +5,14 @@
  * @param rangeA - The first value of the range.
  * @param rangeB - The second value of the range.
  * @returns The clamped value.
+ *
+ * @example
+ * ```ts
+ * import { clamp } from 'std-kit';
+ *
+ * clamp(120, 0, 100);
+ * // 100
+ * ```
  */
 export const clamp = (value: number, rangeA: number, rangeB: number): number => Math.max(Math.min(value, Math.max(rangeA, rangeB)), Math.min(rangeA, rangeB));
 
@@ -58,6 +66,14 @@ export const rad2deg = (radians: number): number => radians * (180 / Math.PI);
  * @param end - The ending number of the range.
  * @param step - The increment value between numbers in the range. Default is 1. If not a positive integer, it will be clamped to 1.
  * @returns A readonly array of numbers within the specified range.
+ *
+ * @example
+ * ```ts
+ * import { range } from 'std-kit';
+ *
+ * range(2, 8, 2);
+ * // [2, 4, 6, 8]
+ * ```
  */
 export const range = (start: number, end: number, step = 1): readonly number[] => {
   const clampedStep = step <= 0 || !Number.isFinite(step) ? 1 : Math.max(1, Math.floor(step));
@@ -78,6 +94,14 @@ export const sum = (values: readonly number[]): number => values.reduce((acc, cu
  *
  * @param values - The array of numbers.
  * @returns The mean value of the numbers.
+ *
+ * @example
+ * ```ts
+ * import { mean } from 'std-kit';
+ *
+ * mean([10, 20, 30]);
+ * // 20
+ * ```
  */
 export const mean = (values: readonly number[]): number => (values.length === 0 ? 0 : sum(values) / values.length);
 

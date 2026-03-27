@@ -36,6 +36,7 @@ Deeply merges a patch object into a source object.
 
 **Returns:** A new object that is the result of deeply merging the patch into the source.
 
+
 ---
 
 ## filterObject
@@ -47,7 +48,9 @@ filterObject<T>(obj: Readonly<T>, filter: (key: string, value: unknown, path: st
 Recursively filters an object or array tree, preserving the original structure but only keeping
 items that match the provided predicate.
 
+
 **Returns:** A new object/array with the same structure, containing only matching items.
+
 
 ---
 
@@ -62,7 +65,9 @@ If the value at the specified path doesn't exist, returns a default value.
 
 Supports accessing both object properties and array indices using a path such as 'user.posts[0].title'.
 
+
 **Returns:** The value at the specified path, or the default value if the path does not exist.
+
 
 ---
 
@@ -75,7 +80,9 @@ mapObject<T>(obj: T, mapper: (key: string, value: unknown, path: string, parent:
 Recursively maps over all values in an object or array tree, allowing transformation
 of each value while preserving the structure.
 
+
 **Returns:** A new object/array with the same structure but transformed values.
+
 
 ---
 
@@ -97,7 +104,9 @@ Deeply merges a patch object into a source object.
 - Strict mode: When `strict` is true, only keys/items that exist in the source will be merged.
   New keys from the patch and non-matching array items will be ignored.
 
+
 **Returns:** A new object that is the result of deeply merging the patch into the source.
+
 
 ---
 
@@ -109,7 +118,9 @@ omit<T, K>(obj: T, keys: readonly K[]): Omit<T, K>
 
 Creates a new object with all keys from the source object except the specified ones.
 
+
 **Returns:** A new object without the specified keys.
+
 
 ---
 
@@ -121,7 +132,9 @@ pick<T, K>(obj: T, keys: readonly K[]): Pick<T, K>
 
 Creates a new object with only the specified keys from the source object.
 
+
 **Returns:** A new object containing only the specified keys.
+
 
 ---
 
@@ -137,7 +150,9 @@ Returns a flat array of matching values, optionally with their paths.
 The return type is inferred dynamically based on the `path` argument. If `path: true`, the return type includes
 both the path and the value. Otherwise, it returns just the values.
 
+
 **Returns:** A flat array of matching values or matching values with paths (if `path` is true).
+
 
 ---
 
@@ -152,6 +167,9 @@ If the path does not exist, it will create intermediate objects or arrays as nee
 
 Supports both object properties and array indices in the path, such as 'user.posts[0].title'.
 
+
 **Returns:** Nothing.
 
+
 ---
+

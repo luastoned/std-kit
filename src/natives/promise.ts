@@ -13,6 +13,15 @@ export type DeferredTask<T> = () => Promise<T>;
  * @param fn - The function to wrap.
  * @param args - Arguments to apply when the task runs.
  * @returns A deferred task that resolves to the function result.
+ *
+ * @example
+ * ```ts
+ * import { defer } from 'std-kit';
+ *
+ * const task = defer((name: string) => `Hello ${name}`, 'Ada');
+ * await task();
+ * // 'Hello Ada'
+ * ```
  */
 export const defer = <Args extends readonly unknown[], Ret>(fn: (...args: Args) => Ret | Promise<Ret>, ...args: Args): DeferredTask<Awaited<Ret>> => {
   return () => Promise.resolve(fn(...args)) as Promise<Awaited<Ret>>;
@@ -40,6 +49,16 @@ const normalizeParallel = (parallel: number): number => {
 };
 
 /**
+ * Checks whether an array contains only defined values.
+ *
+ * @internal
+ * @template T - The array element type.
+ * @param values - The values to validate.
+ * @returns Whether all values are defined.
+ */
+const hasDefinedValues = <T>(values: ReadonlyArray<T | undefined>): values is T[] => values.every((value) => value !== undefined);
+
+/**
  * Runs promise-returning tasks with a concurrency limit.
  * Resolves in input order, rejects on the first error (Promise.all semantics).
  *
@@ -47,6 +66,16 @@ const normalizeParallel = (parallel: number): number => {
  * @param parallel - Maximum number of concurrent tasks. Invalid values default to 1.
  * @param tasks - Deferred tasks to execute.
  * @returns A promise resolving to results in the same order as input tasks.
+ *
+ * @example
+ * ```ts
+ * import { defer, threads } from 'std-kit';
+ *
+ * const tasks = [defer(async () => 1), defer(async () => 2), defer(async () => 3)];
+ *
+ * await threads(2, tasks);
+ * // [1, 2, 3]
+ * ```
  */
 export const threads = async <T>(parallel: number, tasks: ReadonlyArray<DeferredTask<T>>): Promise<T[]> => {
   const normalizedParallel = normalizeParallel(parallel);
@@ -56,7 +85,7 @@ export const threads = async <T>(parallel: number, tasks: ReadonlyArray<Deferred
   }
 
   const limit = normalizedParallel === Number.POSITIVE_INFINITY ? tasks.length : Math.min(normalizedParallel, tasks.length);
-  const results: T[] = new Array(tasks.length);
+  const results: Array<T | undefined> = Array.from({ length: tasks.length });
 
   let nextIdx = 0;
   let activeCount = 0;
@@ -70,6 +99,12 @@ export const threads = async <T>(parallel: number, tasks: ReadonlyArray<Deferred
       while (activeCount < limit && nextIdx < tasks.length) {
         const taskIdx = nextIdx++;
         const task = tasks[taskIdx];
+        if (task === undefined) {
+          aborted = true;
+          reject(new Error(`Missing task at index ${taskIdx}.`));
+          return;
+        }
+
         activeCount++;
 
         Promise.resolve()
@@ -80,6 +115,10 @@ export const threads = async <T>(parallel: number, tasks: ReadonlyArray<Deferred
             completedCount++;
             activeCount--;
             if (completedCount === tasks.length) {
+              if (!hasDefinedValues(results)) {
+                reject(new Error('Expected all task results to be defined before resolution.'));
+                return;
+              }
               resolve(results);
               return;
             }

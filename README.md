@@ -139,17 +139,21 @@ filterObject(data, { keys: ['name', 'age'] });
 Traverse and transform explicit tree structures:
 
 ```typescript
-import { findTreeNode, insertTreeNode, flattenTree } from 'std-kit';
+import { findTreeNode, insertTreeNode, updateTreeNode, flattenTree } from 'std-kit';
 
 const tree = {
   id: 'root',
-  children: [{ id: 'a' }, { id: 'b', children: [{ id: 'b1' }] }],
+  children: [
+    { id: 'a', label: 'Alpha' },
+    { id: 'b', label: 'Beta', children: [{ id: 'b1', label: 'Beta 1' }] },
+  ],
 };
 
-findTreeNode(tree, (node) => node.id === 'b1'); // { id: 'b1' }
+findTreeNode(tree, (node) => node.id === 'b1'); // { id: 'b1', label: 'Beta 1' }
 flattenTree(tree).map((node) => node.id); // ['root', 'a', 'b', 'b1']
 
-insertTreeNode(tree, (node) => node.id === 'b', { id: 'b2' });
+const withNewChild = insertTreeNode(tree, (node) => node.id === 'b', { id: 'b2', label: 'Beta 2' });
+const published = updateTreeNode(withNewChild, [1, 0], (node) => ({ ...node, label: `${node.label} (published)` }));
 ```
 
 ### 📦 Heaps
@@ -157,7 +161,7 @@ insertTreeNode(tree, (node) => node.id === 'b', { id: 'b2' });
 Work with priority queues using min-heaps or max-heaps:
 
 ```typescript
-import { createMinHeap, createMaxHeap } from 'std-kit';
+import { createHeap, createMinHeap, createMaxHeap } from 'std-kit';
 
 const minHeap = createMinHeap<number>({ items: [5, 1, 4] });
 minHeap.push(2);
@@ -165,6 +169,17 @@ minHeap.pop(); // 1
 
 const maxHeap = createMaxHeap<number>({ items: [5, 1, 4] });
 maxHeap.pop(); // 5
+
+const jobs = createHeap({
+  items: [
+    { id: 'backup', priority: 10 },
+    { id: 'reindex', priority: 20 },
+    { id: 'deploy', priority: 30 },
+  ],
+  compare: (a, b) => a.priority - b.priority,
+});
+
+jobs.pop(); // { id: 'backup', priority: 10 }
 ```
 
 ### 🔄 Promises

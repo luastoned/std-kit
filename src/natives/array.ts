@@ -19,6 +19,14 @@ const toKeyFn = <T, K extends PropertyKey>(key: KeySelector<T, K>): ((item: T) =
  * @template T - The type of elements in the array.
  * @param array - The input array.
  * @returns A new array with unique elements.
+ *
+ * @example
+ * ```ts
+ * import { unique } from 'std-kit';
+ *
+ * unique([1, 2, 2, 3, 1]);
+ * // [1, 2, 3]
+ * ```
  */
 export const unique = <T>(array: readonly T[]): T[] => Array.from(new Set(array));
 
@@ -59,7 +67,10 @@ export const shuffle = <T>(array: readonly T[], inPlace = false): T[] => {
   // Fisher-Yates shuffle algorithm
   for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
+    const current = result[i];
+    const swapValue = result[j];
+    result[i] = swapValue as T;
+    result[j] = current as T;
   }
 
   return result;
@@ -98,12 +109,20 @@ export const fill = <T>(size: number, value: T): T[] => Array(size).fill(value);
  * @param array - The array to be chunked.
  * @param size - The size of each chunk. Default is 2.
  * @returns An array of chunks, each containing elements from the original array.
+ *
+ * @example
+ * ```ts
+ * import { chunk } from 'std-kit';
+ *
+ * chunk(['a', 'b', 'c', 'd', 'e'], 2);
+ * // [['a', 'b'], ['c', 'd'], ['e']]
+ * ```
  */
 export const chunk = <T>(array: readonly T[], size = 2): T[][] => {
   const normalizedSize = size <= 0 || !Number.isFinite(size) ? 1 : Math.max(1, Math.floor(size));
   const chunks: T[][] = [];
   for (let idx = 0; idx < array.length; idx += normalizedSize) {
-    chunks.push([...array.slice(idx, idx + normalizedSize)]);
+    chunks.push(array.slice(idx, idx + normalizedSize));
   }
 
   return chunks;
@@ -153,6 +172,21 @@ export const countBy = <T, K extends PropertyKey>(array: readonly T[], key: KeyS
  * @param array - The array to group.
  * @param key - The key used for grouping. Can be a property name or a function that returns the key.
  * @returns An object where the keys are the grouped values and the values are arrays of elements that belong to each group.
+ *
+ * @example
+ * ```ts
+ * import { groupBy } from 'std-kit';
+ *
+ * groupBy(
+ *   [
+ *     { id: 1, role: 'admin' },
+ *     { id: 2, role: 'user' },
+ *     { id: 3, role: 'admin' },
+ *   ],
+ *   'role',
+ * );
+ * // { admin: [{ id: 1, role: 'admin' }, { id: 3, role: 'admin' }], user: [{ id: 2, role: 'user' }] }
+ * ```
  */
 export const groupBy = <T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): Record<K, T[]> => {
   const result = {} as Record<K, T[]>;
@@ -182,6 +216,22 @@ export const groupBy = <T, K extends PropertyKey>(array: readonly T[], key: KeyS
  * @param orders - The sort orders for each key.
  * @param inPlace - Indicates whether to sort the array in place or return a new sorted array.
  * @returns The sorted array.
+ *
+ * @example
+ * ```ts
+ * import { orderBy } from 'std-kit';
+ *
+ * orderBy(
+ *   [
+ *     { name: 'Ada', score: 20 },
+ *     { name: 'Grace', score: 40 },
+ *     { name: 'Ada', score: 10 },
+ *   ],
+ *   ['name', 'score'],
+ *   ['asc', 'desc'],
+ * );
+ * // [{ name: 'Ada', score: 20 }, { name: 'Ada', score: 10 }, { name: 'Grace', score: 40 }]
+ * ```
  */
 export const orderBy = <T, K extends string | number>(
   array: readonly T[],
@@ -192,9 +242,8 @@ export const orderBy = <T, K extends string | number>(
   const keyFns = keys.map((key) => toKeyFn(key));
   const result: T[] = inPlace ? (array as T[]) : [...array];
   return result.sort((a, b) => {
-    for (let idx = 0; idx < keys.length; idx++) {
-      const keyFn = keyFns[idx];
-      const order = orders[idx];
+    for (const [idx, keyFn] of keyFns.entries()) {
+      const order = orders[idx] ?? 'asc';
 
       // Determine the value for each item based on the key or function
       const aValue = keyFn(a);
@@ -225,6 +274,21 @@ export const orderBy = <T, K extends string | number>(
  * @param array - The input array.
  * @param key - The key property or function used to extract the key from each element.
  * @returns A new array containing unique elements based on the specified key.
+ *
+ * @example
+ * ```ts
+ * import { uniqueBy } from 'std-kit';
+ *
+ * uniqueBy(
+ *   [
+ *     { id: 1, name: 'Ada' },
+ *     { id: 1, name: 'Ada Lovelace' },
+ *     { id: 2, name: 'Grace' },
+ *   ],
+ *   'id',
+ * );
+ * // [{ id: 1, name: 'Ada Lovelace' }, { id: 2, name: 'Grace' }]
+ * ```
  */
 export const uniqueBy = <T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): T[] => {
   const itemMap = new Map<K, T>();
@@ -248,6 +312,10 @@ function* cartesianIt<T = unknown>(items: readonly T[][]): IterableIterator<T[]>
   if (items.length === 0) return;
 
   const [first, ...rest] = items;
+  if (first === undefined) {
+    return;
+  }
+
   const remainder = rest.length > 0 ? cartesianIt(rest) : [[]];
 
   for (const rem of remainder) {
@@ -262,6 +330,17 @@ function* cartesianIt<T = unknown>(items: readonly T[][]): IterableIterator<T[]>
  *
  * @param items - The array of arrays to calculate the cartesian product from.
  * @returns The cartesian product as a 2D array.
+ *
+ * @example
+ * ```ts
+ * import { cartesian } from 'std-kit';
+ *
+ * cartesian([
+ *   ['S', 'M'],
+ *   ['red', 'blue'],
+ * ]);
+ * // [['S', 'red'], ['M', 'red'], ['S', 'blue'], ['M', 'blue']]
+ * ```
  */
 export const cartesian = <T = unknown>(items: readonly T[][]): T[][] => [...cartesianIt(items)];
 
@@ -284,7 +363,10 @@ export const combinations = <T>(items: readonly T[]): T[][] => {
     for (let bitPosition = 0; bitPosition < items.length; bitPosition++) {
       if (subsetMask & (1 << bitPosition)) {
         // If the bitPosition-th bit is set in `subsetMask`, include array[bitPosition] in the current combination
-        combination.push(items[bitPosition]);
+        const item = items[bitPosition];
+        if (item !== undefined) {
+          combination.push(item);
+        }
       }
     }
 

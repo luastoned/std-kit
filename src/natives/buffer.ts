@@ -14,6 +14,18 @@ const toBuffer = (chunk: string | Buffer | Uint8Array): Buffer => (Buffer.isBuff
  *
  * @param stream - The readable stream to convert.
  * @returns A promise that resolves with the concatenated buffer of all chunks read from the stream.
+ *
+ * @example
+ * ```ts
+ * import { Readable } from 'node:stream';
+ * import { streamToBuffer } from 'std-kit/node';
+ *
+ * const stream = Readable.from(['hello ', 'world']);
+ * const buffer = await streamToBuffer(stream);
+ *
+ * buffer.toString();
+ * // 'hello world'
+ * ```
  */
 export const streamToBuffer = (stream: Readable): Promise<Buffer> => {
   return new Promise<Buffer>((resolve, reject) => {
@@ -30,6 +42,18 @@ export const streamToBuffer = (stream: Readable): Promise<Buffer> => {
  *
  * @param stream - The readable stream to pipe.
  * @returns A promise that resolves to a buffer containing the data from the stream.
+ *
+ * @example
+ * ```ts
+ * import { Readable } from 'node:stream';
+ * import { pipeToBuffer } from 'std-kit/node';
+ *
+ * const stream = Readable.from(['a', 'b', 'c']);
+ * const buffer = await pipeToBuffer(stream);
+ *
+ * buffer.toString();
+ * // 'abc'
+ * ```
  */
 export const pipeToBuffer = (stream: Readable): Promise<Buffer> => {
   return new Promise((resolve, reject) => {

@@ -43,7 +43,9 @@ Supports most JSON-compatible types including objects, arrays, strings, numbers,
 Cannot clone functions, Dates, RegExps, Maps, Sets, ArrayBuffers, typed arrays, or circular references.
 For more complex cloning needs, consider using structuredClone() which supports additional types.
 
+
 **Returns:** The cloned item or undefined if the input is undefined.
+
 
 ---
 
@@ -55,7 +57,9 @@ isArray<T = unknown>(item: unknown): item is T[] | readonly T[]
 
 Checks if the given item is an array.
 
+
 **Returns:** `true` if the item is an array, `false` otherwise.
+
 
 ---
 
@@ -67,7 +71,9 @@ isBoolean(item: unknown): item is boolean
 
 Checks if the given item is a boolean.
 
+
 **Returns:** `true` if the item is a boolean, `false` otherwise.
+
 
 ---
 
@@ -79,7 +85,9 @@ isContainer(item: unknown): item is Container
 
 Checks if the given item is an object or array container.
 
+
 **Returns:** `true` if the item is an object or array container.
+
 
 ---
 
@@ -91,7 +99,9 @@ isDate(item: unknown): item is Date
 
 Checks if the given item is a Date object.
 
+
 **Returns:** `true` if the item is a Date object, `false` otherwise.
+
 
 ---
 
@@ -103,7 +113,9 @@ isDefined<T = unknown>(item: T): item is Exclude<T, undefined>
 
 Checks if the given item is defined.
 
+
 **Returns:** A boolean indicating whether the item is defined or not.
+
 
 ---
 
@@ -115,7 +127,9 @@ isError(item: unknown): item is Error
 
 Checks if the given item is an instance of the Error class.
 
+
 **Returns:** `true` if the item is an instance of Error, `false` otherwise.
+
 
 ---
 
@@ -127,7 +141,9 @@ isFunction(item: unknown): item is (...args: unknown[]) => unknown
 
 Checks if the given item is a function.
 
+
 **Returns:** `true` if the item is a function, `false` otherwise.
+
 
 ---
 
@@ -139,7 +155,9 @@ isInfinity(item: unknown): item is number
 
 Checks if the given item is an infinity number.
 
+
 **Returns:** A boolean indicating whether the item is an infinity number.
+
 
 ---
 
@@ -151,7 +169,9 @@ isMap<K = unknown, V = unknown>(item: unknown): item is Map<K, V>
 
 Checks if the given item is an instance of Map.
 
+
 **Returns:** `true` if the item is a Map, `false` otherwise.
+
 
 ---
 
@@ -163,7 +183,9 @@ isMutableContainer(item: unknown): item is MutableContainer
 
 Checks if the given item can be treated as a mutable container.
 
+
 **Returns:** `true` if the item is an object or array suitable for mutation.
+
 
 ---
 
@@ -175,7 +197,9 @@ isNull(item: unknown): item is null
 
 Checks if the given item is null.
 
+
 **Returns:** `true` if the item is null, `false` otherwise.
+
 
 ---
 
@@ -187,7 +211,9 @@ isNumber(item: unknown): item is number
 
 Checks if the given item is a number.
 
+
 **Returns:** `true` if the item is a number, `false` otherwise.
+
 
 ---
 
@@ -199,7 +225,9 @@ isObject(item: unknown): item is Record<PropertyKey, unknown>
 
 Checks if the given item is an object.
 
+
 **Returns:** `true` if the item is an object, `false` otherwise.
+
 
 ---
 
@@ -211,7 +239,9 @@ isPlainObject(item: unknown): item is Record<PropertyKey, unknown>
 
 Checks if the given item is a plain object.
 
+
 **Returns:** A boolean indicating whether the item is a plain object.
+
 
 ---
 
@@ -223,7 +253,9 @@ isPromise<T = unknown>(item: unknown): item is Promise<T>
 
 Checks if the given item is a Promise.
 
+
 **Returns:** `true` if the item is a Promise, `false` otherwise.
+
 
 ---
 
@@ -235,7 +267,9 @@ isRegExp(item: unknown): item is RegExp
 
 Checks if the given item is a regular expression.
 
+
 **Returns:** `true` if the item is a regular expression, `false` otherwise.
+
 
 ---
 
@@ -247,7 +281,9 @@ isSet<T = unknown>(item: unknown): item is Set<T>
 
 Checks if the given item is a Set.
 
+
 **Returns:** A boolean indicating whether the item is a Set.
+
 
 ---
 
@@ -259,7 +295,9 @@ isString(item: unknown): item is string
 
 Checks if the given item is a string.
 
+
 **Returns:** `true` if the item is a string, `false` otherwise.
+
 
 ---
 
@@ -271,7 +309,9 @@ isSymbol(item: unknown): item is symbol
 
 Checks if the given item is a symbol.
 
+
 **Returns:** `true` if the item is a symbol, `false` otherwise.
+
 
 ---
 
@@ -283,7 +323,9 @@ isUndefined(item: unknown): item is undefined
 
 Checks if the given item is undefined.
 
+
 **Returns:** A boolean indicating whether the item is undefined or not.
+
 
 ---
 
@@ -295,7 +337,9 @@ isWeakMap<K, V = unknown>(item: unknown): item is WeakMap<K, V>
 
 Checks if the given item is an instance of WeakMap.
 
+
 **Returns:** A boolean indicating whether the item is an instance of WeakMap.
+
 
 ---
 
@@ -307,6 +351,9 @@ isWeakSet<T>(item: unknown): item is WeakSet<T>
 
 Checks if the given item is a WeakSet.
 
+
 **Returns:** A boolean indicating whether the item is a WeakSet.
 
+
 ---
+

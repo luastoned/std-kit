@@ -232,6 +232,25 @@ function normalizeInsertPosition(position: TreeInsertOptions['position'], length
  * @param visitor - Visitor called for each node.
  * @param options - Tree traversal options.
  * @returns Nothing.
+ *
+ * @example
+ * ```ts
+ * import { walkTree } from 'std-kit';
+ *
+ * const ids: string[] = [];
+ * walkTree(
+ *   {
+ *     id: 'root',
+ *     children: [{ id: 'a' }, { id: 'b', children: [{ id: 'b1' }] }],
+ *   },
+ *   (node) => {
+ *     ids.push(node.id);
+ *   },
+ * );
+ *
+ * ids;
+ * // ['root', 'a', 'b', 'b1']
+ * ```
  */
 export function walkTree<TNode extends object, TChildKey extends PropertyKey = 'children'>(
   tree: Readonly<TNode>,
@@ -260,8 +279,11 @@ export function walkTree<TNode extends object, TChildKey extends PropertyKey = '
       }
 
       const children = getTreeChildren(node, childrenKey);
-      for (let index = 0; index < children.length && !stopped; index++) {
-        const child = children[index];
+      for (const [index, child] of children.entries()) {
+        if (stopped) {
+          break;
+        }
+
         visit(child, {
           parent: node,
           path: [...context.path, index],
@@ -392,6 +414,26 @@ export function flattenTree<TNode extends object, TChildKey extends PropertyKey 
  * @param mapper - Mapper used to transform each node.
  * @param options - Tree traversal options.
  * @returns A new mapped tree.
+ *
+ * @example
+ * ```ts
+ * import { mapTree } from 'std-kit';
+ *
+ * const renamed = mapTree(
+ *   {
+ *     id: 'root',
+ *     label: 'Root',
+ *     children: [{ id: 'a', label: 'Alpha' }],
+ *   },
+ *   (node) => ({
+ *     ...node,
+ *     label: node.label.toUpperCase(),
+ *   }),
+ * );
+ *
+ * renamed.children?.[0]?.label;
+ * // 'ALPHA'
+ * ```
  */
 export function mapTree<TNode extends object, TChildKey extends PropertyKey = 'children'>(
   tree: Readonly<TNode>,
@@ -449,6 +491,25 @@ export function mapTree<TNode extends object, TChildKey extends PropertyKey = 'c
  * @param updater - Updater used to transform the matched node.
  * @param options - Tree traversal options.
  * @returns A new tree when a node is updated, otherwise the original tree.
+ *
+ * @example
+ * ```ts
+ * import { updateTreeNode } from 'std-kit';
+ *
+ * const tree = {
+ *   id: 'root',
+ *   children: [{ id: 'draft', status: 'pending' }],
+ * };
+ *
+ * const published = updateTreeNode(
+ *   tree,
+ *   (node) => node.id === 'draft',
+ *   (node) => ({ ...node, status: 'published' }),
+ * );
+ *
+ * published.children?.[0]?.status;
+ * // 'published'
+ * ```
  */
 export function updateTreeNode<TNode extends object, TChildKey extends PropertyKey = 'children'>(
   tree: Readonly<TNode>,
@@ -476,8 +537,7 @@ export function updateTreeNode<TNode extends object, TChildKey extends PropertyK
       let changed = currentNode !== node;
       let nextChildren: TNode[] | undefined;
 
-      for (let index = 0; index < children.length; index++) {
-        const child = children[index];
+      for (const [index, child] of children.entries()) {
         const nextChild = visit(child, {
           parent: currentNode,
           path: [...context.path, index],
@@ -576,8 +636,7 @@ export function removeTreeNode<TNode extends object, TChildKey extends PropertyK
       let changed = false;
       let nextChildren: TNode[] | undefined;
 
-      for (let index = 0; index < children.length; index++) {
-        const child = children[index];
+      for (const [index, child] of children.entries()) {
         const result = visit(child, {
           parent: node,
           path: [...context.path, index],
@@ -628,6 +687,21 @@ export function removeTreeNode<TNode extends object, TChildKey extends PropertyK
  * @param node - Node to insert.
  * @param options - Tree insertion options.
  * @returns A new tree when insertion succeeds, otherwise the original tree.
+ *
+ * @example
+ * ```ts
+ * import { insertTreeNode } from 'std-kit';
+ *
+ * const tree = {
+ *   id: 'root',
+ *   children: [{ id: 'a' }, { id: 'b' }],
+ * };
+ *
+ * const nextTree = insertTreeNode(tree, (current) => current.id === 'b', { id: 'b1' }, { position: 'append' });
+ *
+ * nextTree.children?.[1]?.children?.[0]?.id;
+ * // 'b1'
+ * ```
  */
 export function insertTreeNode<TNode extends object, TChildKey extends PropertyKey = 'children'>(
   tree: Readonly<TNode>,
@@ -662,8 +736,7 @@ export function insertTreeNode<TNode extends object, TChildKey extends PropertyK
       let changed = false;
       let nextChildren: TNode[] | undefined;
 
-      for (let index = 0; index < children.length; index++) {
-        const child = children[index];
+      for (const [index, child] of children.entries()) {
         const nextChild = visit(child, {
           parent: currentNode,
           path: [...context.path, index],
