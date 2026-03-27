@@ -134,6 +134,39 @@ mergeObject(source, patch); // { colors: ['blue'], count: 5, theme: 'dark' }
 filterObject(data, { keys: ['name', 'age'] });
 ```
 
+### 🌳 Trees
+
+Traverse and transform explicit tree structures:
+
+```typescript
+import { findTreeNode, insertTreeNode, flattenTree } from 'std-kit';
+
+const tree = {
+  id: 'root',
+  children: [{ id: 'a' }, { id: 'b', children: [{ id: 'b1' }] }],
+};
+
+findTreeNode(tree, (node) => node.id === 'b1'); // { id: 'b1' }
+flattenTree(tree).map((node) => node.id); // ['root', 'a', 'b', 'b1']
+
+insertTreeNode(tree, (node) => node.id === 'b', { id: 'b2' });
+```
+
+### 📦 Heaps
+
+Work with priority queues using min-heaps or max-heaps:
+
+```typescript
+import { createMinHeap, createMaxHeap } from 'std-kit';
+
+const minHeap = createMinHeap<number>({ items: [5, 1, 4] });
+minHeap.push(2);
+minHeap.pop(); // 1
+
+const maxHeap = createMaxHeap<number>({ items: [5, 1, 4] });
+maxHeap.pop(); // 5
+```
+
 ### 🔄 Promises
 
 Control async execution flow:
@@ -148,7 +181,6 @@ const results = await threads(3, tasks); // Max 3 concurrent requests
 // Sleep/delay execution
 await sleep(1000); // 1 second
 await sleep(500); // 500ms
-
 ```
 
 ### 🔢 Numbers
@@ -193,7 +225,10 @@ function process(value: unknown) {
 
 // Safe execution
 const result = guard(() => JSON.parse(input)); // undefined on error
-const safe = guard(() => riskyOperation(), (err) => err.code === 'SAFE');
+const safe = guard(
+  () => riskyOperation(),
+  (err) => err.code === 'SAFE',
+);
 ```
 
 ### 🧬 TypeScript Utilities
@@ -231,27 +266,34 @@ const buffer = await streamToBuffer(readableStream);
 
 ### Core Modules
 
-| Module | Description |
-|--------|-------------|
-| [📋 array](docs/natives/array.md) | Array manipulation, grouping, sorting, and transformations |
-| [🎯 object](docs/natives/object.md) | Deep access, merge, filter, map, and query objects |
-| [🔢 number](docs/natives/number.md) | Number operations, ranges, rounding, and formatting |
-| [⚡ promise](docs/natives/promise.md) | Async control flow, concurrency, and timing |
-| [⏱️ timer](docs/natives/timer.md) | Sleep, delay, timeout, and interval utilities |
-| [⚙️ function](docs/natives/function.md) | Function composition, memoization, and helpers |
+| Module                                  | Description                                                |
+| --------------------------------------- | ---------------------------------------------------------- |
+| [📋 array](docs/natives/array.md)       | Array manipulation, grouping, sorting, and transformations |
+| [🎯 object](docs/natives/object.md)     | Deep access, merge, filter, map, and query objects         |
+| [🔢 number](docs/natives/number.md)     | Number operations, ranges, rounding, and formatting        |
+| [⚡ promise](docs/natives/promise.md)   | Async control flow, concurrency, and timing                |
+| [⏱️ timer](docs/natives/timer.md)       | Sleep, delay, timeout, and interval utilities              |
+| [⚙️ function](docs/natives/function.md) | Function composition, memoization, and helpers             |
+
+### Structures
+
+| Module                             | Description                                                    |
+| ---------------------------------- | -------------------------------------------------------------- |
+| [📦 heap](docs/structures/heap.md) | Priority queue helpers with configurable min/max heap ordering |
+| [🌳 tree](docs/structures/tree.md) | Typed tree traversal, querying, and immutable node updates     |
 
 ### Utilities
 
-| Module | Description |
-|--------|-------------|
+| Module                                  | Description                                        |
+| --------------------------------------- | -------------------------------------------------- |
 | [🛠️ generic](docs/utilities/generic.md) | Type guards, checks, and generic utility functions |
-| [🛡️ guard](docs/utilities/guard.md) | Safe execution and error handling |
-| [📘 types](docs/utilities/types.md) | TypeScript type utilities and transformations |
+| [🛡️ guard](docs/utilities/guard.md)     | Safe execution and error handling                  |
+| [📘 types](docs/utilities/types.md)     | TypeScript type utilities and transformations      |
 
 ### Node.js Specific
 
-| Module | Description |
-|--------|-------------|
+| Module                              | Description                                      |
+| ----------------------------------- | ------------------------------------------------ |
 | [💾 buffer](docs/natives/buffer.md) | Stream to buffer conversion and buffer utilities |
 
 ---

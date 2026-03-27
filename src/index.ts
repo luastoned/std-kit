@@ -5,6 +5,9 @@ export * from './natives/object';
 export * from './natives/promise';
 export * from './natives/timer';
 
+export * from './structures/heap';
+export * from './structures/tree';
+
 export * from './utilities/generic';
 export * from './utilities/guard';
 export * from './utilities/types';

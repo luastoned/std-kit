@@ -149,7 +149,10 @@ const isTypeDocType = (value: unknown): value is TypeDocType =>
 
 const extractCommentText = (items?: TypeDocText[]): string => {
   if (!items || items.length === 0) return '';
-  return items.map((item) => item.text).join('').trim();
+  return items
+    .map((item) => item.text)
+    .join('')
+    .trim();
 };
 
 const getReflectionSignature = (node: TypeDocNode): TypeDocNode | undefined => {
@@ -394,7 +397,7 @@ function processModules(): void {
     if (parts.length !== 2) continue;
 
     const [category, moduleName] = parts;
-    if (category !== 'natives' && category !== 'utilities') {
+    if (category !== 'natives' && category !== 'utilities' && category !== 'structures') {
       continue;
     }
     const markdown = generateMarkdown(moduleName, items);
