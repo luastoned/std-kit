@@ -32,23 +32,27 @@ export function roundTo(value: number, decimals = 2): number {
 /**
  * Generates a random integer between the specified minimum and maximum values (inclusive).
  *
- * @param min - The minimum value of the range.
- * @param max - The maximum value of the range.
+ * @param min - One bound of the range.
+ * @param max - The other bound of the range.
  * @returns A random integer between the minimum and maximum values.
  */
 export function randomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  const lower = Math.min(min, max);
+  const upper = Math.max(min, max);
+  return Math.floor(Math.random() * (upper - lower + 1)) + lower;
 }
 
 /**
  * Generates a random number between the specified minimum and maximum values.
  *
- * @param min - The minimum value of the range (inclusive).
- * @param max - The maximum value of the range (exclusive).
+ * @param min - One bound of the range.
+ * @param max - The other bound of the range.
  * @returns A random number between the minimum and maximum values.
  */
 export function randomNum(min: number, max: number): number {
-  return Math.random() * (max - min) + min;
+  const lower = Math.min(min, max);
+  const upper = Math.max(min, max);
+  return Math.random() * (upper - lower) + lower;
 }
 
 /**

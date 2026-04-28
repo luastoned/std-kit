@@ -108,12 +108,13 @@ export function flatten<T>(array: readonly unknown[], depth = Infinity): T[] {
  * Creates a new array of a specified size and fills it with the provided value.
  *
  * @template T - The type of elements in the array.
- * @param size - The size of the array to create.
+ * @param size - The size of the array to create. Positive fractional sizes are floored; invalid or non-positive sizes return an empty array.
  * @param value - The value to fill the array with.
  * @returns An array of the specified size filled with the provided value.
  */
 export function fill<T>(size: number, value: T): T[] {
-  return Array(size).fill(value);
+  const normalizedSize = size <= 0 || !Number.isFinite(size) ? 0 : Math.floor(size);
+  return Array(normalizedSize).fill(value);
 }
 
 /**

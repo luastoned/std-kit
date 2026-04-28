@@ -26,9 +26,26 @@ describe('math utils', () => {
     }
   });
 
+  it('generates random integer in reversed inclusive range', () => {
+    for (let idx = 0; idx < 100; idx++) {
+      const num = randomInt(10, 5);
+      expect(num).toBeGreaterThanOrEqual(5);
+      expect(num).toBeLessThanOrEqual(10);
+      expect(Number.isInteger(num)).toBe(true);
+    }
+  });
+
   it('generates random float in exclusive upper bound range', () => {
     for (let idx = 0; idx < 100; idx++) {
       const num = randomNum(5, 10);
+      expect(num).toBeGreaterThanOrEqual(5);
+      expect(num).toBeLessThan(10);
+    }
+  });
+
+  it('generates random float in reversed exclusive upper bound range', () => {
+    for (let idx = 0; idx < 100; idx++) {
+      const num = randomNum(10, 5);
       expect(num).toBeGreaterThanOrEqual(5);
       expect(num).toBeLessThan(10);
     }

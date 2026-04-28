@@ -119,6 +119,16 @@ describe('fill', () => {
   it('should return empty array when size is zero', () => {
     expect(fill(0, 'test')).toEqual([]);
   });
+
+  it('should return empty array for invalid sizes', () => {
+    expect(fill(-1, 'test')).toEqual([]);
+    expect(fill(Number.NaN, 'test')).toEqual([]);
+    expect(fill(Number.POSITIVE_INFINITY, 'test')).toEqual([]);
+  });
+
+  it('should floor fractional sizes', () => {
+    expect(fill(2.9, 'x')).toEqual(['x', 'x']);
+  });
 });
 
 describe('chunk', () => {
