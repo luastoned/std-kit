@@ -37,6 +37,18 @@ describe('getValue', () => {
   it('returns the entire value if path is empty', () => {
     expect(getValue(data, '')).toEqual(data);
   });
+
+  it('does not read inherited properties', () => {
+    const inherited = { token: 'secret' };
+    const obj = Object.create(inherited) as { token?: string };
+
+    expect(getValue(obj, 'token', 'fallback')).toBe('fallback');
+  });
+
+  it('does not traverse forbidden path keys', () => {
+    expect(getValue({}, '__proto__.toString', 'fallback')).toBe('fallback');
+    expect(getValue({}, 'constructor.prototype', 'fallback')).toBe('fallback');
+  });
 });
 
 describe('setValue', () => {

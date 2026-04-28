@@ -32,7 +32,7 @@
 ## TreeMapper
 
 ```typescript
-type TreeMapper<TNode> = (node: TNode, context: TreeContext<TNode>) => TNode;
+type TreeMapper<TNode> = (node: TNode, context: TreeContext<TNode>) => TNode
 ```
 
 Mapper used to transform tree nodes.
@@ -42,7 +42,7 @@ Mapper used to transform tree nodes.
 ## TreeNode
 
 ```typescript
-type TreeNode<TData = Record<string, unknown>, TChildKey = 'children'> = TData & Partial<Record<TChildKey, readonly TreeNode<TData, TChildKey>[]>>;
+type TreeNode<TData = Record<string, unknown>, TChildKey = "children"> = TData & Partial<Record<TChildKey, readonly TreeNode<TData, TChildKey>[]>>
 ```
 
 Represents a recursive tree node with a configurable child key.
@@ -52,17 +52,18 @@ Represents a recursive tree node with a configurable child key.
 ## TreePath
 
 ```typescript
-type TreePath = readonly number[];
+type TreePath = readonly number[]
 ```
 
 Represents a path to a node using child indices.
+
 
 ---
 
 ## TreePredicate
 
 ```typescript
-type TreePredicate<TNode> = (node: TNode, context: TreeContext<TNode>) => boolean;
+type TreePredicate<TNode> = (node: TNode, context: TreeContext<TNode>) => boolean
 ```
 
 Predicate used to match tree nodes.
@@ -72,7 +73,7 @@ Predicate used to match tree nodes.
 ## TreeTarget
 
 ```typescript
-type TreeTarget<TNode> = TreePath | TreePredicate<TNode>;
+type TreeTarget<TNode> = TreePath | TreePredicate<TNode>
 ```
 
 Target used to address a tree node by path or predicate.
@@ -82,7 +83,7 @@ Target used to address a tree node by path or predicate.
 ## TreeUpdater
 
 ```typescript
-type TreeUpdater<TNode> = (node: TNode, context: TreeContext<TNode>) => TNode;
+type TreeUpdater<TNode> = (node: TNode, context: TreeContext<TNode>) => TNode
 ```
 
 Updater used to transform a matched tree node.
@@ -92,7 +93,7 @@ Updater used to transform a matched tree node.
 ## TreeVisitControl
 
 ```typescript
-type TreeVisitControl = void | 'skip' | 'stop';
+type TreeVisitControl = void | "skip" | "stop"
 ```
 
 Controls depth-first traversal in `walkTree`.
@@ -102,7 +103,7 @@ Controls depth-first traversal in `walkTree`.
 ## TreeVisitor
 
 ```typescript
-type TreeVisitor<TNode> = (node: TNode, context: TreeContext<TNode>) => TreeVisitControl;
+type TreeVisitor<TNode> = (node: TNode, context: TreeContext<TNode>) => TreeVisitControl
 ```
 
 Visitor used during tree traversal.
@@ -119,7 +120,9 @@ Finds the first tree node that matches a predicate.
 
 Matching uses depth-first preorder traversal.
 
+
 **Returns:** The first matching node, or `undefined` when no node matches.
+
 
 ---
 
@@ -131,7 +134,9 @@ flattenTree<TNode, TChildKey = "children">(tree: Readonly<TNode>, options?: Read
 
 Flattens a tree into a preorder array of nodes.
 
+
 **Returns:** A preorder array containing every visited node.
+
 
 ---
 
@@ -145,7 +150,9 @@ Inserts a node into the children of the first matching parent target.
 
 Matching uses depth-first preorder traversal.
 
+
 **Returns:** A new tree when insertion succeeds, otherwise the original tree.
+
 
 ---
 
@@ -159,7 +166,9 @@ Maps a tree into a new tree by transforming each node.
 
 Mapping uses depth-first preorder traversal. Child traversal continues from the mapped node's current children.
 
+
 **Returns:** A new mapped tree.
+
 
 ---
 
@@ -173,7 +182,9 @@ Queries all tree nodes that match a predicate.
 
 Matching uses depth-first preorder traversal.
 
+
 **Returns:** All matching nodes in depth-first preorder.
+
 
 ---
 
@@ -187,7 +198,9 @@ Removes the first tree node that matches a target.
 
 Matching uses depth-first preorder traversal.
 
+
 **Returns:** A new tree without the matched node, or `undefined` when the root is removed.
+
 
 ---
 
@@ -201,7 +214,9 @@ Replaces the first tree node that matches a target.
 
 Matching uses depth-first preorder traversal.
 
+
 **Returns:** A new tree when a node is replaced, otherwise the original tree.
+
 
 ---
 
@@ -215,7 +230,9 @@ Updates the first tree node that matches a target.
 
 Matching uses depth-first preorder traversal.
 
+
 **Returns:** A new tree when a node is updated, otherwise the original tree.
+
 
 ---
 
@@ -229,6 +246,9 @@ Walks a tree in depth-first preorder.
 
 Returning `'skip'` skips the current node's descendants. Returning `'stop'` stops traversal entirely.
 
+
 **Returns:** Nothing.
 
+
 ---
+

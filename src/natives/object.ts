@@ -80,10 +80,13 @@ export function getValue<TData, TPath extends string, TDefault = GetFieldType<TD
   defaultValue?: TDefault,
 ): GetFieldType<TData, TPath> | TDefault {
   const keys = tokenizePath(path);
+  if (hasForbiddenPathKeys(keys)) {
+    return defaultValue as TDefault;
+  }
 
   let result: unknown = data; // Use `unknown` to ensure strict type checking
   for (const key of keys) {
-    if (result !== null && result !== undefined && typeof result === 'object' && key in result) {
+    if (result !== null && result !== undefined && typeof result === 'object' && Object.hasOwn(result, key)) {
       result = (result as Record<string, unknown>)[key]; // Use indexed access for objects/arrays
     } else {
       return defaultValue as TDefault;

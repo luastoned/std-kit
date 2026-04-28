@@ -50,18 +50,6 @@ function normalizeParallel(parallel: number): number {
 }
 
 /**
- * Checks whether an array contains only defined values.
- *
- * @template T - The array element type.
- * @param values - The values to validate.
- * @returns Whether all values are defined.
- * @internal
- */
-function hasDefinedValues<T>(values: ReadonlyArray<T | undefined>): values is T[] {
-  return values.every((value) => value !== undefined);
-}
-
-/**
  * Runs promise-returning tasks with a concurrency limit. Resolves in input order, rejects on the first error (Promise.all semantics).
  *
  * @example
@@ -87,7 +75,7 @@ export async function threads<T>(parallel: number, tasks: ReadonlyArray<Deferred
   }
 
   const limit = normalizedParallel === Number.POSITIVE_INFINITY ? tasks.length : Math.min(normalizedParallel, tasks.length);
-  const results: Array<T | undefined> = Array.from({ length: tasks.length });
+  const results: T[] = Array.from({ length: tasks.length });
 
   let nextIdx = 0;
   let activeCount = 0;
@@ -117,10 +105,6 @@ export async function threads<T>(parallel: number, tasks: ReadonlyArray<Deferred
             completedCount++;
             activeCount--;
             if (completedCount === tasks.length) {
-              if (!hasDefinedValues(results)) {
-                reject(new Error('Expected all task results to be defined before resolution.'));
-                return;
-              }
               resolve(results);
               return;
             }

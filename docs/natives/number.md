@@ -27,7 +27,9 @@ clamp(value: number, rangeA: number, rangeB: number): number
 
 Clamps a value between a specified range.
 
+
 **Returns:** The clamped value.
+
 
 ---
 
@@ -39,7 +41,9 @@ deg2rad(degrees: number): number
 
 Converts degrees to radians.
 
+
 **Returns:** The equivalent value in radians.
+
 
 ---
 
@@ -51,7 +55,9 @@ lerp(from: number, to: number, t: number): number
 
 Linearly interpolates between two numbers.
 
+
 **Returns:** The interpolated value.
+
 
 ---
 
@@ -63,7 +69,9 @@ mean(values: readonly number[]): number
 
 Calculates the mean of an array of numbers.
 
+
 **Returns:** The mean value of the numbers.
+
 
 ---
 
@@ -75,7 +83,9 @@ rad2deg(radians: number): number
 
 Converts radians to degrees.
 
+
 **Returns:** The value in degrees.
+
 
 ---
 
@@ -87,7 +97,9 @@ randomInt(min: number, max: number): number
 
 Generates a random integer between the specified minimum and maximum values (inclusive).
 
+
 **Returns:** A random integer between the minimum and maximum values.
+
 
 ---
 
@@ -99,7 +111,9 @@ randomNum(min: number, max: number): number
 
 Generates a random number between the specified minimum and maximum values.
 
+
 **Returns:** A random number between the minimum and maximum values.
+
 
 ---
 
@@ -111,7 +125,9 @@ range(start: number, end: number, step: number = 1): readonly number[]
 
 Generates an array of numbers within a specified range.
 
+
 **Returns:** A readonly array of numbers within the specified range.
+
 
 ---
 
@@ -123,7 +139,9 @@ roundTo(value: number, decimals: number = 2): number
 
 Rounds a number to the specified number of decimal places.
 
+
 **Returns:** The rounded number.
+
 
 ---
 
@@ -135,6 +153,9 @@ sum(values: readonly number[]): number
 
 Calculates the sum of an array of numbers.
 
+
 **Returns:** The sum of the numbers in the array.
 
+
 ---
+

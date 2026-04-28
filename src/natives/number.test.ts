@@ -53,8 +53,14 @@ describe('math utils', () => {
     expect(range(5, 25, 5)).toEqual([5, 10, 15, 20, 25]);
   });
 
+  it('generates descending ranges', () => {
+    expect(range(5, 1)).toEqual([5, 4, 3, 2, 1]);
+    expect(range(10, 0, 3)).toEqual([10, 7, 4, 1]);
+  });
+
   it('clamps invalid step values to 1', () => {
     expect(range(1, 5, 0)).toEqual([1, 2, 3, 4, 5]); // step 0 clamped to 1
+    expect(range(5, 1, 0)).toEqual([5, 4, 3, 2, 1]); // step 0 clamped to 1
     expect(range(1, 5, -2)).toEqual([1, 2, 3, 4, 5]); // negative step clamped to 1
     expect(range(1, 5, 0.5)).toEqual([1, 2, 3, 4, 5]); // fractional step clamped to 1
   });

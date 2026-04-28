@@ -80,17 +80,21 @@ export function rad2deg(radians: number): number {
  *
  *   range(2, 8, 2);
  *   // [2, 4, 6, 8]
+ *
+ *   range(5, 1);
+ *   // [5, 4, 3, 2, 1]
  *   ```;
  *
  * @param start - The starting number of the range.
  * @param end - The ending number of the range.
- * @param step - The increment value between numbers in the range. Default is 1. If not a positive integer, it will be clamped to 1.
+ * @param step - The positive distance between numbers in the range. Default is 1. If not a positive integer, it will be clamped to 1.
  * @returns A readonly array of numbers within the specified range.
  */
 export function range(start: number, end: number, step = 1): readonly number[] {
   const clampedStep = step <= 0 || !Number.isFinite(step) ? 1 : Math.max(1, Math.floor(step));
-  const length = Math.ceil((end - start + 1) / clampedStep);
-  return Array.from({ length }, (_, i) => start + i * clampedStep);
+  const direction = start <= end ? 1 : -1;
+  const length = Math.floor(Math.abs(end - start) / clampedStep) + 1;
+  return Array.from({ length }, (_, i) => start + i * clampedStep * direction);
 }
 
 /**

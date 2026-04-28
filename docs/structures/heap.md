@@ -19,13 +19,12 @@
 ## HeapCompare
 
 ```typescript
-type HeapCompare<T> = (a: T, b: T) => number;
+type HeapCompare<T> = (a: T, b: T) => number
 ```
 
 Comparison function used to order heap items.
 
-Values less than zero place `a` ahead of `b`, values greater than zero place `b` ahead of `a`,
-and zero keeps them equivalent.
+Values less than zero place `a` ahead of `b`, values greater than zero place `b` ahead of `a`, and zero keeps them equivalent.
 
 ---
 
@@ -37,7 +36,9 @@ createHeap<T>(options: Readonly<HeapOptions<T>>): Heap<T>
 
 Creates a heap with custom ordering.
 
+
 **Returns:** A stateful heap API.
+
 
 ---
 
@@ -49,7 +50,9 @@ createMaxHeap<T>(options: Readonly<Partial<HeapOptions<T>>> = {}): Heap<T>
 
 Creates a max-heap for primitive or otherwise naturally comparable values.
 
+
 **Returns:** A max-heap instance.
+
 
 ---
 
@@ -61,6 +64,9 @@ createMinHeap<T>(options: Readonly<Partial<HeapOptions<T>>> = {}): Heap<T>
 
 Creates a min-heap for primitive or otherwise naturally comparable values.
 
+
 **Returns:** A min-heap instance.
 
+
 ---
+

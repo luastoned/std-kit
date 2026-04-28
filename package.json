@@ -26,14 +26,24 @@
   "types": "./lib/index.d.ts",
   "exports": {
     ".": {
-      "types": "./lib/index.d.ts",
-      "import": "./lib/index.mjs",
-      "require": "./lib/index.js"
+      "import": {
+        "types": "./lib/index.d.mts",
+        "default": "./lib/index.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.ts",
+        "default": "./lib/index.js"
+      }
     },
     "./node": {
-      "types": "./lib/node.d.cts",
-      "import": "./lib/node.mjs",
-      "require": "./lib/node.cjs"
+      "import": {
+        "types": "./lib/node.d.mts",
+        "default": "./lib/node.mjs"
+      },
+      "require": {
+        "types": "./lib/node.d.cts",
+        "default": "./lib/node.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
@@ -45,9 +55,10 @@
     "clean": "rimraf coverage dist docs lib",
     "docs": "yarn docs:typedoc && yarn docs:transform",
     "docs:transform": "tsx scripts/transform-docs.ts",
-    "docs:typedoc": "typedoc --excludeInternal --intentionallyNotExported KeySelector --intentionallyNotExported GetNestedField --intentionallyNotExported GetDirectOrIndexedField --json docs/documentation.json",
+    "docs:typedoc": "typedoc src/index.ts src/node.ts --excludeInternal --intentionallyNotExported KeySelector --intentionallyNotExported GetNestedField --intentionallyNotExported GetDirectOrIndexedField --json docs/documentation.json",
     "test": "vitest --run",
     "typecheck": "tsc --noEmit",
+    "verify": "yarn typecheck && yarn lint:check && yarn format:check && yarn test",
     "release": "release-it",
     "format": "yarn format:write",
     "format:check": "oxfmt --check ./src",

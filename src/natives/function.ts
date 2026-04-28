@@ -17,16 +17,17 @@
  * @param fn - The function to execute once.
  * @returns A new function that executes the original function only on the first call.
  */
-export function once<Args extends unknown[], Ret>(fn: (...args: Args) => Ret): (...args: Args) => Ret | undefined {
+export function once<Args extends unknown[], Ret>(fn: (...args: Args) => Ret): (...args: Args) => Ret {
   let called = false;
   let result: Ret;
 
-  return function onceWrapper(...args: Args): Ret | undefined {
+  return function onceWrapper(...args: Args): Ret {
     if (!called) {
       called = true;
       result = fn(...args);
       return result;
     }
+
     return result;
   };
 }

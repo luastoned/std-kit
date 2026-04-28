@@ -57,4 +57,10 @@ describe('threads', () => {
     expect(elapsed).toBeGreaterThanOrEqual(80);
     expect(elapsed).toBeLessThanOrEqual(140);
   });
+
+  it('preserves undefined task results', async () => {
+    const tasks = [defer(() => undefined), defer(() => 'done')];
+
+    await expect(threads(2, tasks)).resolves.toEqual([undefined, 'done']);
+  });
 });

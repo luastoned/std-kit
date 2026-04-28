@@ -19,7 +19,9 @@ pipeToBuffer(stream: Readable): Promise<Buffer<ArrayBufferLike>>
 
 Pipes a readable stream to a buffer.
 
+
 **Returns:** A promise that resolves to a buffer containing the data from the stream.
+
 
 ---
 
@@ -31,6 +33,9 @@ streamToBuffer(stream: Readable): Promise<Buffer<ArrayBufferLike>>
 
 Converts a readable stream into a buffer.
 
+
 **Returns:** A promise that resolves with the concatenated buffer of all chunks read from the stream.
 
+
 ---
+
