@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { clamp, roundTo, randomInt, randomNum, deg2rad, rad2deg, range, sum, mean, lerp } from './number';
 
 describe('math utils', () => {

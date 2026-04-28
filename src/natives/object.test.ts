@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { getValue, setValue, queryObject, filterObject, mapObject, mergeObject, pick, omit } from './object';
 
 describe('getValue', () => {

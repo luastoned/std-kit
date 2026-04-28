@@ -8,34 +8,35 @@ export type DeferredTask<T> = () => Promise<T>;
 /**
  * Wraps a function call so it can be executed later as a promise task.
  *
+ * @example
+ *   ```ts
+ *   import { defer } from 'std-kit';
+ *
+ *   const task = defer((name: string) => `Hello ${name}`, 'Ada');
+ *   await task();
+ *   // 'Hello Ada'
+ *   ```
+ *
  * @template Args - The argument tuple type for the function.
  * @template Ret - The return type of the function.
  * @param fn - The function to wrap.
  * @param args - Arguments to apply when the task runs.
  * @returns A deferred task that resolves to the function result.
- *
- * @example
- * ```ts
- * import { defer } from 'std-kit';
- *
- * const task = defer((name: string) => `Hello ${name}`, 'Ada');
- * await task();
- * // 'Hello Ada'
- * ```
  */
-export const defer = <Args extends readonly unknown[], Ret>(fn: (...args: Args) => Ret | Promise<Ret>, ...args: Args): DeferredTask<Awaited<Ret>> => {
-  return () => Promise.resolve(fn(...args)) as Promise<Awaited<Ret>>;
-};
+export function defer<Args extends readonly unknown[], Ret>(fn: (...args: Args) => Ret | Promise<Ret>, ...args: Args): DeferredTask<Awaited<Ret>> {
+  return function deferredTask(): Promise<Awaited<Ret>> {
+    return Promise.resolve(fn(...args)) as Promise<Awaited<Ret>>;
+  };
+}
 
 /**
- * Normalizes a parallelism value to a safe runtime limit.
- * Preserves `Infinity`, and clamps invalid or non-positive values to `1`.
+ * Normalizes a parallelism value to a safe runtime limit. Preserves `Infinity`, and clamps invalid or non-positive values to `1`.
  *
- * @internal
  * @param parallel - Raw parallelism input.
  * @returns A normalized parallelism value.
+ * @internal
  */
-const normalizeParallel = (parallel: number): number => {
+function normalizeParallel(parallel: number): number {
   if (parallel === Number.POSITIVE_INFINITY) {
     return parallel;
   }
@@ -46,38 +47,39 @@ const normalizeParallel = (parallel: number): number => {
 
   const floored = Math.floor(parallel);
   return floored > 0 ? floored : 1;
-};
+}
 
 /**
  * Checks whether an array contains only defined values.
  *
- * @internal
  * @template T - The array element type.
  * @param values - The values to validate.
  * @returns Whether all values are defined.
+ * @internal
  */
-const hasDefinedValues = <T>(values: ReadonlyArray<T | undefined>): values is T[] => values.every((value) => value !== undefined);
+function hasDefinedValues<T>(values: ReadonlyArray<T | undefined>): values is T[] {
+  return values.every((value) => value !== undefined);
+}
 
 /**
- * Runs promise-returning tasks with a concurrency limit.
- * Resolves in input order, rejects on the first error (Promise.all semantics).
+ * Runs promise-returning tasks with a concurrency limit. Resolves in input order, rejects on the first error (Promise.all semantics).
+ *
+ * @example
+ *   ```ts
+ *   import { defer, threads } from 'std-kit';
+ *
+ *   const tasks = [defer(async () => 1), defer(async () => 2), defer(async () => 3)];
+ *
+ *   await threads(2, tasks);
+ *   // [1, 2, 3]
+ *   ```;
  *
  * @template T - The task result type.
  * @param parallel - Maximum number of concurrent tasks. Invalid values default to 1.
  * @param tasks - Deferred tasks to execute.
  * @returns A promise resolving to results in the same order as input tasks.
- *
- * @example
- * ```ts
- * import { defer, threads } from 'std-kit';
- *
- * const tasks = [defer(async () => 1), defer(async () => 2), defer(async () => 3)];
- *
- * await threads(2, tasks);
- * // [1, 2, 3]
- * ```
  */
-export const threads = async <T>(parallel: number, tasks: ReadonlyArray<DeferredTask<T>>): Promise<T[]> => {
+export async function threads<T>(parallel: number, tasks: ReadonlyArray<DeferredTask<T>>): Promise<T[]> {
   const normalizedParallel = normalizeParallel(parallel);
 
   if (tasks.length === 0) {
@@ -93,7 +95,7 @@ export const threads = async <T>(parallel: number, tasks: ReadonlyArray<Deferred
   let aborted = false;
 
   return new Promise<T[]>((resolve, reject) => {
-    const launchNext = () => {
+    function launchNext(): void {
       if (aborted) return;
 
       while (activeCount < limit && nextIdx < tasks.length) {
@@ -130,8 +132,8 @@ export const threads = async <T>(parallel: number, tasks: ReadonlyArray<Deferred
             reject(error);
           });
       }
-    };
+    }
 
     launchNext();
   });
-};
+}

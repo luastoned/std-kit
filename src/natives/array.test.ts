@@ -1,4 +1,5 @@
 import { expect, describe, it } from 'vitest';
+
 import { unique, compact, reverse, shuffle, flatten, fill, chunk, cluster, countBy, groupBy, orderBy, uniqueBy, cartesian, combinations } from './array';
 
 describe('unique', () => {

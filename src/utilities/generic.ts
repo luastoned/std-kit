@@ -3,18 +3,20 @@ import type { Container, MutableContainer } from '~/utilities/types';
 /**
  * Checks if the given item is an array.
  *
+ * @example
+ *   ```ts
+ *   import { isArray } from 'std-kit';
+ *
+ *   isArray([1, 2, 3]);
+ *   // true
+ *   ```;
+ *
  * @param item - The item to check.
  * @returns `true` if the item is an array, `false` otherwise.
- *
- * @example
- * ```ts
- * import { isArray } from 'std-kit';
- *
- * isArray([1, 2, 3]);
- * // true
- * ```
  */
-export const isArray = <T = unknown>(item: unknown): item is T[] | readonly T[] => typeof item === 'object' && Array.isArray(item);
+export function isArray<T = unknown>(item: unknown): item is T[] | readonly T[] {
+  return typeof item === 'object' && Array.isArray(item);
+}
 
 /**
  * Checks if the given item is a boolean.
@@ -22,7 +24,9 @@ export const isArray = <T = unknown>(item: unknown): item is T[] | readonly T[] 
  * @param item - The item to check.
  * @returns `true` if the item is a boolean, `false` otherwise.
  */
-export const isBoolean = (item: unknown): item is boolean => typeof item === 'boolean';
+export function isBoolean(item: unknown): item is boolean {
+  return typeof item === 'boolean';
+}
 
 /**
  * Checks if the given item is a Date object.
@@ -30,7 +34,9 @@ export const isBoolean = (item: unknown): item is boolean => typeof item === 'bo
  * @param item - The item to check.
  * @returns `true` if the item is a Date object, `false` otherwise.
  */
-export const isDate = (item: unknown): item is Date => item instanceof Date;
+export function isDate(item: unknown): item is Date {
+  return item instanceof Date;
+}
 
 /**
  * Checks if the given item is defined.
@@ -38,7 +44,9 @@ export const isDate = (item: unknown): item is Date => item instanceof Date;
  * @param item - The item to check.
  * @returns A boolean indicating whether the item is defined or not.
  */
-export const isDefined = <T = unknown>(item: T): item is Exclude<T, undefined> => item !== undefined;
+export function isDefined<T = unknown>(item: T): item is Exclude<T, undefined> {
+  return item !== undefined;
+}
 
 /**
  * Checks if the given item is an instance of the Error class.
@@ -46,7 +54,9 @@ export const isDefined = <T = unknown>(item: T): item is Exclude<T, undefined> =
  * @param item - The item to check.
  * @returns `true` if the item is an instance of Error, `false` otherwise.
  */
-export const isError = (item: unknown): item is Error => item instanceof Error;
+export function isError(item: unknown): item is Error {
+  return item instanceof Error;
+}
 
 /**
  * Checks if the given item is a function.
@@ -54,7 +64,9 @@ export const isError = (item: unknown): item is Error => item instanceof Error;
  * @param item - The item to check.
  * @returns `true` if the item is a function, `false` otherwise.
  */
-export const isFunction = (item: unknown): item is (...args: unknown[]) => unknown => typeof item === 'function';
+export function isFunction(item: unknown): item is (...args: unknown[]) => unknown {
+  return typeof item === 'function';
+}
 
 /**
  * Checks if the given item is an infinity number.
@@ -62,7 +74,9 @@ export const isFunction = (item: unknown): item is (...args: unknown[]) => unkno
  * @param item - The item to be checked.
  * @returns A boolean indicating whether the item is an infinity number.
  */
-export const isInfinity = (item: unknown): item is number => item === Number.POSITIVE_INFINITY || item === Number.NEGATIVE_INFINITY;
+export function isInfinity(item: unknown): item is number {
+  return item === Number.POSITIVE_INFINITY || item === Number.NEGATIVE_INFINITY;
+}
 
 /**
  * Checks if the given item is an instance of Map.
@@ -72,7 +86,9 @@ export const isInfinity = (item: unknown): item is number => item === Number.POS
  * @param item - The item to check.
  * @returns `true` if the item is a Map, `false` otherwise.
  */
-export const isMap = <K = unknown, V = unknown>(item: unknown): item is Map<K, V> => item instanceof Map;
+export function isMap<K = unknown, V = unknown>(item: unknown): item is Map<K, V> {
+  return item instanceof Map;
+}
 
 /**
  * Checks if the given item is null.
@@ -80,7 +96,9 @@ export const isMap = <K = unknown, V = unknown>(item: unknown): item is Map<K, V
  * @param item - The item to check.
  * @returns `true` if the item is null, `false` otherwise.
  */
-export const isNull = (item: unknown): item is null => item === null;
+export function isNull(item: unknown): item is null {
+  return item === null;
+}
 
 /**
  * Checks if the given item is a number.
@@ -88,39 +106,45 @@ export const isNull = (item: unknown): item is null => item === null;
  * @param item - The item to be checked.
  * @returns `true` if the item is a number, `false` otherwise.
  */
-export const isNumber = (item: unknown): item is number => typeof item === 'number' && Number.isFinite(item);
+export function isNumber(item: unknown): item is number {
+  return typeof item === 'number' && Number.isFinite(item);
+}
 
 /**
  * Checks if the given item is an object.
  *
+ * @example
+ *   ```ts
+ *   import { isObject } from 'std-kit';
+ *
+ *   isObject({ name: 'Ada' });
+ *   // true
+ *   ```;
+ *
  * @param item - The item to check.
  * @returns `true` if the item is an object, `false` otherwise.
- *
- * @example
- * ```ts
- * import { isObject } from 'std-kit';
- *
- * isObject({ name: 'Ada' });
- * // true
- * ```
  */
-export const isObject = (item: unknown): item is Record<PropertyKey, unknown> => typeof item === 'object' && !Array.isArray(item) && item !== null;
+export function isObject(item: unknown): item is Record<PropertyKey, unknown> {
+  return typeof item === 'object' && !Array.isArray(item) && item !== null;
+}
 
 /**
  * Checks if the given item is an object or array container.
  *
+ * @example
+ *   ```ts
+ *   import { isContainer } from 'std-kit';
+ *
+ *   isContainer(['a', 'b']);
+ *   // true
+ *   ```;
+ *
  * @param item - The item to check.
  * @returns `true` if the item is an object or array container.
- *
- * @example
- * ```ts
- * import { isContainer } from 'std-kit';
- *
- * isContainer(['a', 'b']);
- * // true
- * ```
  */
-export const isContainer = (item: unknown): item is Container => isObject(item) || isArray(item);
+export function isContainer(item: unknown): item is Container {
+  return isObject(item) || isArray(item);
+}
 
 /**
  * Checks if the given item can be treated as a mutable container.
@@ -128,7 +152,9 @@ export const isContainer = (item: unknown): item is Container => isObject(item) 
  * @param item - The item to check.
  * @returns `true` if the item is an object or array suitable for mutation.
  */
-export const isMutableContainer = (item: unknown): item is MutableContainer => isContainer(item);
+export function isMutableContainer(item: unknown): item is MutableContainer {
+  return isContainer(item);
+}
 
 /**
  * Checks if the given item is a plain object.
@@ -136,23 +162,27 @@ export const isMutableContainer = (item: unknown): item is MutableContainer => i
  * @param item - The item to check.
  * @returns A boolean indicating whether the item is a plain object.
  */
-export const isPlainObject = (item: unknown): item is Record<PropertyKey, unknown> => isObject(item) && item.constructor === Object;
+export function isPlainObject(item: unknown): item is Record<PropertyKey, unknown> {
+  return isObject(item) && item.constructor === Object;
+}
 
 /**
  * Checks if the given item is a Promise.
  *
+ * @example
+ *   ```ts
+ *   import { isPromise } from 'std-kit';
+ *
+ *   isPromise(Promise.resolve(42));
+ *   // true
+ *   ```;
+ *
  * @param item - The item to check.
  * @returns `true` if the item is a Promise, `false` otherwise.
- *
- * @example
- * ```ts
- * import { isPromise } from 'std-kit';
- *
- * isPromise(Promise.resolve(42));
- * // true
- * ```
  */
-export const isPromise = <T = unknown>(item: unknown): item is Promise<T> => item instanceof Promise;
+export function isPromise<T = unknown>(item: unknown): item is Promise<T> {
+  return item instanceof Promise;
+}
 
 /**
  * Checks if the given item is a regular expression.
@@ -160,7 +190,9 @@ export const isPromise = <T = unknown>(item: unknown): item is Promise<T> => ite
  * @param item - The item to check.
  * @returns `true` if the item is a regular expression, `false` otherwise.
  */
-export const isRegExp = (item: unknown): item is RegExp => item instanceof RegExp;
+export function isRegExp(item: unknown): item is RegExp {
+  return item instanceof RegExp;
+}
 
 /**
  * Checks if the given item is a Set.
@@ -168,7 +200,9 @@ export const isRegExp = (item: unknown): item is RegExp => item instanceof RegEx
  * @param item - The item to check.
  * @returns A boolean indicating whether the item is a Set.
  */
-export const isSet = <T = unknown>(item: unknown): item is Set<T> => item instanceof Set;
+export function isSet<T = unknown>(item: unknown): item is Set<T> {
+  return item instanceof Set;
+}
 
 /**
  * Checks if the given item is a string.
@@ -176,7 +210,9 @@ export const isSet = <T = unknown>(item: unknown): item is Set<T> => item instan
  * @param item - The item to check.
  * @returns `true` if the item is a string, `false` otherwise.
  */
-export const isString = (item: unknown): item is string => typeof item === 'string';
+export function isString(item: unknown): item is string {
+  return typeof item === 'string';
+}
 
 /**
  * Checks if the given item is a symbol.
@@ -184,7 +220,9 @@ export const isString = (item: unknown): item is string => typeof item === 'stri
  * @param item - The item to check.
  * @returns `true` if the item is a symbol, `false` otherwise.
  */
-export const isSymbol = (item: unknown): item is symbol => typeof item === 'symbol';
+export function isSymbol(item: unknown): item is symbol {
+  return typeof item === 'symbol';
+}
 
 /**
  * Checks if the given item is undefined.
@@ -192,7 +230,9 @@ export const isSymbol = (item: unknown): item is symbol => typeof item === 'symb
  * @param item - The item to check.
  * @returns A boolean indicating whether the item is undefined or not.
  */
-export const isUndefined = (item: unknown): item is undefined => item === undefined;
+export function isUndefined(item: unknown): item is undefined {
+  return item === undefined;
+}
 
 /**
  * Checks if the given item is an instance of WeakMap.
@@ -202,7 +242,9 @@ export const isUndefined = (item: unknown): item is undefined => item === undefi
  * @param item - The item to be checked.
  * @returns A boolean indicating whether the item is an instance of WeakMap.
  */
-export const isWeakMap = <K extends WeakKey, V = unknown>(item: unknown): item is WeakMap<K, V> => item instanceof WeakMap;
+export function isWeakMap<K extends WeakKey, V = unknown>(item: unknown): item is WeakMap<K, V> {
+  return item instanceof WeakMap;
+}
 
 /**
  * Checks if the given item is a WeakSet.
@@ -211,27 +253,29 @@ export const isWeakMap = <K extends WeakKey, V = unknown>(item: unknown): item i
  * @param item - The item to check.
  * @returns A boolean indicating whether the item is a WeakSet.
  */
-export const isWeakSet = <T extends WeakKey>(item: unknown): item is WeakSet<T> => item instanceof WeakSet;
+export function isWeakSet<T extends WeakKey>(item: unknown): item is WeakSet<T> {
+  return item instanceof WeakSet;
+}
 
 /**
- * Creates a deep clone of an item using JSON.parse/JSON.stringify serialization.
- * Supports most JSON-compatible types including objects, arrays, strings, numbers, booleans, and null.
- * Cannot clone functions, Dates, RegExps, Maps, Sets, ArrayBuffers, typed arrays, or circular references.
- * For more complex cloning needs, consider using structuredClone() which supports additional types.
+ * Creates a deep clone of an item using JSON.parse/JSON.stringify serialization. Supports most JSON-compatible types including objects, arrays, strings,
+ * numbers, booleans, and null. Cannot clone functions, Dates, RegExps, Maps, Sets, ArrayBuffers, typed arrays, or circular references. For more complex cloning
+ * needs, consider using structuredClone() which supports additional types.
+ *
+ * @example
+ *   ```ts
+ *   import { cloneObject } from 'std-kit';
+ *
+ *   const original = { user: { name: 'Ada' } };
+ *   const cloned = cloneObject(original);
+ *
+ *   cloned.user.name = 'Grace';
+ *   // original.user.name is still 'Ada'
+ *   ```;
  *
  * @param item - The item to clone.
  * @returns The cloned item or undefined if the input is undefined.
- *
- * @example
- * ```ts
- * import { cloneObject } from 'std-kit';
- *
- * const original = { user: { name: 'Ada' } };
- * const cloned = cloneObject(original);
- *
- * cloned.user.name = 'Grace';
- * // original.user.name is still 'Ada'
- * ```
  */
-export const cloneObject = <T>(item: T): T extends undefined ? undefined : T =>
-  (item !== undefined ? JSON.parse(JSON.stringify(item)) : undefined) as T extends undefined ? undefined : T;
+export function cloneObject<T>(item: T): T extends undefined ? undefined : T {
+  return (item !== undefined ? JSON.parse(JSON.stringify(item)) : undefined) as T extends undefined ? undefined : T;
+}

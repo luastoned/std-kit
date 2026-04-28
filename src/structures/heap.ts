@@ -1,8 +1,7 @@
 /**
  * Comparison function used to order heap items.
  *
- * Values less than zero place `a` ahead of `b`, values greater than zero place `b` ahead of `a`,
- * and zero keeps them equivalent.
+ * Values less than zero place `a` ahead of `b`, values greater than zero place `b` ahead of `a`, and zero keeps them equivalent.
  *
  * @template T - The heap item type.
  * @param a - The first item to compare.
@@ -41,10 +40,10 @@ export interface Heap<T> {
 /**
  * Creates a default comparator for primitive min/max heaps.
  *
- * @internal
  * @template T - The heap item type.
  * @param direction - Whether lower or higher values should rise to the top.
  * @returns A comparator for primitive values.
+ * @internal
  */
 function createDefaultCompare<T>(direction: 'min' | 'max'): HeapCompare<T> {
   return (a: T, b: T): number => {
@@ -63,12 +62,12 @@ function createDefaultCompare<T>(direction: 'min' | 'max'): HeapCompare<T> {
 /**
  * Swaps two entries in a heap array.
  *
- * @internal
  * @template T - The heap item type.
  * @param items - The heap array.
  * @param leftIndex - The first index.
  * @param rightIndex - The second index.
  * @returns Nothing.
+ * @internal
  */
 function swapHeapItems<T>(items: T[], leftIndex: number, rightIndex: number): void {
   const leftItem = items[leftIndex];
@@ -80,12 +79,12 @@ function swapHeapItems<T>(items: T[], leftIndex: number, rightIndex: number): vo
 /**
  * Restores heap order by moving an item upward.
  *
- * @internal
  * @template T - The heap item type.
  * @param items - The heap array.
  * @param startIndex - The index to bubble up.
  * @param compare - The heap comparator.
  * @returns The final item index.
+ * @internal
  */
 function siftUp<T>(items: T[], startIndex: number, compare: HeapCompare<T>): number {
   let index = startIndex;
@@ -108,12 +107,12 @@ function siftUp<T>(items: T[], startIndex: number, compare: HeapCompare<T>): num
 /**
  * Restores heap order by moving an item downward.
  *
- * @internal
  * @template T - The heap item type.
  * @param items - The heap array.
  * @param startIndex - The index to sift down.
  * @param compare - The heap comparator.
  * @returns The final item index.
+ * @internal
  */
 function siftDown<T>(items: T[], startIndex: number, compare: HeapCompare<T>): number {
   let index = startIndex;
@@ -145,11 +144,11 @@ function siftDown<T>(items: T[], startIndex: number, compare: HeapCompare<T>): n
 /**
  * Builds a heap in-place from an existing item array.
  *
- * @internal
  * @template T - The heap item type.
  * @param items - The array to heapify.
  * @param compare - The heap comparator.
  * @returns Nothing.
+ * @internal
  */
 function heapify<T>(items: T[], compare: HeapCompare<T>): void {
   for (let index = Math.floor(items.length / 2) - 1; index >= 0; index--) {
@@ -160,26 +159,26 @@ function heapify<T>(items: T[], compare: HeapCompare<T>): void {
 /**
  * Creates a heap with custom ordering.
  *
+ * @example
+ *   ```ts
+ *   import { createHeap } from 'std-kit';
+ *
+ *   const jobs = createHeap({
+ *     items: [
+ *       { id: 'deploy', priority: 30 },
+ *       { id: 'backup', priority: 10 },
+ *       { id: 'reindex', priority: 20 },
+ *     ],
+ *     compare: (a, b) => a.priority - b.priority,
+ *   });
+ *
+ *   jobs.pop();
+ *   // { id: 'backup', priority: 10 }
+ *   ```;
+ *
  * @template T - The heap item type.
  * @param options - Heap creation options.
  * @returns A stateful heap API.
- *
- * @example
- * ```ts
- * import { createHeap } from 'std-kit';
- *
- * const jobs = createHeap({
- *   items: [
- *     { id: 'deploy', priority: 30 },
- *     { id: 'backup', priority: 10 },
- *     { id: 'reindex', priority: 20 },
- *   ],
- *   compare: (a, b) => a.priority - b.priority,
- * });
- *
- * jobs.pop();
- * // { id: 'backup', priority: 10 }
- * ```
  */
 export function createHeap<T>(options: Readonly<HeapOptions<T>>): Heap<T> {
   const items = options.items ? [...options.items] : [];
@@ -254,20 +253,20 @@ export function createHeap<T>(options: Readonly<HeapOptions<T>>): Heap<T> {
 /**
  * Creates a min-heap for primitive or otherwise naturally comparable values.
  *
+ * @example
+ *   ```ts
+ *   import { createMinHeap } from 'std-kit';
+ *
+ *   const queue = createMinHeap<number>({ items: [8, 3, 5] });
+ *   queue.push(1);
+ *
+ *   queue.pop();
+ *   // 1
+ *   ```;
+ *
  * @template T - The heap item type.
  * @param options - Optional initial items and comparator override.
  * @returns A min-heap instance.
- *
- * @example
- * ```ts
- * import { createMinHeap } from 'std-kit';
- *
- * const queue = createMinHeap<number>({ items: [8, 3, 5] });
- * queue.push(1);
- *
- * queue.pop();
- * // 1
- * ```
  */
 export function createMinHeap<T>(options: Readonly<Partial<HeapOptions<T>>> = {}): Heap<T> {
   const compare = options.compare ?? createDefaultCompare<T>('min');
@@ -277,20 +276,20 @@ export function createMinHeap<T>(options: Readonly<Partial<HeapOptions<T>>> = {}
 /**
  * Creates a max-heap for primitive or otherwise naturally comparable values.
  *
+ * @example
+ *   ```ts
+ *   import { createMaxHeap } from 'std-kit';
+ *
+ *   const scoreboard = createMaxHeap<number>({ items: [12, 42, 7] });
+ *   scoreboard.push(30);
+ *
+ *   scoreboard.peek();
+ *   // 42
+ *   ```;
+ *
  * @template T - The heap item type.
  * @param options - Optional initial items and comparator override.
  * @returns A max-heap instance.
- *
- * @example
- * ```ts
- * import { createMaxHeap } from 'std-kit';
- *
- * const scoreboard = createMaxHeap<number>({ items: [12, 42, 7] });
- * scoreboard.push(30);
- *
- * scoreboard.peek();
- * // 42
- * ```
  */
 export function createMaxHeap<T>(options: Readonly<Partial<HeapOptions<T>>> = {}): Heap<T> {
   const compare = options.compare ?? createDefaultCompare<T>('max');

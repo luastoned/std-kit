@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { findTreeNode, flattenTree, insertTreeNode, mapTree, queryTree, removeTreeNode, replaceTreeNode, updateTreeNode, walkTree } from './tree';
 
 type ItemTreeNode = {

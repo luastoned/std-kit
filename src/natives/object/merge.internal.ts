@@ -1,14 +1,16 @@
-import type { PlainObject } from '~/utilities/types';
 import { isArray, isPlainObject } from '~/utilities/generic';
+import type { PlainObject } from '~/utilities/types';
 
 /**
  * Strategy used to merge arrays while deep-merging objects.
+ *
  * @internal
  */
 export type MergeArrayStrategy = boolean | string | ((item: unknown, index: number) => unknown);
 
 /**
  * Public-facing `mergeObject` options shape.
+ *
  * @internal
  */
 export interface MergeObjectOptions {
@@ -20,6 +22,7 @@ export interface MergeObjectOptions {
 
 /**
  * Fully normalized runtime merge options.
+ *
  * @internal
  */
 export interface MergeRuntimeOptions {
@@ -31,46 +34,52 @@ export interface MergeRuntimeOptions {
 
 /**
  * Merge callback used for nested plain objects.
+ *
  * @internal
  */
 type PlainObjectMergeFn = (src: PlainObject, patch: PlainObject, isStrictAtThisLevel: boolean) => PlainObject;
 
 /**
  * Creates a shallow copy for plain objects and returns non-objects as-is.
- * @internal
+ *
  * @param value - Value to clone when needed.
  * @returns A shallow-cloned plain object or original value.
+ * @internal
  */
-const clonePlainObjectIfNeeded = (value: unknown): unknown => (isPlainObject(value) ? { ...value } : value);
+function clonePlainObjectIfNeeded(value: unknown): unknown {
+  return isPlainObject(value) ? { ...value } : value;
+}
 
 /**
  * Normalizes merge options with defaults.
- * @internal
+ *
  * @param options - Raw merge options.
  * @returns Normalized merge options.
+ * @internal
  */
-export const normalizeMergeOptions = (options: Readonly<MergeObjectOptions> = {}): MergeRuntimeOptions => {
+export function normalizeMergeOptions(options: Readonly<MergeObjectOptions> = {}): MergeRuntimeOptions {
   const { immutable = true, mergeArrays = true, applyUndefined = false, strict = false } = options;
   return { immutable, mergeArrays, applyUndefined, strict };
-};
+}
 
 /**
  * Merges object-arrays by key matching.
- * @internal
+ *
  * @param srcArray - Source array.
  * @param patchArray - Patch array.
  * @param strict - Whether strict mode is enabled.
  * @param getKey - Key extraction callback.
  * @param mergeObjectEntries - Object merge callback.
  * @returns Merged array value.
+ * @internal
  */
-const mergeArraysByKey = (
+function mergeArraysByKey(
   srcArray: readonly unknown[],
   patchArray: readonly unknown[],
   strict: boolean,
   getKey: (item: unknown, idx: number) => unknown,
   mergeObjectEntries: (src: PlainObject, patch: PlainObject) => PlainObject,
-): unknown[] => {
+): unknown[] {
   const srcMap = new Map<unknown, unknown>();
   const srcItemsWithoutKey: unknown[] = [];
 
@@ -122,23 +131,24 @@ const mergeArraysByKey = (
 
   mergedArray.push(...srcItemsWithoutKey);
   return mergedArray;
-};
+}
 
 /**
  * Merges arrays index-by-index.
- * @internal
+ *
  * @param srcArray - Source array.
  * @param patchArray - Patch array.
  * @param strict - Whether strict mode is enabled.
  * @param mergeObjectEntries - Object merge callback.
  * @returns Merged array value.
+ * @internal
  */
-const mergeArraysByIndex = (
+function mergeArraysByIndex(
   srcArray: readonly unknown[],
   patchArray: readonly unknown[],
   strict: boolean,
   mergeObjectEntries: (src: PlainObject, patch: PlainObject) => PlainObject,
-): unknown[] => {
+): unknown[] {
   const maxLength = Math.max(srcArray.length, patchArray.length);
   const mergedArray: unknown[] = [];
 
@@ -162,25 +172,26 @@ const mergeArraysByIndex = (
   }
 
   return mergedArray;
-};
+}
 
 /**
  * Merges arrays according to the configured strategy.
- * @internal
+ *
  * @param srcValue - Source value.
  * @param patchValue - Patch array.
  * @param mergeArrays - Merge strategy option.
  * @param strict - Whether strict mode is enabled.
  * @param mergeObjectEntries - Object merge callback.
  * @returns Merged array value.
+ * @internal
  */
-const mergeArraysWithStrategy = (
+function mergeArraysWithStrategy(
   srcValue: unknown,
   patchValue: readonly unknown[],
   mergeArrays: MergeArrayStrategy,
   strict: boolean,
   mergeObjectEntries: (src: PlainObject, patch: PlainObject) => PlainObject,
-): unknown[] => {
+): unknown[] {
   if (!mergeArrays || !isArray(srcValue) || patchValue.length === 0) {
     return [...patchValue];
   }
@@ -200,11 +211,11 @@ const mergeArraysWithStrategy = (
   }
 
   return mergeArraysByIndex(srcValue as readonly unknown[], patchValue, strict, mergeObjectEntries);
-};
+}
 
 /**
  * Merges plain-object entries recursively.
- * @internal
+ *
  * @param args - Merge arguments.
  * @param args.src - Source object.
  * @param args.patch - Patch object.
@@ -212,14 +223,15 @@ const mergeArraysWithStrategy = (
  * @param args.isStrictAtThisLevel - Strict mode for current object level.
  * @param args.mergeNested - Nested object merge callback.
  * @returns Merged plain object.
+ * @internal
  */
-export const mergePlainObjects = (args: {
+export function mergePlainObjects(args: {
   src: PlainObject;
   patch: PlainObject;
   options: Readonly<MergeRuntimeOptions>;
   isStrictAtThisLevel: boolean;
   mergeNested: PlainObjectMergeFn;
-}): PlainObject => {
+}): PlainObject {
   const { src, patch, options, isStrictAtThisLevel, mergeNested } = args;
   const target = options.immutable ? { ...src } : src;
 
@@ -252,4 +264,4 @@ export const mergePlainObjects = (args: {
   }
 
   return target;
-};
+}

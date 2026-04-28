@@ -2,7 +2,7 @@
  * Represents a path to a node using child indices.
  *
  * @example
- * `[1, 0, 2]` targets the third child of the first child of the second root descendant.
+ *   `[1, 0, 2]` targets the third child of the first child of the second root descendant.
  */
 export type TreePath = readonly number[];
 
@@ -116,10 +116,10 @@ interface TreeTransformResult<TNode> {
 /**
  * Normalizes tree options with defaults.
  *
- * @internal
  * @template TChildKey - The property key used for child nodes.
  * @param options - Raw tree options.
  * @returns Normalized runtime options.
+ * @internal
  */
 function normalizeTreeOptions<TChildKey extends PropertyKey = 'children'>(options?: Readonly<TreeOptions<TChildKey>>): TreeRuntimeOptions<TChildKey> {
   return {
@@ -130,12 +130,12 @@ function normalizeTreeOptions<TChildKey extends PropertyKey = 'children'>(option
 /**
  * Returns the child nodes of a tree node.
  *
- * @internal
  * @template TNode - The node type.
  * @template TChildKey - The property key used for child nodes.
  * @param node - The source node.
  * @param childrenKey - The child property key.
  * @returns A readonly array of child nodes.
+ * @internal
  */
 function getTreeChildren<TNode extends object, TChildKey extends PropertyKey>(node: TNode, childrenKey: TChildKey): readonly TNode[] {
   const candidate = (node as Record<PropertyKey, unknown>)[childrenKey];
@@ -145,12 +145,12 @@ function getTreeChildren<TNode extends object, TChildKey extends PropertyKey>(no
 /**
  * Checks whether a node explicitly defines the configured child key.
  *
- * @internal
  * @template TNode - The node type.
  * @template TChildKey - The property key used for child nodes.
  * @param node - The source node.
  * @param childrenKey - The child property key.
  * @returns `true` when the node has the child key.
+ * @internal
  */
 function hasChildrenKey<TNode extends object, TChildKey extends PropertyKey>(node: TNode, childrenKey: TChildKey): boolean {
   return childrenKey in (node as Record<PropertyKey, unknown>);
@@ -159,13 +159,13 @@ function hasChildrenKey<TNode extends object, TChildKey extends PropertyKey>(nod
 /**
  * Creates a shallow-cloned node with updated children.
  *
- * @internal
  * @template TNode - The node type.
  * @template TChildKey - The property key used for child nodes.
  * @param node - The source node.
  * @param childrenKey - The child property key.
  * @param children - The next child nodes.
  * @returns A cloned node with updated children.
+ * @internal
  */
 function cloneNodeWithChildren<TNode extends object, TChildKey extends PropertyKey>(node: TNode, childrenKey: TChildKey, children: readonly TNode[]): TNode {
   const clone = { ...(node as Record<PropertyKey, unknown>) };
@@ -181,12 +181,12 @@ function cloneNodeWithChildren<TNode extends object, TChildKey extends PropertyK
 /**
  * Checks whether a target matches the current traversal position.
  *
- * @internal
  * @template TNode - The node type.
  * @param node - The current node.
  * @param context - The traversal context.
  * @param target - The target path or predicate.
  * @returns `true` when the target matches the current node.
+ * @internal
  */
 function matchesTreeTarget<TNode>(node: TNode, context: TreeContext<TNode>, target: TreeTarget<TNode>): boolean {
   if (typeof target === 'function') {
@@ -199,10 +199,10 @@ function matchesTreeTarget<TNode>(node: TNode, context: TreeContext<TNode>, targ
 /**
  * Normalizes the insertion position for a child array.
  *
- * @internal
  * @param position - Desired insertion position.
  * @param length - Current child array length.
  * @returns A clamped insertion index.
+ * @internal
  */
 function normalizeInsertPosition(position: TreeInsertOptions['position'], length: number): number {
   if (position === 'prepend') {
@@ -226,31 +226,31 @@ function normalizeInsertPosition(position: TreeInsertOptions['position'], length
  *
  * Returning `'skip'` skips the current node's descendants. Returning `'stop'` stops traversal entirely.
  *
+ * @example
+ *   ```ts
+ *   import { walkTree } from 'std-kit';
+ *
+ *   const ids: string[] = [];
+ *   walkTree(
+ *     {
+ *       id: 'root',
+ *       children: [{ id: 'a' }, { id: 'b', children: [{ id: 'b1' }] }],
+ *     },
+ *     (node) => {
+ *       ids.push(node.id);
+ *     },
+ *   );
+ *
+ *   ids;
+ *   // ['root', 'a', 'b', 'b1']
+ *   ```;
+ *
  * @template TNode - The node type.
  * @template TChildKey - The property key used for child nodes.
  * @param tree - The root node.
  * @param visitor - Visitor called for each node.
  * @param options - Tree traversal options.
  * @returns Nothing.
- *
- * @example
- * ```ts
- * import { walkTree } from 'std-kit';
- *
- * const ids: string[] = [];
- * walkTree(
- *   {
- *     id: 'root',
- *     children: [{ id: 'a' }, { id: 'b', children: [{ id: 'b1' }] }],
- *   },
- *   (node) => {
- *     ids.push(node.id);
- *   },
- * );
- *
- * ids;
- * // ['root', 'a', 'b', 'b1']
- * ```
  */
 export function walkTree<TNode extends object, TChildKey extends PropertyKey = 'children'>(
   tree: Readonly<TNode>,
@@ -408,32 +408,32 @@ export function flattenTree<TNode extends object, TChildKey extends PropertyKey 
  *
  * Mapping uses depth-first preorder traversal. Child traversal continues from the mapped node's current children.
  *
+ * @example
+ *   ```ts
+ *   import { mapTree } from 'std-kit';
+ *
+ *   const renamed = mapTree(
+ *     {
+ *       id: 'root',
+ *       label: 'Root',
+ *       children: [{ id: 'a', label: 'Alpha' }],
+ *     },
+ *     (node) => ({
+ *       ...node,
+ *       label: node.label.toUpperCase(),
+ *     }),
+ *   );
+ *
+ *   renamed.children?.[0]?.label;
+ *   // 'ALPHA'
+ *   ```;
+ *
  * @template TNode - The node type.
  * @template TChildKey - The property key used for child nodes.
  * @param tree - The root node.
  * @param mapper - Mapper used to transform each node.
  * @param options - Tree traversal options.
  * @returns A new mapped tree.
- *
- * @example
- * ```ts
- * import { mapTree } from 'std-kit';
- *
- * const renamed = mapTree(
- *   {
- *     id: 'root',
- *     label: 'Root',
- *     children: [{ id: 'a', label: 'Alpha' }],
- *   },
- *   (node) => ({
- *     ...node,
- *     label: node.label.toUpperCase(),
- *   }),
- * );
- *
- * renamed.children?.[0]?.label;
- * // 'ALPHA'
- * ```
  */
 export function mapTree<TNode extends object, TChildKey extends PropertyKey = 'children'>(
   tree: Readonly<TNode>,
@@ -484,6 +484,25 @@ export function mapTree<TNode extends object, TChildKey extends PropertyKey = 'c
  *
  * Matching uses depth-first preorder traversal.
  *
+ * @example
+ *   ```ts
+ *   import { updateTreeNode } from 'std-kit';
+ *
+ *   const tree = {
+ *     id: 'root',
+ *     children: [{ id: 'draft', status: 'pending' }],
+ *   };
+ *
+ *   const published = updateTreeNode(
+ *     tree,
+ *     (node) => node.id === 'draft',
+ *     (node) => ({ ...node, status: 'published' }),
+ *   );
+ *
+ *   published.children?.[0]?.status;
+ *   // 'published'
+ *   ```;
+ *
  * @template TNode - The node type.
  * @template TChildKey - The property key used for child nodes.
  * @param tree - The root node.
@@ -491,25 +510,6 @@ export function mapTree<TNode extends object, TChildKey extends PropertyKey = 'c
  * @param updater - Updater used to transform the matched node.
  * @param options - Tree traversal options.
  * @returns A new tree when a node is updated, otherwise the original tree.
- *
- * @example
- * ```ts
- * import { updateTreeNode } from 'std-kit';
- *
- * const tree = {
- *   id: 'root',
- *   children: [{ id: 'draft', status: 'pending' }],
- * };
- *
- * const published = updateTreeNode(
- *   tree,
- *   (node) => node.id === 'draft',
- *   (node) => ({ ...node, status: 'published' }),
- * );
- *
- * published.children?.[0]?.status;
- * // 'published'
- * ```
  */
 export function updateTreeNode<TNode extends object, TChildKey extends PropertyKey = 'children'>(
   tree: Readonly<TNode>,
@@ -680,6 +680,21 @@ export function removeTreeNode<TNode extends object, TChildKey extends PropertyK
  *
  * Matching uses depth-first preorder traversal.
  *
+ * @example
+ *   ```ts
+ *   import { insertTreeNode } from 'std-kit';
+ *
+ *   const tree = {
+ *     id: 'root',
+ *     children: [{ id: 'a' }, { id: 'b' }],
+ *   };
+ *
+ *   const nextTree = insertTreeNode(tree, (current) => current.id === 'b', { id: 'b1' }, { position: 'append' });
+ *
+ *   nextTree.children?.[1]?.children?.[0]?.id;
+ *   // 'b1'
+ *   ```;
+ *
  * @template TNode - The node type.
  * @template TChildKey - The property key used for child nodes.
  * @param tree - The root node.
@@ -687,21 +702,6 @@ export function removeTreeNode<TNode extends object, TChildKey extends PropertyK
  * @param node - Node to insert.
  * @param options - Tree insertion options.
  * @returns A new tree when insertion succeeds, otherwise the original tree.
- *
- * @example
- * ```ts
- * import { insertTreeNode } from 'std-kit';
- *
- * const tree = {
- *   id: 'root',
- *   children: [{ id: 'a' }, { id: 'b' }],
- * };
- *
- * const nextTree = insertTreeNode(tree, (current) => current.id === 'b', { id: 'b1' }, { position: 'append' });
- *
- * nextTree.children?.[1]?.children?.[0]?.id;
- * // 'b1'
- * ```
  */
 export function insertTreeNode<TNode extends object, TChildKey extends PropertyKey = 'children'>(
   tree: Readonly<TNode>,

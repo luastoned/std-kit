@@ -1,5 +1,7 @@
-import { describe, it, expect } from 'vitest';
 import { Readable } from 'node:stream';
+
+import { describe, it, expect } from 'vitest';
+
 import { streamToBuffer, pipeToBuffer } from './buffer';
 
 describe('streamToBuffer', () => {

@@ -6,15 +6,15 @@
 
 ## Functions
 
-- `pipeToBuffer(stream: Readable): Promise`
-- `streamToBuffer(stream: Readable): Promise`
+- `pipeToBuffer(stream: Readable): Promise<Buffer<ArrayBufferLike>>`
+- `streamToBuffer(stream: Readable): Promise<Buffer<ArrayBufferLike>>`
 
 ---
 
 ## pipeToBuffer
 
 ```typescript
-pipeToBuffer(stream: Readable): Promise
+pipeToBuffer(stream: Readable): Promise<Buffer<ArrayBufferLike>>
 ```
 
 Pipes a readable stream to a buffer.
@@ -26,7 +26,7 @@ Pipes a readable stream to a buffer.
 ## streamToBuffer
 
 ```typescript
-streamToBuffer(stream: Readable): Promise
+streamToBuffer(stream: Readable): Promise<Buffer<ArrayBufferLike>>
 ```
 
 Converts a readable stream into a buffer.

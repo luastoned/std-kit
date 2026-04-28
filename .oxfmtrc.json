@@ -1,5 +1,38 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "arrowParens": "always",
+  "ignorePatterns": [
+    "docs/**",
+    "lib/**",
+    "coverage/**",
+    "/dist",
+    "/node_modules"
+  ],
+  "jsdoc": {
+    "commentLineStrategy": "multiline",
+    "lineWrappingStyle": "balance",
+    "preferCodeFences": true
+  },
   "printWidth": 160,
-  "singleQuote": true
+  "semi": true,
+  "singleQuote": true,
+  "sortImports": {
+    "groups": [
+      "builtin",
+      "external",
+      "internal",
+      [
+        "parent",
+        "sibling",
+        "index"
+      ],
+      "style",
+      "unknown"
+    ],
+    "newlinesBetween": true
+  },
+  "sortPackageJson": false,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "useTabs": false
 }

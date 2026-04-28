@@ -2,43 +2,55 @@ import { isArray, isFunction } from '~/utilities/generic';
 
 /**
  * Internal helper type for key selection by property name or selector function.
+ *
  * @internal
  */
 type KeySelector<T, K extends PropertyKey> = K | ((item: T) => K);
 
 /**
  * Builds a normalized key selector function.
+ *
  * @internal
  */
-const toKeyFn = <T, K extends PropertyKey>(key: KeySelector<T, K>): ((item: T) => K) =>
-  isFunction(key) ? (key as (item: T) => K) : (item: T): K => item[key as keyof T & K] as K;
+function toKeyFn<T, K extends PropertyKey>(key: KeySelector<T, K>): (item: T) => K {
+  if (isFunction(key)) {
+    return key as (item: T) => K;
+  }
+
+  return function keySelector(item: T): K {
+    return item[key as keyof T & K] as K;
+  };
+}
 
 /**
  * Returns a new array with unique elements from the input array.
  *
+ * @example
+ *   ```ts
+ *   import { unique } from 'std-kit';
+ *
+ *   unique([1, 2, 2, 3, 1]);
+ *   // [1, 2, 3]
+ *   ```;
+ *
  * @template T - The type of elements in the array.
  * @param array - The input array.
  * @returns A new array with unique elements.
- *
- * @example
- * ```ts
- * import { unique } from 'std-kit';
- *
- * unique([1, 2, 2, 3, 1]);
- * // [1, 2, 3]
- * ```
  */
-export const unique = <T>(array: readonly T[]): T[] => Array.from(new Set(array));
+export function unique<T>(array: readonly T[]): T[] {
+  return Array.from(new Set(array));
+}
 
 /**
- * Returns a new array with all falsy values removed.
- * Falsy values include: false, null, 0, "", undefined, and NaN.
+ * Returns a new array with all falsy values removed. Falsy values include: false, null, 0, "", undefined, and NaN.
  *
  * @template T - The type of elements in the array.
  * @param array - The input array.
  * @returns A new array with only truthy values.
  */
-export const compact = <T>(array: readonly T[]): NonNullable<T>[] => array.filter(Boolean) as NonNullable<T>[];
+export function compact<T>(array: readonly T[]): NonNullable<T>[] {
+  return array.filter(Boolean) as NonNullable<T>[];
+}
 
 /**
  * Reverses the elements of an array.
@@ -48,10 +60,10 @@ export const compact = <T>(array: readonly T[]): NonNullable<T>[] => array.filte
  * @param inPlace - Specifies whether to reverse the array in place or create a new reversed array.
  * @returns The reversed array.
  */
-export const reverse = <T>(array: readonly T[], inPlace = false): T[] => {
+export function reverse<T>(array: readonly T[], inPlace = false): T[] {
   const result: T[] = inPlace ? (array as T[]) : [...array];
   return result.reverse();
-};
+}
 
 /**
  * Shuffles the elements of an array using the Fisher-Yates algorithm.
@@ -61,7 +73,7 @@ export const reverse = <T>(array: readonly T[], inPlace = false): T[] => {
  * @param inPlace - Specifies whether to shuffle the array in place or create a new shuffled array.
  * @returns The shuffled array.
  */
-export const shuffle = <T>(array: readonly T[], inPlace = false): T[] => {
+export function shuffle<T>(array: readonly T[], inPlace = false): T[] {
   const result: T[] = inPlace ? (array as T[]) : [...array];
 
   // Fisher-Yates shuffle algorithm
@@ -74,7 +86,7 @@ export const shuffle = <T>(array: readonly T[], inPlace = false): T[] => {
   }
 
   return result;
-};
+}
 
 /**
  * Flattens a nested array up to the specified depth.
@@ -84,13 +96,13 @@ export const shuffle = <T>(array: readonly T[], inPlace = false): T[] => {
  * @param depth - The maximum depth to flatten. Defaults to Infinity for full flattening.
  * @returns The flattened array.
  */
-export const flatten = <T>(array: readonly unknown[], depth = Infinity): T[] => {
+export function flatten<T>(array: readonly unknown[], depth = Infinity): T[] {
   if (depth < 1) {
     return array.slice() as T[];
   }
 
   return array.reduce((acc: T[], item: unknown) => acc.concat(isArray(item) && depth > 1 ? flatten(item, depth - 1) : (item as T)), [] as T[]);
-};
+}
 
 /**
  * Creates a new array of a specified size and fills it with the provided value.
@@ -100,25 +112,27 @@ export const flatten = <T>(array: readonly unknown[], depth = Infinity): T[] => 
  * @param value - The value to fill the array with.
  * @returns An array of the specified size filled with the provided value.
  */
-export const fill = <T>(size: number, value: T): T[] => Array(size).fill(value);
+export function fill<T>(size: number, value: T): T[] {
+  return Array(size).fill(value);
+}
 
 /**
  * Splits an array into chunks of a specified size.
+ *
+ * @example
+ *   ```ts
+ *   import { chunk } from 'std-kit';
+ *
+ *   chunk(['a', 'b', 'c', 'd', 'e'], 2);
+ *   // [['a', 'b'], ['c', 'd'], ['e']]
+ *   ```;
  *
  * @template T - The type of elements in the array.
  * @param array - The array to be chunked.
  * @param size - The size of each chunk. Default is 2.
  * @returns An array of chunks, each containing elements from the original array.
- *
- * @example
- * ```ts
- * import { chunk } from 'std-kit';
- *
- * chunk(['a', 'b', 'c', 'd', 'e'], 2);
- * // [['a', 'b'], ['c', 'd'], ['e']]
- * ```
  */
-export const chunk = <T>(array: readonly T[], size = 2): T[][] => {
+export function chunk<T>(array: readonly T[], size = 2): T[][] {
   const normalizedSize = size <= 0 || !Number.isFinite(size) ? 1 : Math.max(1, Math.floor(size));
   const chunks: T[][] = [];
   for (let idx = 0; idx < array.length; idx += normalizedSize) {
@@ -126,7 +140,7 @@ export const chunk = <T>(array: readonly T[], size = 2): T[][] => {
   }
 
   return chunks;
-};
+}
 
 /**
  * Splits an array into chunks of a specified size.
@@ -137,12 +151,13 @@ export const chunk = <T>(array: readonly T[], size = 2): T[][] => {
  * @param size - The size of each chunk.
  * @returns An array of chunks.
  */
-export const cluster = chunk;
+export function cluster<T>(array: readonly T[], size = 2): T[][] {
+  return chunk(array, size);
+}
 
 /**
- * Counts the occurrences of each unique key in an array.
- * If a key function is provided, it will be used to extract the key from each element.
- * If a key property is provided, it will be used to extract the key from each element.
+ * Counts the occurrences of each unique key in an array. If a key function is provided, it will be used to extract the key from each element. If a key property
+ * is provided, it will be used to extract the key from each element.
  *
  * @template T - The type of elements in the array.
  * @template K - The type of the key used for counting.
@@ -150,7 +165,7 @@ export const cluster = chunk;
  * @param key - The key used for counting. Can be a property name or a function that returns the key.
  * @returns An object that maps each unique key to its count.
  */
-export const countBy = <T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): Record<K, number> => {
+export function countBy<T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): Record<K, number> {
   const keyFn = toKeyFn(key);
   return array.reduce(
     (acc, item) => {
@@ -160,35 +175,34 @@ export const countBy = <T, K extends PropertyKey>(array: readonly T[], key: KeyS
     },
     {} as Record<K, number>,
   );
-};
+}
 
 /**
- * Groups the elements of an array by a specified key.
- * If a key function is provided, it will be used to extract the key from each element.
- * If a key property is provided, it will be used to extract the key from each element.
+ * Groups the elements of an array by a specified key. If a key function is provided, it will be used to extract the key from each element. If a key property is
+ * provided, it will be used to extract the key from each element.
+ *
+ * @example
+ *   ```ts
+ *   import { groupBy } from 'std-kit';
+ *
+ *   groupBy(
+ *     [
+ *       { id: 1, role: 'admin' },
+ *       { id: 2, role: 'user' },
+ *       { id: 3, role: 'admin' },
+ *     ],
+ *     'role',
+ *   );
+ *   // { admin: [{ id: 1, role: 'admin' }, { id: 3, role: 'admin' }], user: [{ id: 2, role: 'user' }] }
+ *   ```;
  *
  * @template T - The type of the elements in the array.
  * @template K - The type of the key used for grouping.
  * @param array - The array to group.
  * @param key - The key used for grouping. Can be a property name or a function that returns the key.
  * @returns An object where the keys are the grouped values and the values are arrays of elements that belong to each group.
- *
- * @example
- * ```ts
- * import { groupBy } from 'std-kit';
- *
- * groupBy(
- *   [
- *     { id: 1, role: 'admin' },
- *     { id: 2, role: 'user' },
- *     { id: 3, role: 'admin' },
- *   ],
- *   'role',
- * );
- * // { admin: [{ id: 1, role: 'admin' }, { id: 3, role: 'admin' }], user: [{ id: 2, role: 'user' }] }
- * ```
  */
-export const groupBy = <T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): Record<K, T[]> => {
+export function groupBy<T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): Record<K, T[]> {
   const result = {} as Record<K, T[]>;
   const keyFn = toKeyFn(key);
 
@@ -202,12 +216,27 @@ export const groupBy = <T, K extends PropertyKey>(array: readonly T[], key: KeyS
   }
 
   return result;
-};
+}
 
 /**
- * Sorts an array of objects based on the specified keys and orders.
- * If a key function is provided, it will be used to extract the key from each element.
- * If a key property is provided, it will be used to extract the key from each element.
+ * Sorts an array of objects based on the specified keys and orders. If a key function is provided, it will be used to extract the key from each element. If a
+ * key property is provided, it will be used to extract the key from each element.
+ *
+ * @example
+ *   ```ts
+ *   import { orderBy } from 'std-kit';
+ *
+ *   orderBy(
+ *     [
+ *       { name: 'Ada', score: 20 },
+ *       { name: 'Grace', score: 40 },
+ *       { name: 'Ada', score: 10 },
+ *     ],
+ *     ['name', 'score'],
+ *     ['asc', 'desc'],
+ *   );
+ *   // [{ name: 'Ada', score: 20 }, { name: 'Ada', score: 10 }, { name: 'Grace', score: 40 }]
+ *   ```;
  *
  * @template T - The type of the array elements.
  * @template K - The type of the keys used for sorting.
@@ -216,29 +245,13 @@ export const groupBy = <T, K extends PropertyKey>(array: readonly T[], key: KeyS
  * @param orders - The sort orders for each key.
  * @param inPlace - Indicates whether to sort the array in place or return a new sorted array.
  * @returns The sorted array.
- *
- * @example
- * ```ts
- * import { orderBy } from 'std-kit';
- *
- * orderBy(
- *   [
- *     { name: 'Ada', score: 20 },
- *     { name: 'Grace', score: 40 },
- *     { name: 'Ada', score: 10 },
- *   ],
- *   ['name', 'score'],
- *   ['asc', 'desc'],
- * );
- * // [{ name: 'Ada', score: 20 }, { name: 'Ada', score: 10 }, { name: 'Grace', score: 40 }]
- * ```
  */
-export const orderBy = <T, K extends string | number>(
+export function orderBy<T, K extends string | number>(
   array: readonly T[],
   keys: ReadonlyArray<KeySelector<T, K>>,
   orders: ReadonlyArray<'asc' | 'desc'>,
   inPlace = false,
-): T[] => {
+): T[] {
   const keyFns = keys.map((key) => toKeyFn(key));
   const result: T[] = inPlace ? (array as T[]) : [...array];
   return result.sort((a, b) => {
@@ -262,35 +275,34 @@ export const orderBy = <T, K extends string | number>(
 
     return 0;
   });
-};
+}
 
 /**
- * Returns a new array containing unique elements from the input array based on the specified key.
- * If a key function is provided, it will be used to extract the key from each element.
- * If a key property is provided, it will be used to extract the key from each element.
+ * Returns a new array containing unique elements from the input array based on the specified key. If a key function is provided, it will be used to extract the
+ * key from each element. If a key property is provided, it will be used to extract the key from each element.
+ *
+ * @example
+ *   ```ts
+ *   import { uniqueBy } from 'std-kit';
+ *
+ *   uniqueBy(
+ *     [
+ *       { id: 1, name: 'Ada' },
+ *       { id: 1, name: 'Ada Lovelace' },
+ *       { id: 2, name: 'Grace' },
+ *     ],
+ *     'id',
+ *   );
+ *   // [{ id: 1, name: 'Ada Lovelace' }, { id: 2, name: 'Grace' }]
+ *   ```;
  *
  * @template T - The type of elements in the input array.
  * @template K - The type of the key used for uniqueness.
  * @param array - The input array.
  * @param key - The key property or function used to extract the key from each element.
  * @returns A new array containing unique elements based on the specified key.
- *
- * @example
- * ```ts
- * import { uniqueBy } from 'std-kit';
- *
- * uniqueBy(
- *   [
- *     { id: 1, name: 'Ada' },
- *     { id: 1, name: 'Ada Lovelace' },
- *     { id: 2, name: 'Grace' },
- *   ],
- *   'id',
- * );
- * // [{ id: 1, name: 'Ada Lovelace' }, { id: 2, name: 'Grace' }]
- * ```
  */
-export const uniqueBy = <T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): T[] => {
+export function uniqueBy<T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): T[] {
   const itemMap = new Map<K, T>();
   const keyFn = toKeyFn(key);
 
@@ -299,13 +311,14 @@ export const uniqueBy = <T, K extends PropertyKey>(array: readonly T[], key: Key
   }
 
   return Array.from(itemMap.values());
-};
+}
 
 /**
  * Generates an iterable iterator that produces all possible combinations of elements from the input arrays.
  *
  * @template T - The type of the elements in the input arrays.
  * @param items - An array of arrays containing the elements to combine.
+ * @yields The next cartesian-product tuple from the input arrays.
  * @returns An iterable iterator that produces all possible combinations of elements.
  */
 function* cartesianIt<T = unknown>(items: readonly T[][]): IterableIterator<T[]> {
@@ -328,21 +341,23 @@ function* cartesianIt<T = unknown>(items: readonly T[][]): IterableIterator<T[]>
 /**
  * Calculates the cartesian product of the given array of arrays.
  *
+ * @example
+ *   ```ts
+ *   import { cartesian } from 'std-kit';
+ *
+ *   cartesian([
+ *     ['S', 'M'],
+ *     ['red', 'blue'],
+ *   ]);
+ *   // [['S', 'red'], ['M', 'red'], ['S', 'blue'], ['M', 'blue']]
+ *   ```;
+ *
  * @param items - The array of arrays to calculate the cartesian product from.
  * @returns The cartesian product as a 2D array.
- *
- * @example
- * ```ts
- * import { cartesian } from 'std-kit';
- *
- * cartesian([
- *   ['S', 'M'],
- *   ['red', 'blue'],
- * ]);
- * // [['S', 'red'], ['M', 'red'], ['S', 'blue'], ['M', 'blue']]
- * ```
  */
-export const cartesian = <T = unknown>(items: readonly T[][]): T[][] => [...cartesianIt(items)];
+export function cartesian<T = unknown>(items: readonly T[][]): T[][] {
+  return [...cartesianIt(items)];
+}
 
 /**
  * Generates all possible non-empty combinations of the elements in an array.
@@ -351,7 +366,7 @@ export const cartesian = <T = unknown>(items: readonly T[][]): T[][] => [...cart
  * @param items - The array of elements.
  * @returns An array of arrays representing the combinations.
  */
-export const combinations = <T>(items: readonly T[]): T[][] => {
+export function combinations<T>(items: readonly T[]): T[][] {
   const result: T[][] = [];
 
   // Iterate over each number from 1 to (2^length - 1)
@@ -375,4 +390,4 @@ export const combinations = <T>(items: readonly T[]): T[][] => {
   }
 
   return result;
-};
+}
