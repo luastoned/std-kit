@@ -6,6 +6,36 @@
 export type DeferredTask<T> = () => Promise<T>;
 
 /**
+ * Options used to create a promise task queue.
+ */
+export interface QueueOptions {
+  concurrency?: number;
+  interval?: number;
+}
+
+/**
+ * Reusable promise task queue.
+ */
+export interface Queue {
+  readonly activeCount: number;
+  readonly pendingCount: number;
+  add<T>(task: () => T | Promise<T>): Promise<Awaited<T>>;
+  clear(reason?: unknown): void;
+}
+
+/**
+ * Internal queue entry.
+ *
+ * @template T - Task result type.
+ * @internal
+ */
+interface QueueEntry<T> {
+  task: () => T | Promise<T>;
+  resolve: (value: Awaited<T>) => void;
+  reject: (reason?: unknown) => void;
+}
+
+/**
  * Wraps a function call so it can be executed later as a promise task.
  *
  * @example
@@ -47,6 +77,131 @@ function normalizeParallel(parallel: number): number {
 
   const floored = Math.floor(parallel);
   return floored > 0 ? floored : 1;
+}
+
+/**
+ * Normalizes a delay interval to a non-negative integer.
+ *
+ * @param interval - Raw interval input.
+ * @returns A normalized interval in milliseconds.
+ * @internal
+ */
+function normalizeInterval(interval: number | undefined): number {
+  if (interval === undefined || interval <= 0 || !Number.isFinite(interval)) {
+    return 0;
+  }
+
+  return Math.floor(interval);
+}
+
+/**
+ * Creates a reusable FIFO queue for promise-returning tasks.
+ *
+ * `concurrency` limits how many tasks may run at the same time. `interval` enforces a minimum delay between task starts, which is useful for simple API rate
+ * limiting.
+ *
+ * @example
+ *   ```ts
+ *   import { queue } from 'std-kit';
+ *
+ *   const apiQueue = queue({ concurrency: 3, interval: 1000 });
+ *
+ *   const user = await apiQueue.add(() => fetch('/users/1'));
+ *   ```;
+ *
+ * @param options - Queue options.
+ * @param options.concurrency - Maximum number of tasks running at once. Invalid values default to 1.
+ * @param options.interval - Minimum delay between task starts in milliseconds. Invalid values disable interval limiting.
+ * @returns A reusable promise task queue.
+ */
+export function queue(options: Readonly<QueueOptions> = {}): Queue {
+  const concurrency = normalizeParallel(options.concurrency ?? 1);
+  const interval = normalizeInterval(options.interval);
+  const entries: Array<QueueEntry<unknown>> = [];
+
+  let activeCount = 0;
+  let lastStartTime = 0;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+
+  function clearTimer(): void {
+    if (timer === undefined) {
+      return;
+    }
+
+    clearTimeout(timer);
+    timer = undefined;
+  }
+
+  function schedule(): void {
+    clearTimer();
+
+    if (entries.length === 0 || activeCount >= concurrency) {
+      return;
+    }
+
+    const waitFor = interval > 0 ? Math.max(0, lastStartTime + interval - Date.now()) : 0;
+    if (waitFor > 0) {
+      timer = setTimeout(startNext, waitFor);
+      return;
+    }
+
+    startNext();
+  }
+
+  function startNext(): void {
+    clearTimer();
+
+    while (entries.length > 0 && activeCount < concurrency) {
+      const waitFor = interval > 0 ? Math.max(0, lastStartTime + interval - Date.now()) : 0;
+      if (waitFor > 0) {
+        timer = setTimeout(startNext, waitFor);
+        return;
+      }
+
+      const entry = entries.shift();
+      if (entry === undefined) {
+        return;
+      }
+
+      activeCount++;
+      lastStartTime = Date.now();
+
+      Promise.resolve()
+        .then(() => entry.task())
+        .then(entry.resolve, entry.reject)
+        .finally(() => {
+          activeCount--;
+          schedule();
+        });
+    }
+  }
+
+  return {
+    get activeCount(): number {
+      return activeCount;
+    },
+    get pendingCount(): number {
+      return entries.length;
+    },
+    add<T>(task: () => T | Promise<T>): Promise<Awaited<T>> {
+      return new Promise<Awaited<T>>((resolve, reject) => {
+        entries.push({
+          task,
+          resolve,
+          reject,
+        } as QueueEntry<unknown>);
+        schedule();
+      });
+    },
+    clear(reason: unknown = new Error('Queue was cleared.')): void {
+      clearTimer();
+
+      while (entries.length > 0) {
+        const entry = entries.shift();
+        entry?.reject(reason);
+      }
+    },
+  };
 }
 
 /**

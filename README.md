@@ -187,11 +187,15 @@ jobs.pop(); // { id: 'backup', priority: 10 }
 Control async execution flow:
 
 ```typescript
-import { threads, defer, sleep } from 'std-kit';
+import { threads, defer, queue, sleep } from 'std-kit';
 
 // Limit concurrent promises
 const tasks = urls.map((url) => defer(fetch, url));
 const results = await threads(3, tasks); // Max 3 concurrent requests
+
+// Reuse a queue for API work
+const apiQueue = queue({ concurrency: 3, interval: 1000 });
+const user = await apiQueue.add(() => fetch('/users/1'));
 
 // Sleep/delay execution
 await sleep(1000); // 1 second
