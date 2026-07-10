@@ -206,6 +206,10 @@ function buildTypeString(type?: TypeDocType): string {
         const returnType = buildTypeString(reflectionSig.type);
         return `(${params}) => ${returnType}`;
       }
+      const members = type.declaration?.children?.map((member) => buildInterfaceMember(member));
+      if (members && members.length > 0) {
+        return `{ ${members.join('; ')} }`;
+      }
       return 'object';
     }
     default:
@@ -220,13 +224,25 @@ const buildTypeParameters = (typeParameters?: TypeDocNode[]): string => {
 
   const rendered = typeParameters
     .map((tp) => {
+      const constraint = tp.type && isTypeDocType(tp.type) ? ` extends ${buildTypeString(tp.type)}` : '';
       const defaultType = tp.default && isTypeDocType(tp.default) ? ` = ${buildTypeString(tp.default)}` : '';
-      return `${tp.name}${defaultType}`;
+      return `${tp.name}${constraint}${defaultType}`;
     })
     .join(', ');
 
   return rendered ? `<${rendered}>` : '';
 };
+
+function buildInterfaceMember(member: TypeDocNode): string {
+  const readonlyPrefix = member.flags?.isReadonly ? 'readonly ' : '';
+  const optionalSuffix = member.flags?.isOptional ? '?' : '';
+  const signature = member.signatures?.[0];
+  if (signature) {
+    return buildSignatureFromNode(`${readonlyPrefix}${member.name}${optionalSuffix}`, signature);
+  }
+
+  return `${readonlyPrefix}${member.name}${optionalSuffix}: ${buildTypeString(member.type)}`;
+}
 
 const buildParameters = (parameters?: TypeDocNode[]): string => {
   if (!parameters || parameters.length === 0) {
@@ -260,10 +276,16 @@ function buildFunctionSignature(func: TypeDocNode): string {
   }
 
   if (func.signatures && func.signatures.length > 0) {
-    return buildSignatureFromNode(func.name, func.signatures[0]);
+    return func.signatures.map((signature) => buildSignatureFromNode(func.name, signature)).join('\n');
   }
 
   return func.name;
+}
+
+function buildInterfaceSignature(interfaceNode: TypeDocNode): string {
+  const typeParamStr = buildTypeParameters(interfaceNode.typeParameters);
+  const members = interfaceNode.children?.map((member) => `  ${buildInterfaceMember(member)};`).join('\n') ?? '';
+  return `interface ${interfaceNode.name}${typeParamStr} {${members ? `\n${members}\n` : ''}}`;
 }
 
 function buildTypeAliasSignature(typeAlias: TypeDocNode): string {
@@ -300,7 +322,7 @@ function generateMarkdown(moduleName: string, items: ItemInfo[]): string {
     markdown += '## Functions\n\n';
     for (const func of functions) {
       const deprecatedTag = func.deprecated ? ' ~~(deprecated)~~' : '';
-      markdown += `- \`${func.signature}\`${deprecatedTag}\n`;
+      markdown += `- \`${func.signature.split('\n')[0]?.replace(/ \{$/, '')}\`${deprecatedTag}\n`;
     }
     markdown += '\n';
   }
@@ -309,7 +331,7 @@ function generateMarkdown(moduleName: string, items: ItemInfo[]): string {
     markdown += '## Types\n\n';
     for (const type of types) {
       const deprecatedTag = type.deprecated ? ' ~~(deprecated)~~' : '';
-      markdown += `- \`${type.signature}\`${deprecatedTag}\n`;
+      markdown += `- \`${type.signature.split('\n')[0]?.replace(/ \{$/, '')}\`${deprecatedTag}\n`;
     }
     markdown += '\n';
   }
@@ -337,6 +359,8 @@ function generateMarkdown(moduleName: string, items: ItemInfo[]): string {
             markdown += `- **${tag.name}**: ${content}\n`;
           } else if (tagName === 'returns') {
             markdown += `\n**Returns:** ${content}\n\n`;
+          } else if (tagName === 'throws') {
+            markdown += `\n**Throws:** ${content}\n\n`;
           } else if (tagName === 'template') {
             markdown += `- **Type Parameter ${tag.name}**: ${content}\n`;
           }
@@ -367,12 +391,13 @@ function processModules(): void {
   for (const child of declarations) {
     const isFunction = child.kind === 64 || child.kind === 32;
     const isTypeAlias = child.kind === 2097152;
-    if (!isFunction && !isTypeAlias) continue;
+    const isInterface = child.kind === 256;
+    if (!isFunction && !isTypeAlias && !isInterface) continue;
 
     const source = getSourceInfo(child);
     if (!source?.fileName) continue;
 
-    const signature = isTypeAlias ? buildTypeAliasSignature(child) : buildFunctionSignature(child);
+    const signature = isTypeAlias ? buildTypeAliasSignature(child) : isInterface ? buildInterfaceSignature(child) : buildFunctionSignature(child);
     const comment = getBestComment(child);
     const deprecated = comment?.blockTags?.some((tag) => tag.tag === '@deprecated') || false;
 
@@ -381,7 +406,7 @@ function processModules(): void {
       signature,
       comment,
       deprecated,
-      isType: isTypeAlias,
+      isType: isTypeAlias || isInterface,
     };
 
     if (!itemsByFile.has(source.fileName)) {

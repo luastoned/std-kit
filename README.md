@@ -322,6 +322,8 @@ Contributions are welcome! Feel free to:
 - 📖 Improve documentation
 - 🔧 Submit pull requests
 
+Before submitting a change, run `yarn verify`. Maintainers can run `yarn release:check` for the complete build, documentation, export-parity, and package-content validation.
+
 ## 📄 License
 
 [MIT](./LICENSE) License © 2024-PRESENT [LuaStoned](https://github.com/luastoned)

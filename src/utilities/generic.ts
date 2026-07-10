@@ -163,7 +163,12 @@ export function isMutableContainer(item: unknown): item is MutableContainer {
  * @returns A boolean indicating whether the item is a plain object.
  */
 export function isPlainObject(item: unknown): item is Record<PropertyKey, unknown> {
-  return isObject(item) && item.constructor === Object;
+  if (!isObject(item)) {
+    return false;
+  }
+
+  const prototype = Object.getPrototypeOf(item);
+  return prototype === null || prototype === Object.prototype;
 }
 
 /**

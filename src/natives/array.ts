@@ -8,6 +8,18 @@ import { isArray, isFunction } from '~/utilities/generic';
 type KeySelector<T, K extends PropertyKey> = K | ((item: T) => K);
 
 /**
+ * Defines a safe enumerable record entry, including reserved keys such as `__proto__`.
+ */
+function setRecordEntry<T>(record: Record<PropertyKey, T>, key: PropertyKey, value: T): void {
+  Object.defineProperty(record, key, {
+    configurable: true,
+    enumerable: true,
+    value,
+    writable: true,
+  });
+}
+
+/**
  * Builds a normalized key selector function.
  *
  * @internal
@@ -171,7 +183,8 @@ export function countBy<T, K extends PropertyKey>(array: readonly T[], key: KeyS
   return array.reduce(
     (acc, item) => {
       const itemKey = keyFn(item);
-      acc[itemKey] = (acc[itemKey] || 0) + 1;
+      const count = Object.hasOwn(acc, itemKey) ? acc[itemKey] : 0;
+      setRecordEntry(acc, itemKey, (count ?? 0) + 1);
       return acc;
     },
     {} as Record<K, number>,
@@ -209,8 +222,8 @@ export function groupBy<T, K extends PropertyKey>(array: readonly T[], key: KeyS
 
   for (const item of array) {
     const itemKey = keyFn(item);
-    if (!isArray(result[itemKey])) {
-      result[itemKey] = [];
+    if (!Object.hasOwn(result, itemKey)) {
+      setRecordEntry(result, itemKey, []);
     }
 
     result[itemKey].push(item);
@@ -364,10 +377,15 @@ export function cartesian<T = unknown>(items: readonly T[][]): T[][] {
  * Generates all possible non-empty combinations of the elements in an array.
  *
  * @template T - The type of the array elements.
- * @param items - The array of elements.
+ * @param items - The array of elements. At most 30 items are supported to avoid overflowing the bitmask representation.
  * @returns An array of arrays representing the combinations.
+ * @throws {RangeError} When more than 30 input items are provided.
  */
 export function combinations<T>(items: readonly T[]): T[][] {
+  if (items.length >= 31) {
+    throw new RangeError('combinations supports at most 30 input items.');
+  }
+
   const result: T[][] = [];
 
   // Iterate over each number from 1 to (2^length - 1)
@@ -379,10 +397,7 @@ export function combinations<T>(items: readonly T[]): T[][] {
     for (let bitPosition = 0; bitPosition < items.length; bitPosition++) {
       if (subsetMask & (1 << bitPosition)) {
         // If the bitPosition-th bit is set in `subsetMask`, include array[bitPosition] in the current combination
-        const item = items[bitPosition];
-        if (item !== undefined) {
-          combination.push(item);
-        }
+        combination.push(items[bitPosition] as T);
       }
     }
 

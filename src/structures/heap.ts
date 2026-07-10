@@ -211,8 +211,8 @@ export function createHeap<T>(options: Readonly<HeapOptions<T>>): Heap<T> {
 
       const top = items[0];
       const last = items.pop();
-      if (items.length > 0 && last !== undefined) {
-        items[0] = last;
+      if (items.length > 0) {
+        items[0] = last as T;
         siftDown(items, 0, compare);
       }
 

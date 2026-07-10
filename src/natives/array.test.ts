@@ -183,6 +183,14 @@ describe('countBy', () => {
   it('should count numbers correctly', () => {
     expect(countBy([1, 2, 1, 3, 2, 1], (x) => x)).toEqual({ 1: 3, 2: 2, 3: 1 });
   });
+
+  it('supports reserved property names safely', () => {
+    const result = countBy(['__proto__', 'constructor', '__proto__'], (value) => value);
+
+    expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
+    expect(result.__proto__).toBe(2);
+    expect(result.constructor).toBe(1);
+  });
 });
 
 describe('groupBy', () => {
@@ -207,6 +215,14 @@ describe('groupBy', () => {
       odd: [1, 3, 5],
       even: [2, 4, 6],
     });
+  });
+
+  it('supports reserved property names safely', () => {
+    const result = groupBy(['__proto__', 'constructor'], (value) => value);
+
+    expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
+    expect(result.__proto__).toEqual(['__proto__']);
+    expect(result.constructor).toEqual(['constructor']);
   });
 });
 
@@ -320,5 +336,13 @@ describe('combinations', () => {
 
   it('should return single combination for single element', () => {
     expect(combinations(['x'])).toEqual([['x']]);
+  });
+
+  it('preserves undefined elements', () => {
+    expect(combinations([undefined])).toEqual([[undefined]]);
+  });
+
+  it('rejects inputs that exceed the supported bitmask size', () => {
+    expect(() => combinations(Array.from({ length: 31 }, (_, index) => index))).toThrow(RangeError);
   });
 });

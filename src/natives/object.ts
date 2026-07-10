@@ -5,9 +5,11 @@ import {
   hasForbiddenPathKeys,
   isArrayIndexSegment,
   normalizeFilterPredicates,
+  setOwnEnumerableProperty,
   tokenizePath,
+  withActiveContainer,
 } from '~/natives/object/shared.internal';
-import { isArray, isContainer, isMutableContainer, isObject } from '~/utilities/generic';
+import { isArray, isContainer, isMutableContainer, isPlainObject } from '~/utilities/generic';
 import type { Container, DeepPartial, GetFieldType, MutableContainer, PlainObject } from '~/utilities/types';
 
 /**
@@ -23,7 +25,7 @@ export function pick<T extends object, K extends keyof T>(obj: T, keys: readonly
   const result = {} as Pick<T, K>;
   for (const key of keys) {
     if (key in obj) {
-      result[key] = obj[key];
+      setOwnEnumerableProperty(result as Record<PropertyKey, unknown>, key, obj[key]);
     }
   }
 
@@ -219,16 +221,7 @@ export function queryObject<Ret = unknown, T = unknown, P extends boolean = fals
    */
   function traverse(value: unknown, currentPath = '', currentKey = '', parent: unknown = null): void {
     const container = isContainer(value);
-    if (container) {
-      const containerRef = value as object;
-      if (visiting.has(containerRef)) {
-        return;
-      }
-      visiting.add(containerRef);
-    }
-
-    // Check if the current node matches criteria
-    try {
+    const visitValue = (): void => {
       if (filter(currentKey, value as T, currentPath, parent)) {
         if (path) {
           results.push({ path: currentPath, value: value as Ret } as P extends true ? { path: string; value: Ret } : Ret);
@@ -242,11 +235,14 @@ export function queryObject<Ret = unknown, T = unknown, P extends boolean = fals
           traverse(childValue, childPath, key, value);
         });
       }
-    } finally {
-      if (container) {
-        visiting.delete(value as object);
-      }
+    };
+
+    if (!container) {
+      visitValue();
+      return;
     }
+
+    withActiveContainer(value as object, visiting, () => undefined, visitValue);
   }
 
   // Early return for non-object values
@@ -364,16 +360,16 @@ export function filterObject<T>(
 
       // Both key and value match - keep as-is
       if (keyMatches && valueMatches) {
-        result[key] = propValue;
+        setOwnEnumerableProperty(result, key, propValue);
         hasMatchingItems = true;
         continue;
       }
 
       // Key matches but value doesn't, or key doesn't match - check if it's a container
       if (isContainer(propValue)) {
-        const filteredValue = recurse(propValue, keyPath, parent);
+        const filteredValue = recurse(propValue, keyPath, obj);
         if (filteredValue !== undefined) {
-          result[key] = filteredValue;
+          setOwnEnumerableProperty(result, key, filteredValue);
           hasMatchingItems = true;
         }
       }
@@ -402,26 +398,24 @@ export function filterObject<T>(
       return undefined;
     }
 
-    if (visiting.has(value as object)) {
-      return undefined;
-    }
-    visiting.add(value as object);
+    return withActiveContainer(
+      value as object,
+      visiting,
+      () => undefined,
+      () => {
+        // Handle arrays
+        if (isArray(value)) {
+          return filterArray(value, currentPath);
+        }
 
-    try {
-      // Handle arrays
-      if (isArray(value)) {
-        return filterArray(value, currentPath);
-      }
+        // Handle objects
+        if (isPlainObject(value)) {
+          return filterObjectProps(value as Record<string, unknown>, currentPath, value);
+        }
 
-      // Handle objects
-      if (isObject(value)) {
-        return filterObjectProps(value as Record<string, unknown>, currentPath, parent);
-      }
-
-      return undefined;
-    } finally {
-      visiting.delete(value as object);
-    }
+        return undefined;
+      },
+    );
   }
 
   return recurse(obj, '', null) as DeepPartial<T> | undefined;
@@ -470,7 +464,7 @@ export function mapObject<T>(obj: T, mapper: (key: string, value: unknown, path:
     }
 
     // Handle objects
-    if (isObject(value)) {
+    if (isPlainObject(value)) {
       if (mappedContainers.has(value)) {
         return mappedContainers.get(value) as Record<string, unknown>;
       }
@@ -480,7 +474,7 @@ export function mapObject<T>(obj: T, mapper: (key: string, value: unknown, path:
       for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
         const keyPath = buildChildPath(currentPath, key, false);
         const transformed = mapper(key, val, keyPath, value);
-        result[key] = isContainer(transformed) ? recurse(transformed, keyPath) : transformed;
+        setOwnEnumerableProperty(result, key, isContainer(transformed) ? recurse(transformed, keyPath) : transformed);
       }
 
       return result;
@@ -508,6 +502,7 @@ export function mapObject<T>(obj: T, mapper: (key: string, value: unknown, path:
  *   - If function: Arrays are merged by matching the result of the key extractor function (item, index) => key.
  * - Strict mode: When `strict` is true, only keys/items that exist in the source will be merged. New keys from the patch and non-matching array items will be
  *   ignored.
+ * - Prototype-mutating keys (`__proto__`, `constructor`, and `prototype`) are ignored at every level.
  *
  * @example
  *   ```ts

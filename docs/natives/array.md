@@ -11,15 +11,15 @@
 - `cluster<T>(array: readonly T[], size: number = 2): T[][]` ~~(deprecated)~~
 - `combinations<T>(items: readonly T[]): T[][]`
 - `compact<T>(array: readonly T[]): NonNullable<T>[]`
-- `countBy<T, K>(array: readonly T[], key: K | ((item: T) => K)): Record<K, number>`
+- `countBy<T, K extends PropertyKey>(array: readonly T[], key: K | ((item: T) => K)): Record<K, number>`
 - `fill<T>(size: number, value: T): T[]`
 - `flatten<T>(array: readonly unknown[], depth: number = Infinity): T[]`
-- `groupBy<T, K>(array: readonly T[], key: K | ((item: T) => K)): Record<K, T[]>`
-- `orderBy<T, K>(array: readonly T[], keys: readonly K | ((item: T) => K)[], orders: readonly "asc" | "desc"[], inPlace: boolean = false): T[]`
+- `groupBy<T, K extends PropertyKey>(array: readonly T[], key: K | ((item: T) => K)): Record<K, T[]>`
+- `orderBy<T, K extends string | number>(array: readonly T[], keys: readonly K | ((item: T) => K)[], orders: readonly "asc" | "desc"[], inPlace: boolean = false): T[]`
 - `reverse<T>(array: readonly T[], inPlace: boolean = false): T[]`
 - `shuffle<T>(array: readonly T[], inPlace: boolean = false): T[]`
 - `unique<T>(array: readonly T[]): T[]`
-- `uniqueBy<T, K>(array: readonly T[], key: K | ((item: T) => K)): T[]`
+- `uniqueBy<T, K extends PropertyKey>(array: readonly T[], key: K | ((item: T) => K)): T[]`
 
 ---
 
@@ -79,6 +79,9 @@ Generates all possible non-empty combinations of the elements in an array.
 **Returns:** An array of arrays representing the combinations.
 
 
+**Throws:** When more than 30 input items are provided.
+
+
 ---
 
 ## compact
@@ -98,7 +101,7 @@ Returns a new array with all falsy values removed. Falsy values include: false, 
 ## countBy
 
 ```typescript
-countBy<T, K>(array: readonly T[], key: K | ((item: T) => K)): Record<K, number>
+countBy<T, K extends PropertyKey>(array: readonly T[], key: K | ((item: T) => K)): Record<K, number>
 ```
 
 Counts the occurrences of each unique key in an array. If a key function is provided, it will be used to extract the key from each element. If a key property
@@ -141,7 +144,7 @@ Flattens a nested array up to the specified depth.
 ## groupBy
 
 ```typescript
-groupBy<T, K>(array: readonly T[], key: K | ((item: T) => K)): Record<K, T[]>
+groupBy<T, K extends PropertyKey>(array: readonly T[], key: K | ((item: T) => K)): Record<K, T[]>
 ```
 
 Groups the elements of an array by a specified key. If a key function is provided, it will be used to extract the key from each element. If a key property is
@@ -156,7 +159,7 @@ provided, it will be used to extract the key from each element.
 ## orderBy
 
 ```typescript
-orderBy<T, K>(array: readonly T[], keys: readonly K | ((item: T) => K)[], orders: readonly "asc" | "desc"[], inPlace: boolean = false): T[]
+orderBy<T, K extends string | number>(array: readonly T[], keys: readonly K | ((item: T) => K)[], orders: readonly "asc" | "desc"[], inPlace: boolean = false): T[]
 ```
 
 Sorts an array of objects based on the specified keys and orders. If a key function is provided, it will be used to extract the key from each element. If a
@@ -213,7 +216,7 @@ Returns a new array with unique elements from the input array.
 ## uniqueBy
 
 ```typescript
-uniqueBy<T, K>(array: readonly T[], key: K | ((item: T) => K)): T[]
+uniqueBy<T, K extends PropertyKey>(array: readonly T[], key: K | ((item: T) => K)): T[]
 ```
 
 Returns a new array containing unique elements from the input array based on the specified key. If a key function is provided, it will be used to extract the

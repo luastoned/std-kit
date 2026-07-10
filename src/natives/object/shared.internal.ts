@@ -9,6 +9,59 @@ import type { Container } from '~/utilities/types';
 const FORBIDDEN_PATH_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 
 /**
+ * Checks whether a property key is unsafe to traverse or merge.
+ *
+ * @param key - Property key to check.
+ * @returns `true` for keys that can mutate an object's prototype chain.
+ * @internal
+ */
+export function isForbiddenPathKey(key: string): boolean {
+  return FORBIDDEN_PATH_KEYS.has(key);
+}
+
+/**
+ * Defines an enumerable own data property without invoking legacy prototype setters.
+ *
+ * @param target - Object receiving the property.
+ * @param key - Property key to define.
+ * @param value - Property value.
+ * @returns Nothing.
+ * @internal
+ */
+export function setOwnEnumerableProperty(target: Record<PropertyKey, unknown>, key: PropertyKey, value: unknown): void {
+  Object.defineProperty(target, key, {
+    configurable: true,
+    enumerable: true,
+    value,
+    writable: true,
+  });
+}
+
+/**
+ * Runs a traversal step while guarding only the active recursion path against cycles.
+ * Shared references may therefore still be visited through distinct object paths.
+ *
+ * @param container - Container currently being traversed.
+ * @param visiting - Active recursion-path set.
+ * @param onCycle - Fallback used when the container is already active.
+ * @param visit - Traversal operation.
+ * @returns The traversal result or cycle fallback.
+ * @internal
+ */
+export function withActiveContainer<T>(container: object, visiting: WeakSet<object>, onCycle: () => T, visit: () => T): T {
+  if (visiting.has(container)) {
+    return onCycle();
+  }
+
+  visiting.add(container);
+  try {
+    return visit();
+  } finally {
+    visiting.delete(container);
+  }
+}
+
+/**
  * Shared predicate shape used by object traversal helpers.
  *
  * @internal
@@ -73,7 +126,7 @@ export function tokenizePath(path: string): string[] {
  * @internal
  */
 export function hasForbiddenPathKeys(keys: readonly string[]): boolean {
-  return keys.some((key) => FORBIDDEN_PATH_KEYS.has(key));
+  return keys.some((key) => isForbiddenPathKey(key));
 }
 
 /**

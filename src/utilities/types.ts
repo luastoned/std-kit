@@ -78,15 +78,16 @@ export type GenericFn<T> = (...args: T[]) => unknown;
  * @template TFunc - The type of the function.
  * @returns The generic function type.
  */
-export type GenericFunction<TFunc extends (...args: unknown[]) => unknown> = (...args: Parameters<TFunc>) => ReturnType<TFunc>;
+export type GenericFunction<TFunc extends (...args: never[]) => unknown> = (...args: Parameters<TFunc>) => ReturnType<TFunc>;
 
 /**
  * Represents a constructor function type.
  *
  * @template T - The type that the constructor creates.
+ * @template Args - The constructor argument tuple. Defaults to an unconstrained argument list.
  * @returns The constructor type.
  */
-export type Constructor<T = unknown> = new (...args: unknown[]) => T;
+export type Constructor<T = unknown, Args extends unknown[] = any[]> = new (...args: Args) => T;
 
 // =============================================================================
 // Object Types
@@ -300,7 +301,7 @@ type GetDirectField<T, Path extends keyof T> = T[Path];
  *
  * @internal
  */
-type FieldOrUndefined<T, Key> = Key extends keyof T ? T[Key] | Extract<T, undefined> : undefined;
+type FieldOrUndefined<T, Key> = T extends null | undefined ? undefined : Key extends keyof T ? T[Key] : undefined;
 
 /**
  * Infers the type at a dot/bracket path.
@@ -333,13 +334,15 @@ export type GetFieldType<T, Path> = Path extends ''
  *
  * @internal
  */
-type GetDirectOrIndexedField<T, Path> = Path extends `${infer FieldKey}[${infer _IdxKey}]`
-  ? FieldKey extends keyof T
-    ? GetIndexedField<T[FieldKey]>
-    : undefined
-  : Path extends keyof T
-    ? GetDirectField<T, Path>
-    : undefined;
+type GetDirectOrIndexedField<T, Path> = T extends null | undefined
+  ? undefined
+  : Path extends `${infer FieldKey}[${infer _IdxKey}]`
+    ? FieldKey extends keyof T
+      ? GetIndexedField<T[FieldKey]>
+      : undefined
+    : Path extends keyof T
+      ? GetDirectField<T, Path>
+      : undefined;
 
 /**
  * Recursively resolves nested path segments.

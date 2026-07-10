@@ -6,7 +6,7 @@
 
 ## Functions
 
-- `defer<Args, Ret>(fn: (...args: Args) => Ret | Promise<Ret>, ...args: Args): DeferredTask<Awaited<Ret>>`
+- `defer<Args extends readonly unknown[], Ret>(fn: (...args: Args) => Ret | Promise<Ret>, ...args: Args): DeferredTask<Awaited<Ret>>`
 - `threads<T>(parallel: number, tasks: readonly DeferredTask<T>[]): Promise<T[]>`
 
 ## Types
@@ -28,7 +28,7 @@ A deferred async task that resolves to `T` when executed.
 ## defer
 
 ```typescript
-defer<Args, Ret>(fn: (...args: Args) => Ret | Promise<Ret>, ...args: Args): DeferredTask<Awaited<Ret>>
+defer<Args extends readonly unknown[], Ret>(fn: (...args: Args) => Ret | Promise<Ret>, ...args: Args): DeferredTask<Awaited<Ret>>
 ```
 
 Wraps a function call so it can be executed later as a promise task.

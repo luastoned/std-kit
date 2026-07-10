@@ -23,8 +23,9 @@ export function once<Args extends unknown[], Ret>(fn: (...args: Args) => Ret): (
 
   return function onceWrapper(...args: Args): Ret {
     if (!called) {
+      const firstResult = fn(...args);
+      result = firstResult;
       called = true;
-      result = fn(...args);
       return result;
     }
 

@@ -48,7 +48,7 @@ export function debounce<Args extends unknown[], Ret>(callback: (...args: Args) 
 
 /**
  * Throttles a function and returns a promise that resolves with the result of the function. The function will be called at most once within the specified time
- * interval.
+ * interval. Calls coalesced into the same trailing invocation all settle with that invocation's result.
  *
  * @example
  *   ```ts
@@ -67,41 +67,62 @@ export function debounce<Args extends unknown[], Ret>(callback: (...args: Args) 
  * @returns A throttled function that returns a promise.
  */
 export function throttle<Args extends unknown[], Ret>(callback: (...args: Args) => Ret, waitFor: number): (...args: Args) => Promise<Awaited<Ret>> {
-  function now(): number {
-    return Date.now();
-  }
-
-  function resetStartTime(): void {
-    startTime = now();
-  }
-
+  const normalizedWait = Number.isFinite(waitFor) ? Math.max(0, waitFor) : 0;
   let timeout: ReturnType<typeof setTimeout> | undefined;
-  let startTime: number = now() - waitFor;
+  let lastInvocation = Number.NEGATIVE_INFINITY;
+  let trailingArgs: Args | undefined;
+  let trailingWaiters: Array<{
+    resolve: (value: Awaited<Ret> | PromiseLike<Awaited<Ret>>) => void;
+    reject: (reason?: unknown) => void;
+  }> = [];
+
+  function invoke(args: Args): Promise<Awaited<Ret>> {
+    lastInvocation = Date.now();
+    try {
+      return Promise.resolve(callback(...args)) as Promise<Awaited<Ret>>;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  function scheduleTrailing(delay: number): void {
+    if (timeout !== undefined) {
+      clearTimeout(timeout);
+    }
+
+    timeout = setTimeout(() => {
+      timeout = undefined;
+      const args = trailingArgs;
+      const waiters = trailingWaiters;
+      trailingArgs = undefined;
+      trailingWaiters = [];
+
+      if (!args) {
+        return;
+      }
+
+      void invoke(args).then(
+        (value) => {
+          for (const waiter of waiters) waiter.resolve(value);
+        },
+        (error: unknown) => {
+          for (const waiter of waiters) waiter.reject(error);
+        },
+      );
+    }, delay);
+  }
 
   return function throttled(...args: Args): Promise<Awaited<Ret>> {
-    return new Promise((resolve, reject) => {
-      const timeLeft = startTime + waitFor - now();
-      if (timeout !== undefined) {
-        clearTimeout(timeout);
-      }
+    const elapsed = Date.now() - lastInvocation;
+    if (timeout === undefined && elapsed >= normalizedWait) {
+      return invoke(args);
+    }
 
-      if (startTime + waitFor <= now()) {
-        resetStartTime();
-        try {
-          resolve(callback(...args) as Awaited<Ret>);
-        } catch (error) {
-          reject(error);
-        }
-      } else {
-        timeout = setTimeout(() => {
-          resetStartTime();
-          try {
-            resolve(callback(...args) as Awaited<Ret>);
-          } catch (error) {
-            reject(error);
-          }
-        }, timeLeft);
-      }
+    trailingArgs = args;
+    const promise = new Promise<Awaited<Ret>>((resolve, reject) => {
+      trailingWaiters.push({ resolve, reject });
     });
+    scheduleTrailing(Math.max(0, normalizedWait - elapsed));
+    return promise;
   };
 }

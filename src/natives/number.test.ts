@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 import { clamp, roundTo, randomInt, randomNum, deg2rad, rad2deg, range, sum, mean, lerp } from './number';
 
@@ -33,6 +33,19 @@ describe('math utils', () => {
       expect(num).toBeLessThanOrEqual(10);
       expect(Number.isInteger(num)).toBe(true);
     }
+  });
+
+  it('normalizes fractional random integer bounds', () => {
+    vi.spyOn(Math, 'random').mockReturnValueOnce(0).mockReturnValueOnce(0.999999);
+
+    expect(randomInt(1.2, 3.8)).toBe(2);
+    expect(randomInt(1.2, 3.8)).toBe(3);
+    vi.restoreAllMocks();
+  });
+
+  it('rejects ranges with no finite integer', () => {
+    expect(() => randomInt(1.2, 1.8)).toThrow(RangeError);
+    expect(() => randomInt(0, Number.POSITIVE_INFINITY)).toThrow(RangeError);
   });
 
   it('generates random float in exclusive upper bound range', () => {

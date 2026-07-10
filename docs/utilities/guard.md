@@ -14,6 +14,7 @@
 
 ```typescript
 guard<T>(fn: () => Promise<T>, shouldGuard?: (error: unknown) => boolean): Promise<T | undefined>
+guard<T>(fn: () => T, shouldGuard?: (error: unknown) => boolean): T | undefined
 ```
 
 Wraps a function to safely execute it and catch any errors. Works with both synchronous and asynchronous functions.

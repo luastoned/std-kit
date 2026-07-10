@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { cloneObject, isContainer, isMutableContainer } from './generic';
+import { cloneObject, isContainer, isMutableContainer, isPlainObject } from './generic';
 
 describe('cloneObject', () => {
   it('should clone a plain object', () => {
@@ -49,5 +49,20 @@ describe('container guards', () => {
     expect(isMutableContainer('hello')).toBe(false);
     expect(isMutableContainer(123)).toBe(false);
     expect(isMutableContainer(null)).toBe(false);
+  });
+});
+
+describe('isPlainObject', () => {
+  it('recognizes objects with reserved own keys and null prototypes', () => {
+    expect(isPlainObject(JSON.parse('{"constructor":{}}'))).toBe(true);
+    expect(isPlainObject(Object.create(null))).toBe(true);
+  });
+
+  it('rejects class instances and built-in objects', () => {
+    class Example {}
+
+    expect(isPlainObject(new Example())).toBe(false);
+    expect(isPlainObject(new Date())).toBe(false);
+    expect(isPlainObject(new Map())).toBe(false);
   });
 });

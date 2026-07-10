@@ -89,14 +89,35 @@ describe('throttle', () => {
     const fn = vi.fn((x: number) => x);
     const throttled = throttle(fn, 100);
 
-    const _p1 = throttled(1);
-    const _p2 = throttled(2);
-    const _p3 = throttled(3);
+    const p1 = throttled(1);
+    const p2 = throttled(2);
+    const p3 = throttled(3);
 
     vi.advanceTimersByTime(50);
     expect(fn).toHaveBeenCalledTimes(1);
 
     await vi.runAllTimersAsync();
+    await expect(p1).resolves.toBe(1);
+    await expect(p2).resolves.toBe(3);
+    await expect(p3).resolves.toBe(3);
     expect(fn).toHaveBeenCalledTimes(2);
+  });
+
+  it('rejects every coalesced call when the trailing invocation fails', async () => {
+    const error = new Error('failed');
+    const throttled = throttle((value: number) => {
+      if (value === 3) throw error;
+      return value;
+    }, 100);
+
+    await expect(throttled(1)).resolves.toBe(1);
+    const p2 = throttled(2);
+    const p3 = throttled(3);
+    const p2Assertion = expect(p2).rejects.toBe(error);
+    const p3Assertion = expect(p3).rejects.toBe(error);
+    await vi.runAllTimersAsync();
+
+    await p2Assertion;
+    await p3Assertion;
   });
 });

@@ -97,8 +97,13 @@ randomInt(min: number, max: number): number
 
 Generates a random integer between the specified minimum and maximum values (inclusive).
 
+Fractional bounds are normalized inward so every possible result is an integer contained by the original bounds.
+
 
 **Returns:** A random integer between the minimum and maximum values.
+
+
+**Throws:** When the bounds are non-finite or contain no integer.
 
 
 ---

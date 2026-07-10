@@ -64,3 +64,14 @@ describe('threads', () => {
     await expect(threads(2, tasks)).resolves.toEqual([undefined, 'done']);
   });
 });
+
+describe('defer', () => {
+  it('turns synchronous throws into promise rejections', async () => {
+    const task = defer(() => {
+      throw new Error('boom');
+    });
+
+    const promise = task();
+    await expect(promise).rejects.toThrow('boom');
+  });
+});

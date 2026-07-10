@@ -1,5 +1,7 @@
 import { defineConfig } from 'tsdown';
 
+// Keep the configuration explicitly ESM without changing the package's CommonJS default.
+
 export default defineConfig([
   // Main bundle - browser/universal compatible
   {

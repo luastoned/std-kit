@@ -27,8 +27,8 @@
 - `isString(item: unknown): item is string`
 - `isSymbol(item: unknown): item is symbol`
 - `isUndefined(item: unknown): item is undefined`
-- `isWeakMap<K, V = unknown>(item: unknown): item is WeakMap<K, V>`
-- `isWeakSet<T>(item: unknown): item is WeakSet<T>`
+- `isWeakMap<K extends WeakKey, V = unknown>(item: unknown): item is WeakMap<K, V>`
+- `isWeakSet<T extends WeakKey>(item: unknown): item is WeakSet<T>`
 
 ---
 
@@ -331,7 +331,7 @@ Checks if the given item is undefined.
 ## isWeakMap
 
 ```typescript
-isWeakMap<K, V = unknown>(item: unknown): item is WeakMap<K, V>
+isWeakMap<K extends WeakKey, V = unknown>(item: unknown): item is WeakMap<K, V>
 ```
 
 Checks if the given item is an instance of WeakMap.
@@ -345,7 +345,7 @@ Checks if the given item is an instance of WeakMap.
 ## isWeakSet
 
 ```typescript
-isWeakSet<T>(item: unknown): item is WeakSet<T>
+isWeakSet<T extends WeakKey>(item: unknown): item is WeakSet<T>
 ```
 
 Checks if the given item is a WeakSet.

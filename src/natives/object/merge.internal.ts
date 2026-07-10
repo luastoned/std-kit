@@ -1,6 +1,8 @@
 import { isArray, isPlainObject } from '~/utilities/generic';
 import type { PlainObject } from '~/utilities/types';
 
+import { isForbiddenPathKey, setOwnEnumerableProperty } from './shared.internal';
+
 /**
  * Strategy used to merge arrays while deep-merging objects.
  *
@@ -236,6 +238,10 @@ export function mergePlainObjects(args: {
   const target = options.immutable ? { ...src } : src;
 
   for (const [key, patchValue] of Object.entries(patch)) {
+    if (isForbiddenPathKey(key)) {
+      continue;
+    }
+
     if (isStrictAtThisLevel && !(key in target)) {
       continue;
     }
@@ -244,22 +250,24 @@ export function mergePlainObjects(args: {
 
     if (isPlainObject(patchValue)) {
       if (!isPlainObject(srcValue)) {
-        target[key] = {};
+        setOwnEnumerableProperty(target, key, {});
       }
 
-      target[key] = mergeNested(target[key] as PlainObject, patchValue as PlainObject, isStrictAtThisLevel);
+      setOwnEnumerableProperty(target, key, mergeNested(target[key] as PlainObject, patchValue as PlainObject, isStrictAtThisLevel));
       continue;
     }
 
     if (isArray(patchValue)) {
-      target[key] = mergeArraysWithStrategy(srcValue, patchValue, options.mergeArrays, options.strict, (srcItem, patchItem) =>
-        mergeNested(srcItem, patchItem, false),
+      setOwnEnumerableProperty(
+        target,
+        key,
+        mergeArraysWithStrategy(srcValue, patchValue, options.mergeArrays, options.strict, (srcItem, patchItem) => mergeNested(srcItem, patchItem, false)),
       );
       continue;
     }
 
     if (patchValue !== undefined || options.applyUndefined) {
-      target[key] = patchValue;
+      setOwnEnumerableProperty(target, key, patchValue);
     }
   }
 

@@ -222,6 +222,78 @@ function normalizeInsertPosition(position: TreeInsertOptions['position'], length
 }
 
 /**
+ * Transforms the first node matching a target and rebuilds only its ancestor path.
+ * Traversal stops as soon as the first match is found.
+ *
+ * @internal
+ */
+function transformFirstTreeNode<TNode extends object, TChildKey extends PropertyKey>(
+  tree: Readonly<TNode>,
+  target: TreeTarget<TNode>,
+  childrenKey: TChildKey,
+  transform: (node: TNode, context: TreeContext<TNode>) => TNode | undefined,
+): TNode | undefined {
+  let matched = false;
+  const visiting = new WeakSet<object>();
+
+  function visit(node: TNode, context: TreeContext<TNode>): TreeTransformResult<TNode> {
+    if (visiting.has(node)) {
+      return { node, changed: false };
+    }
+
+    if (matchesTreeTarget(node, context, target)) {
+      matched = true;
+      const transformed = transform(node, context);
+      return { node: transformed, changed: transformed !== node };
+    }
+
+    visiting.add(node);
+    try {
+      const children = getTreeChildren(node, childrenKey);
+      for (const [index, child] of children.entries()) {
+        const result = visit(child, {
+          parent: node,
+          path: [...context.path, index],
+          depth: context.depth + 1,
+          index,
+        });
+
+        if (!matched) {
+          continue;
+        }
+
+        if (!result.changed) {
+          return { node, changed: false };
+        }
+
+        const nextChildren = [...children];
+        if (result.node === undefined) {
+          nextChildren.splice(index, 1);
+        } else {
+          nextChildren[index] = result.node;
+        }
+
+        return {
+          node: cloneNodeWithChildren(node, childrenKey, nextChildren),
+          changed: true,
+        };
+      }
+
+      return { node, changed: false };
+    } finally {
+      visiting.delete(node);
+    }
+  }
+
+  return visit(tree as TNode, {
+    parent: null,
+    path: [],
+    depth: 0,
+    index: 0,
+  }).node;
+}
+
+/**
  * Walks a tree in depth-first preorder.
  *
  * Returning `'skip'` skips the current node's descendants. Returning `'stop'` stops traversal entirely.
@@ -357,7 +429,13 @@ export function queryTree<TNode extends object, TChildKey extends PropertyKey = 
   options?: Readonly<TreeQueryOptions<TChildKey>>,
 ): TNode[] {
   const results: TNode[] = [];
-  const maxResults = options?.maxResults;
+  const requestedMaxResults = options?.maxResults;
+  const maxResults =
+    requestedMaxResults === undefined || requestedMaxResults === Number.POSITIVE_INFINITY ? undefined : Math.max(0, Math.floor(requestedMaxResults));
+
+  if (maxResults === 0) {
+    return results;
+  }
 
   walkTree(
     tree,
@@ -518,59 +596,7 @@ export function updateTreeNode<TNode extends object, TChildKey extends PropertyK
   options?: Readonly<TreeOptions<TChildKey>>,
 ): TNode {
   const { childrenKey } = normalizeTreeOptions(options);
-  const state = { matched: false };
-  const visiting = new WeakSet<object>();
-
-  function visit(node: TNode, context: TreeContext<TNode>): TNode {
-    if (visiting.has(node as object)) {
-      return node;
-    }
-
-    visiting.add(node as object);
-    try {
-      const currentNode = !state.matched && matchesTreeTarget(node, context, target) ? ((state.matched = true), updater(node, context)) : node;
-      const children = getTreeChildren(currentNode, childrenKey);
-      if (children.length === 0) {
-        return currentNode;
-      }
-
-      let changed = currentNode !== node;
-      let nextChildren: TNode[] | undefined;
-
-      for (const [index, child] of children.entries()) {
-        const nextChild = visit(child, {
-          parent: currentNode,
-          path: [...context.path, index],
-          depth: context.depth + 1,
-          index,
-        });
-
-        if (nextChild !== child) {
-          if (!nextChildren) {
-            nextChildren = [...children];
-          }
-
-          nextChildren[index] = nextChild;
-          changed = true;
-        }
-      }
-
-      if (!changed) {
-        return node;
-      }
-
-      return nextChildren ? cloneNodeWithChildren(currentNode, childrenKey, nextChildren) : currentNode;
-    } finally {
-      visiting.delete(node as object);
-    }
-  }
-
-  return visit(tree as TNode, {
-    parent: null,
-    path: [],
-    depth: 0,
-    index: 0,
-  });
+  return transformFirstTreeNode(tree, target, childrenKey, updater) as TNode;
 }
 
 /**
@@ -613,66 +639,7 @@ export function removeTreeNode<TNode extends object, TChildKey extends PropertyK
   options?: Readonly<TreeOptions<TChildKey>>,
 ): TNode | undefined {
   const { childrenKey } = normalizeTreeOptions(options);
-  const state = { matched: false };
-  const visiting = new WeakSet<object>();
-
-  function visit(node: TNode, context: TreeContext<TNode>): TreeTransformResult<TNode> {
-    if (visiting.has(node as object)) {
-      return { node, changed: false };
-    }
-
-    if (!state.matched && matchesTreeTarget(node, context, target)) {
-      state.matched = true;
-      return { node: undefined, changed: true };
-    }
-
-    visiting.add(node as object);
-    try {
-      const children = getTreeChildren(node, childrenKey);
-      if (children.length === 0) {
-        return { node, changed: false };
-      }
-
-      let changed = false;
-      let nextChildren: TNode[] | undefined;
-
-      for (const [index, child] of children.entries()) {
-        const result = visit(child, {
-          parent: node,
-          path: [...context.path, index],
-          depth: context.depth + 1,
-          index,
-        });
-
-        if (!changed && (result.changed || result.node !== child)) {
-          nextChildren = children.slice(0, index) as TNode[];
-          changed = true;
-        }
-
-        if (nextChildren && result.node !== undefined) {
-          nextChildren.push(result.node);
-        }
-      }
-
-      if (!changed || !nextChildren) {
-        return { node, changed: false };
-      }
-
-      return {
-        node: cloneNodeWithChildren(node, childrenKey, nextChildren),
-        changed: true,
-      };
-    } finally {
-      visiting.delete(node as object);
-    }
-  }
-
-  return visit(tree as TNode, {
-    parent: null,
-    path: [],
-    depth: 0,
-    index: 0,
-  }).node;
+  return transformFirstTreeNode(tree, target, childrenKey, () => undefined);
 }
 
 /**
@@ -710,64 +677,10 @@ export function insertTreeNode<TNode extends object, TChildKey extends PropertyK
   options?: Readonly<TreeInsertOptions<TChildKey>>,
 ): TNode {
   const { childrenKey } = normalizeTreeOptions(options);
-  const state = { matched: false };
-  const visiting = new WeakSet<object>();
-
-  function visit(currentNode: TNode, context: TreeContext<TNode>): TNode {
-    if (visiting.has(currentNode as object)) {
-      return currentNode;
-    }
-
-    visiting.add(currentNode as object);
-    try {
-      if (!state.matched && matchesTreeTarget(currentNode, context, parentTarget)) {
-        state.matched = true;
-        const children = getTreeChildren(currentNode, childrenKey);
-        const index = normalizeInsertPosition(options?.position, children.length);
-        const nextChildren = [...children.slice(0, index), node, ...children.slice(index)];
-        return cloneNodeWithChildren(currentNode, childrenKey, nextChildren);
-      }
-
-      const children = getTreeChildren(currentNode, childrenKey);
-      if (children.length === 0) {
-        return currentNode;
-      }
-
-      let changed = false;
-      let nextChildren: TNode[] | undefined;
-
-      for (const [index, child] of children.entries()) {
-        const nextChild = visit(child, {
-          parent: currentNode,
-          path: [...context.path, index],
-          depth: context.depth + 1,
-          index,
-        });
-
-        if (nextChild !== child) {
-          if (!nextChildren) {
-            nextChildren = [...children];
-          }
-
-          nextChildren[index] = nextChild;
-          changed = true;
-        }
-      }
-
-      if (!changed || !nextChildren) {
-        return currentNode;
-      }
-
-      return cloneNodeWithChildren(currentNode, childrenKey, nextChildren);
-    } finally {
-      visiting.delete(currentNode as object);
-    }
-  }
-
-  return visit(tree as TNode, {
-    parent: null,
-    path: [],
-    depth: 0,
-    index: 0,
-  });
+  return transformFirstTreeNode(tree, parentTarget, childrenKey, (currentNode) => {
+    const children = getTreeChildren(currentNode, childrenKey);
+    const index = normalizeInsertPosition(options?.position, children.length);
+    const nextChildren = [...children.slice(0, index), node, ...children.slice(index)];
+    return cloneNodeWithChildren(currentNode, childrenKey, nextChildren);
+  }) as TNode;
 }

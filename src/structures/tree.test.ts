@@ -101,6 +101,11 @@ describe('queryTree', () => {
     const result = queryTree(sampleTree(), (node) => node.id.includes('1'), { maxResults: 1 });
     expect(result.map((node) => node.id)).toEqual(['a1']);
   });
+
+  it('returns no results when maxResults is non-positive', () => {
+    expect(queryTree(sampleTree(), () => true, { maxResults: 0 })).toEqual([]);
+    expect(queryTree(sampleTree(), () => true, { maxResults: -1 })).toEqual([]);
+  });
 });
 
 describe('flattenTree', () => {

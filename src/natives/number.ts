@@ -32,13 +32,24 @@ export function roundTo(value: number, decimals = 2): number {
 /**
  * Generates a random integer between the specified minimum and maximum values (inclusive).
  *
- * @param min - One bound of the range.
- * @param max - The other bound of the range.
+ * Fractional bounds are normalized inward so every possible result is an integer contained by the original bounds.
+ *
+ * @param min - One finite bound of the range.
+ * @param max - The other finite bound of the range.
  * @returns A random integer between the minimum and maximum values.
+ * @throws {RangeError} When the bounds are non-finite or contain no integer.
  */
 export function randomInt(min: number, max: number): number {
-  const lower = Math.min(min, max);
-  const upper = Math.max(min, max);
+  if (!Number.isFinite(min) || !Number.isFinite(max)) {
+    throw new RangeError('randomInt bounds must be finite numbers.');
+  }
+
+  const lower = Math.ceil(Math.min(min, max));
+  const upper = Math.floor(Math.max(min, max));
+  if (lower > upper) {
+    throw new RangeError('randomInt bounds must contain at least one integer.');
+  }
+
   return Math.floor(Math.random() * (upper - lower + 1)) + lower;
 }
 

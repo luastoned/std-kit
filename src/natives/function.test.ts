@@ -39,6 +39,20 @@ describe('once', () => {
     expect(fn()).toBeUndefined();
     expect(called).toBe(true);
   });
+
+  it('retries when the first invocation throws', () => {
+    let attempts = 0;
+    const fn = once(() => {
+      attempts++;
+      if (attempts === 1) throw new Error('temporary');
+      return 'ready';
+    });
+
+    expect(() => fn()).toThrow('temporary');
+    expect(fn()).toBe('ready');
+    expect(fn()).toBe('ready');
+    expect(attempts).toBe(2);
+  });
 });
 
 describe('memoize', () => {

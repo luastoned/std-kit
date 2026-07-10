@@ -6,13 +6,13 @@
 
 ## Types
 
-- `type Constructor<T = unknown> = (...args: unknown[]) => T`
+- `type Constructor<T = unknown, Args extends unknown[] = any[]> = (...args: Args) => T`
 - `type Container = GenericObject | readonly unknown[]`
 - `type DeepPartial<T> = unknown`
 - `type DeepReadonly<T> = unknown`
 - `type DeepRequired<T> = unknown`
 - `type GenericFn<T> = (...args: T[]) => unknown`
-- `type GenericFunction<TFunc> = (...args: Parameters<TFunc>) => ReturnType<TFunc>`
+- `type GenericFunction<TFunc extends (...args: never[]) => unknown> = (...args: Parameters<TFunc>) => ReturnType<TFunc>`
 - `type GenericObject = Record<PropertyKey, unknown>`
 - `type GetFieldType<T, Path> = unknown`
 - `type KeyFn<T> = (arg: T) => keyof T`
@@ -29,8 +29,8 @@
 - `type PlainObject = Record<string, unknown>`
 - `type Prettify<T> = unknown & object`
 - `type RequiredKeys<T> = unknown[keyof T]`
-- `type SetOptional<T, K> = Omit<T, K> & Partial<Pick<T, K>>`
-- `type SetRequired<T, K> = T & Required<Pick<T, K>>`
+- `type SetOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>`
+- `type SetRequired<T, K extends keyof T> = T & Required<Pick<T, K>>`
 - `type Simplify<T> = unknown & object`
 - `type ValueOf<T> = T[keyof T]`
 
@@ -39,7 +39,7 @@
 ## Constructor
 
 ```typescript
-type Constructor<T = unknown> = (...args: unknown[]) => T
+type Constructor<T = unknown, Args extends unknown[] = any[]> = (...args: Args) => T
 ```
 
 Represents a constructor function type.
@@ -114,7 +114,7 @@ Represents a generic function type.
 ## GenericFunction
 
 ```typescript
-type GenericFunction<TFunc> = (...args: Parameters<TFunc>) => ReturnType<TFunc>
+type GenericFunction<TFunc extends (...args: never[]) => unknown> = (...args: Parameters<TFunc>) => ReturnType<TFunc>
 ```
 
 Represents a generic function type with preserved signature.
@@ -354,7 +354,7 @@ Extracts the union of all required keys from a type.
 ## SetOptional
 
 ```typescript
-type SetOptional<T, K> = Omit<T, K> & Partial<Pick<T, K>>
+type SetOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 ```
 
 Makes specified keys optional in a type.
@@ -370,7 +370,7 @@ Makes specified keys optional in a type.
 ## SetRequired
 
 ```typescript
-type SetRequired<T, K> = T & Required<Pick<T, K>>
+type SetRequired<T, K extends keyof T> = T & Required<Pick<T, K>>
 ```
 
 Makes specified keys required in a type.
