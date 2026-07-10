@@ -124,7 +124,7 @@ describe('mapObject', () => {
       },
     };
 
-    const result = mapObject(data, (key, value) => (typeof value === 'number' ? value * 2 : value));
+    const result = mapObject<typeof data>(data, (key, value) => (typeof value === 'number' ? value * 2 : value));
 
     expect(result).toEqual({
       a: 2,
@@ -145,7 +145,7 @@ describe('mapObject', () => {
       },
     };
 
-    const result = mapObject(data, (key, value) => (typeof value === 'string' ? value.toUpperCase() : value));
+    const result = mapObject<typeof data>(data, (key, value) => (typeof value === 'string' ? value.toUpperCase() : value));
 
     expect(result).toEqual({
       name: 'ALICE',
@@ -185,7 +185,7 @@ describe('mapObject', () => {
       },
     };
 
-    const result = mapObject(data, (key, value) => (typeof value === 'number' ? value + 1 : value));
+    const result = mapObject<typeof data>(data, (key, value) => (typeof value === 'number' ? value + 1 : value));
 
     expect(result).toEqual({
       numbers: [2, 3, 4],
@@ -218,7 +218,7 @@ describe('mapObject', () => {
       name: 'Product',
     };
 
-    const result = mapObject(data, (key, value) => {
+    const result = mapObject<typeof data>(data, (key, value) => {
       if ((key === 'price' || key === 'cost') && typeof value === 'number') {
         return value + 10; // Add 10
       }
@@ -242,7 +242,7 @@ describe('mapObject', () => {
       object: { nested: 'value' },
     };
 
-    const result = mapObject(data, (key, value) => value);
+    const result = mapObject<typeof data>(data, (key, value) => value);
 
     expect(result).toEqual(data);
   });
@@ -256,7 +256,7 @@ describe('mapObject', () => {
       },
     };
 
-    const result = mapObject(data, (key, value) => value);
+    const result = mapObject<typeof data>(data, (key, value) => value);
 
     expect(result).toEqual(data);
   });
@@ -267,7 +267,7 @@ describe('mapObject', () => {
       count: '42',
     };
 
-    const result = mapObject(data, (key, value) => {
+    const result = mapObject<{ timestamp: number; count: number }>(data, (key, value) => {
       if (key === 'timestamp' && typeof value === 'string') {
         return new Date(value).getFullYear();
       }
@@ -296,7 +296,7 @@ describe('mapObject', () => {
       },
     };
 
-    const result = mapObject(data, (key, value) => (typeof value === 'number' ? value * 10 : value));
+    const result = mapObject<typeof data>(data, (key, value) => (typeof value === 'number' ? value * 10 : value));
 
     expect(result).toEqual({
       level1: {
@@ -322,7 +322,7 @@ describe('mapObject', () => {
       },
     };
 
-    const result = mapObject(data, (key, value, path) => {
+    const result = mapObject<typeof data>(data, (key, value, path) => {
       if (key === 'title' && typeof value === 'string') {
         const depth = path.split('.').length - 1;
         return `${'  '.repeat(depth)}${value}`;
@@ -344,7 +344,7 @@ describe('mapObject', () => {
   it('handles arrays of primitives', () => {
     const data = [1, 2, 3, 4, 5];
 
-    const result = mapObject(data, (key, value) => (typeof value === 'number' ? value ** 2 : value));
+    const result = mapObject<typeof data>(data, (key, value) => (typeof value === 'number' ? value ** 2 : value));
 
     expect(result).toEqual([1, 4, 9, 16, 25]);
   });
@@ -367,7 +367,10 @@ describe('mapObject', () => {
       product2: { name: 'Gadget', price: 50, currency: 'EUR' },
     };
 
-    const result = mapObject(data, (key, value, _path, parent) => {
+    const result = mapObject<{
+      product1: { name: string; price: string; currency: string };
+      product2: { name: string; price: string; currency: string };
+    }>(data, (key, value, _path, parent) => {
       if (key === 'price' && typeof value === 'number' && typeof parent === 'object' && parent !== null) {
         const p = parent as Record<string, unknown>;
         const symbol = p.currency === 'EUR' ? '€' : '$';
@@ -387,7 +390,7 @@ describe('mapObject', () => {
       a: { b: { c: 1 } },
     };
 
-    const result = mapObject(data, (key, value, path) => {
+    const result = mapObject<typeof data>(data, (key, value, path) => {
       if (typeof value === 'number') {
         const depth = path.split('.').length;
         return value * depth;
@@ -405,7 +408,7 @@ describe('mapObject', () => {
       items: [{ id: 1 }, { id: 2 }],
     };
 
-    const result = mapObject(data, (key, value, path, _parent) => {
+    const result = mapObject<{ items: Array<{ id: string }> }>(data, (key, value, path, _parent) => {
       // When key is 'id', parent is the object containing it: {id: 1}
       // To check if we're in an array, need to check if parent's parent was an array
       // or check the path pattern
@@ -438,7 +441,7 @@ describe('mapObject', () => {
     root.self = root;
     root.list = [root];
 
-    const result = mapObject(root, (_key, value) => (typeof value === 'number' ? value + 1 : value));
+    const result = mapObject<CyclicNode>(root, (_key, value) => (typeof value === 'number' ? value + 1 : value));
     expect(result.value).toBe(2);
     expect(result.self).toBe(result);
     expect(result.list?.[0]).toBe(result);

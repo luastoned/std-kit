@@ -10,16 +10,63 @@
 - `chunk<T>(array: readonly T[], size: number = 2): T[][]`
 - `cluster<T>(array: readonly T[], size: number = 2): T[][]` ~~(deprecated)~~
 - `combinations<T>(items: readonly T[]): T[][]`
-- `compact<T>(array: readonly T[]): NonNullable<T>[]`
-- `countBy<T, K extends PropertyKey>(array: readonly T[], key: K | ((item: T) => K)): Record<K, number>`
+- `compact<T>(array: readonly T[]): Exclude<T, Falsy>[]`
+- `countBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Record<K, number>`
 - `fill<T>(size: number, value: T): T[]`
 - `flatten<T>(array: readonly unknown[], depth: number = Infinity): T[]`
-- `groupBy<T, K extends PropertyKey>(array: readonly T[], key: K | ((item: T) => K)): Record<K, T[]>`
-- `orderBy<T, K extends string | number>(array: readonly T[], keys: readonly K | ((item: T) => K)[], orders: readonly "asc" | "desc"[], inPlace: boolean = false): T[]`
-- `reverse<T>(array: readonly T[], inPlace: boolean = false): T[]`
-- `shuffle<T>(array: readonly T[], inPlace: boolean = false): T[]`
+- `groupBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Record<K, T[]>`
+- `orderBy<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), keys: readonly OrderSelector<T>[], orders: readonly ("asc" | "desc")[], inPlace?: InPlace): T[]`
+- `reverse<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), inPlace?: InPlace): T[]`
+- `shuffle<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), inPlace?: InPlace): T[]`
 - `unique<T>(array: readonly T[]): T[]`
-- `uniqueBy<T, K extends PropertyKey>(array: readonly T[], key: K | ((item: T) => K)): T[]`
+- `uniqueBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): T[]`
+
+## Types
+
+- `type Falsy = false | 0 | 0n | '' | null | undefined`
+- `type KeyableProperty<T> = { [P in keyof T]-?: T[P] extends PropertyKey ? P : never }[keyof T]`
+- `type KeySelector<T, K extends PropertyKey = PropertyKey> = { [P in keyof T]-?: T[P] extends K ? P : never }[keyof T] | ((item: T) => K)`
+- `type OrderSelector<T> = keyof T | ((item: T) => string | number | null | undefined)`
+
+---
+
+## Falsy
+
+```typescript
+type Falsy = false | 0 | 0n | '' | null | undefined
+```
+
+Values removed by compact. `NaN` is also removed at runtime but cannot be represented as a distinct TypeScript type.
+
+---
+
+## KeyableProperty
+
+```typescript
+type KeyableProperty<T> = { [P in keyof T]-?: T[P] extends PropertyKey ? P : never }[keyof T]
+```
+
+Property names whose values can safely be used as record keys.
+
+---
+
+## KeySelector
+
+```typescript
+type KeySelector<T, K extends PropertyKey = PropertyKey> = { [P in keyof T]-?: T[P] extends K ? P : never }[keyof T] | ((item: T) => K)
+```
+
+Selects a record key from an array item.
+
+---
+
+## OrderSelector
+
+```typescript
+type OrderSelector<T> = keyof T | ((item: T) => string | number | null | undefined)
+```
+
+Selects a directly orderable value from an array item.
 
 ---
 
@@ -87,13 +134,13 @@ Generates all possible non-empty combinations of the elements in an array.
 ## compact
 
 ```typescript
-compact<T>(array: readonly T[]): NonNullable<T>[]
+compact<T>(array: readonly T[]): Exclude<T, Falsy>[]
 ```
 
 Returns a new array with all falsy values removed. Falsy values include: false, null, 0, "", undefined, and NaN.
 
 
-**Returns:** A new array with only truthy values.
+**Returns:** A new array with only truthy values. Literal falsy members are excluded from the element type.
 
 
 ---
@@ -101,7 +148,8 @@ Returns a new array with all falsy values removed. Falsy values include: false, 
 ## countBy
 
 ```typescript
-countBy<T, K extends PropertyKey>(array: readonly T[], key: K | ((item: T) => K)): Record<K, number>
+countBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Record<K, number>
+countBy<T, P extends string | number | symbol>(array: readonly T[], key: P): Record<Extract<T[P], PropertyKey>, number>
 ```
 
 Counts the occurrences of each unique key in an array. If a key function is provided, it will be used to extract the key from each element. If a key property
@@ -144,7 +192,8 @@ Flattens a nested array up to the specified depth.
 ## groupBy
 
 ```typescript
-groupBy<T, K extends PropertyKey>(array: readonly T[], key: K | ((item: T) => K)): Record<K, T[]>
+groupBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Record<K, T[]>
+groupBy<T, P extends string | number | symbol>(array: readonly T[], key: P): Record<Extract<T[P], PropertyKey>, T[]>
 ```
 
 Groups the elements of an array by a specified key. If a key function is provided, it will be used to extract the key from each element. If a key property is
@@ -159,7 +208,7 @@ provided, it will be used to extract the key from each element.
 ## orderBy
 
 ```typescript
-orderBy<T, K extends string | number>(array: readonly T[], keys: readonly K | ((item: T) => K)[], orders: readonly "asc" | "desc"[], inPlace: boolean = false): T[]
+orderBy<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), keys: readonly OrderSelector<T>[], orders: readonly ("asc" | "desc")[], inPlace?: InPlace): T[]
 ```
 
 Sorts an array of objects based on the specified keys and orders. If a key function is provided, it will be used to extract the key from each element. If a
@@ -174,7 +223,7 @@ key property is provided, it will be used to extract the key from each element.
 ## reverse
 
 ```typescript
-reverse<T>(array: readonly T[], inPlace: boolean = false): T[]
+reverse<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), inPlace?: InPlace): T[]
 ```
 
 Reverses the elements of an array.
@@ -188,7 +237,7 @@ Reverses the elements of an array.
 ## shuffle
 
 ```typescript
-shuffle<T>(array: readonly T[], inPlace: boolean = false): T[]
+shuffle<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), inPlace?: InPlace): T[]
 ```
 
 Shuffles the elements of an array using the Fisher-Yates algorithm.
@@ -216,7 +265,8 @@ Returns a new array with unique elements from the input array.
 ## uniqueBy
 
 ```typescript
-uniqueBy<T, K extends PropertyKey>(array: readonly T[], key: K | ((item: T) => K)): T[]
+uniqueBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): T[]
+uniqueBy<T, P extends string | number | symbol>(array: readonly T[], key: P): T[]
 ```
 
 Returns a new array containing unique elements from the input array based on the specified key. If a key function is provided, it will be used to extract the

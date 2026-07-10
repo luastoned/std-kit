@@ -38,7 +38,7 @@ describe('object traversal contracts', () => {
   it('preserves non-plain objects when the mapper leaves them unchanged', () => {
     const date = new Date(0);
     const map = new Map([['value', 1]]);
-    const result = mapObject({ date, map }, (_key, value) => value);
+    const result = mapObject<{ date: Date; map: Map<string, number> }>({ date, map }, (_key, value) => value);
 
     expect(result.date).toBe(date);
     expect(result.map).toBe(map);

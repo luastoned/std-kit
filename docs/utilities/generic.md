@@ -6,7 +6,7 @@
 
 ## Functions
 
-- `cloneObject<T>(item: T): unknown`
+- `cloneObject<T>(item: T): T extends undefined ? undefined : T`
 - `isArray<T = unknown>(item: unknown): item is T[] | readonly T[]`
 - `isBoolean(item: unknown): item is boolean`
 - `isContainer(item: unknown): item is Container`
@@ -35,7 +35,7 @@
 ## cloneObject
 
 ```typescript
-cloneObject<T>(item: T): unknown
+cloneObject<T>(item: T): T extends undefined ? undefined : T
 ```
 
 Creates a deep clone of an item using JSON.parse/JSON.stringify serialization. Supports most JSON-compatible types including objects, arrays, strings,

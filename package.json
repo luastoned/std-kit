@@ -58,7 +58,7 @@
     "clean": "rimraf coverage dist lib",
     "docs": "yarn docs:typedoc && yarn docs:transform",
     "docs:transform": "tsx scripts/transform-docs.ts",
-    "docs:typedoc": "typedoc src/index.ts src/node.ts --excludeInternal --intentionallyNotExported KeySelector --intentionallyNotExported GetNestedField --intentionallyNotExported GetDirectOrIndexedField --json docs/documentation.json",
+    "docs:typedoc": "typedoc src/index.ts src/node.ts --excludeInternal --intentionallyNotExported DeepAtomic --intentionallyNotExported GetNestedField --intentionallyNotExported GetDirectOrIndexedField --json docs/documentation.json",
     "test": "vitest --run",
     "typecheck": "tsc --noEmit",
     "verify": "yarn typecheck && yarn lint:check && yarn format:check && yarn test",

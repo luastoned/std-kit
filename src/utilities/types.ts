@@ -179,7 +179,13 @@ export type OmitByValue<T, ValueType> = Pick<T, { [K in keyof T]: T[K] extends V
 // =============================================================================
 
 /**
- * Makes all properties in T and nested objects optional recursively.
+ * Object-like values whose internal structure should not be remapped by deep utility types.
+ */
+type DeepAtomic = Date | RegExp | Error | ArrayBuffer | ArrayBufferView | ((...args: never[]) => unknown);
+
+/**
+ * Makes all properties in T and nested objects optional recursively. Functions and built-ins are preserved, collections retain their container semantics, and
+ * tuples retain their positions.
  *
  * @example
  *   ```ts
@@ -197,25 +203,80 @@ export type OmitByValue<T, ValueType> = Pick<T, { [K in keyof T]: T[K] extends V
  * @param T - The type to make deeply partial.
  * @returns The deeply partial type.
  */
-export type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
+export type DeepPartial<T> = T extends DeepAtomic
+  ? T
+  : T extends Promise<infer Value>
+    ? Promise<DeepPartial<Value>>
+    : T extends Map<infer Key, infer Value>
+      ? Map<Key, DeepPartial<Value>>
+      : T extends ReadonlyMap<infer Key, infer Value>
+        ? ReadonlyMap<Key, DeepPartial<Value>>
+        : T extends Set<infer Value>
+          ? Set<DeepPartial<Value>>
+          : T extends ReadonlySet<infer Value>
+            ? ReadonlySet<DeepPartial<Value>>
+            : T extends WeakMap<infer Key, infer Value>
+              ? WeakMap<Key, DeepPartial<Value>>
+              : T extends WeakSet<infer Value>
+                ? WeakSet<Value>
+                : T extends object
+                  ? { [P in keyof T]?: DeepPartial<T[P]> }
+                  : T;
 
 /**
- * Makes all properties in T and nested objects readonly recursively.
+ * Makes all properties in T and nested objects readonly recursively. Mutable maps and sets become their readonly counterparts, while functions and built-ins
+ * are preserved.
  *
  * @template T - The type to make deeply readonly.
  * @param T - The type to make deeply readonly.
  * @returns The deeply readonly type.
  */
-export type DeepReadonly<T> = T extends object ? { readonly [P in keyof T]: DeepReadonly<T[P]> } : T;
+export type DeepReadonly<T> = T extends DeepAtomic
+  ? T
+  : T extends Promise<infer Value>
+    ? Promise<DeepReadonly<Value>>
+    : T extends Map<infer Key, infer Value>
+      ? ReadonlyMap<DeepReadonly<Key>, DeepReadonly<Value>>
+      : T extends ReadonlyMap<infer Key, infer Value>
+        ? ReadonlyMap<DeepReadonly<Key>, DeepReadonly<Value>>
+        : T extends Set<infer Value>
+          ? ReadonlySet<DeepReadonly<Value>>
+          : T extends ReadonlySet<infer Value>
+            ? ReadonlySet<DeepReadonly<Value>>
+            : T extends WeakMap<infer Key, infer Value>
+              ? WeakMap<Key, DeepReadonly<Value>>
+              : T extends WeakSet<infer Value>
+                ? WeakSet<Value>
+                : T extends object
+                  ? { readonly [P in keyof T]: DeepReadonly<T[P]> }
+                  : T;
 
 /**
- * Makes all properties in T and nested objects required recursively.
+ * Makes all properties in T and nested objects required recursively while preserving functions, built-ins, collections, and tuple structure.
  *
  * @template T - The type to make deeply required.
  * @param T - The type to make deeply required.
  * @returns The deeply required type.
  */
-export type DeepRequired<T> = T extends object ? { [P in keyof T]-?: DeepRequired<T[P]> } : T;
+export type DeepRequired<T> = T extends DeepAtomic
+  ? T
+  : T extends Promise<infer Value>
+    ? Promise<DeepRequired<Value>>
+    : T extends Map<infer Key, infer Value>
+      ? Map<Key, DeepRequired<Value>>
+      : T extends ReadonlyMap<infer Key, infer Value>
+        ? ReadonlyMap<Key, DeepRequired<Value>>
+        : T extends Set<infer Value>
+          ? Set<DeepRequired<Value>>
+          : T extends ReadonlySet<infer Value>
+            ? ReadonlySet<DeepRequired<Value>>
+            : T extends WeakMap<infer Key, infer Value>
+              ? WeakMap<Key, DeepRequired<Value>>
+              : T extends WeakSet<infer Value>
+                ? WeakSet<Value>
+                : T extends object
+                  ? { [P in keyof T]-?: DeepRequired<T[P]> }
+                  : T;
 
 // =============================================================================
 // Type Extraction Utilities
@@ -257,6 +318,36 @@ export type OptionalKeys<T> = { [K in keyof T]-?: {} extends Pick<T, K> ? K : ne
  * @returns The merged type.
  */
 export type Merge<T, U> = Omit<T, keyof U> & U;
+
+/**
+ * Describes the default recursive result of `mergeObject`.
+ *
+ * Arrays and atomic values are replaced by the patch type. Object properties are recursively merged. `strict` limits output keys to the source, while
+ * `applyUndefined` controls whether explicit `undefined` replaces a source value.
+ */
+export type DeepMerge<TSource, TPatch, ApplyUndefined extends boolean = false, Strict extends boolean = false> = TPatch extends undefined
+  ? ApplyUndefined extends true
+    ? undefined
+    : TSource
+  : TPatch extends DeepAtomic | readonly unknown[]
+    ? TPatch
+    : TSource extends DeepAtomic | readonly unknown[]
+      ? TPatch
+      : TSource extends object
+        ? TPatch extends object
+          ? Prettify<
+              Omit<TSource, Strict extends true ? Extract<keyof TPatch, keyof TSource> : keyof TPatch> & {
+                [K in Strict extends true ? Extract<keyof TPatch, keyof TSource> : keyof TPatch]: K extends keyof TSource
+                  ? K extends keyof TPatch
+                    ? DeepMerge<TSource[K], TPatch[K], ApplyUndefined, Strict>
+                    : never
+                  : K extends keyof TPatch
+                    ? TPatch[K]
+                    : never;
+              }
+            >
+          : TPatch
+        : TPatch;
 
 // =============================================================================
 // Array Types

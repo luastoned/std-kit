@@ -1,11 +1,24 @@
 import { isArray, isFunction } from '~/utilities/generic';
 
 /**
- * Internal helper type for key selection by property name or selector function.
- *
- * @internal
+ * Values removed by {@link compact}. `NaN` is also removed at runtime but cannot be represented as a distinct TypeScript type.
  */
-type KeySelector<T, K extends PropertyKey> = K | ((item: T) => K);
+export type Falsy = false | 0 | 0n | '' | null | undefined;
+
+/**
+ * Property names whose values can safely be used as record keys.
+ */
+export type KeyableProperty<T> = { [P in keyof T]-?: T[P] extends PropertyKey ? P : never }[keyof T];
+
+/**
+ * Selects a record key from an array item.
+ */
+export type KeySelector<T, K extends PropertyKey = PropertyKey> = { [P in keyof T]-?: T[P] extends K ? P : never }[keyof T] | ((item: T) => K);
+
+/**
+ * Selects a directly orderable value from an array item.
+ */
+export type OrderSelector<T> = keyof T | ((item: T) => string | number | null | undefined);
 
 /**
  * Defines a safe enumerable record entry, including reserved keys such as `__proto__`.
@@ -24,13 +37,13 @@ function setRecordEntry<T>(record: Record<PropertyKey, T>, key: PropertyKey, val
  *
  * @internal
  */
-function toKeyFn<T, K extends PropertyKey>(key: KeySelector<T, K>): (item: T) => K {
-  if (isFunction(key)) {
-    return key as (item: T) => K;
+function toSelectorFn<T, Value>(selector: keyof T | ((item: T) => Value)): (item: T) => Value {
+  if (isFunction(selector)) {
+    return selector as (item: T) => Value;
   }
 
-  return function keySelector(item: T): K {
-    return item[key as keyof T & K] as K;
+  return function valueSelector(item: T): Value {
+    return item[selector as keyof T] as Value;
   };
 }
 
@@ -58,10 +71,10 @@ export function unique<T>(array: readonly T[]): T[] {
  *
  * @template T - The type of elements in the array.
  * @param array - The input array.
- * @returns A new array with only truthy values.
+ * @returns A new array with only truthy values. Literal falsy members are excluded from the element type.
  */
-export function compact<T>(array: readonly T[]): NonNullable<T>[] {
-  return array.filter(Boolean) as NonNullable<T>[];
+export function compact<T>(array: readonly T[]): Array<Exclude<T, Falsy>> {
+  return array.filter(Boolean) as Array<Exclude<T, Falsy>>;
 }
 
 /**
@@ -69,10 +82,10 @@ export function compact<T>(array: readonly T[]): NonNullable<T>[] {
  *
  * @template T - The type of elements in the array.
  * @param array - The array to be reversed.
- * @param inPlace - Specifies whether to reverse the array in place or create a new reversed array.
+ * @param inPlace - Specifies whether to reverse the array in place or create a new reversed array. Readonly arrays only support the default non-mutating mode.
  * @returns The reversed array.
  */
-export function reverse<T>(array: readonly T[], inPlace = false): T[] {
+export function reverse<T, const InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), inPlace?: InPlace): T[] {
   const result: T[] = inPlace ? (array as T[]) : [...array];
   return result.reverse();
 }
@@ -82,10 +95,10 @@ export function reverse<T>(array: readonly T[], inPlace = false): T[] {
  *
  * @template T - The type of elements in the array.
  * @param array - The array to shuffle.
- * @param inPlace - Specifies whether to shuffle the array in place or create a new shuffled array.
+ * @param inPlace - Specifies whether to shuffle the array in place or create a new shuffled array. Readonly arrays only support the default non-mutating mode.
  * @returns The shuffled array.
  */
-export function shuffle<T>(array: readonly T[], inPlace = false): T[] {
+export function shuffle<T, const InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), inPlace?: InPlace): T[] {
   const result: T[] = inPlace ? (array as T[]) : [...array];
 
   // Fisher-Yates shuffle algorithm
@@ -178,8 +191,10 @@ export function cluster<T>(array: readonly T[], size = 2): T[][] {
  * @param key - The key used for counting. Can be a property name or a function that returns the key.
  * @returns An object that maps each unique key to its count.
  */
-export function countBy<T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): Record<K, number> {
-  const keyFn = toKeyFn(key);
+export function countBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Record<K, number>;
+export function countBy<T, P extends KeyableProperty<T>>(array: readonly T[], key: P): Record<Extract<T[P], PropertyKey>, number>;
+export function countBy<T>(array: readonly T[], key: KeySelector<T>): Record<PropertyKey, number> {
+  const keyFn = toSelectorFn<T, PropertyKey>(key);
   return array.reduce(
     (acc, item) => {
       const itemKey = keyFn(item);
@@ -187,7 +202,7 @@ export function countBy<T, K extends PropertyKey>(array: readonly T[], key: KeyS
       setRecordEntry(acc, itemKey, (count ?? 0) + 1);
       return acc;
     },
-    {} as Record<K, number>,
+    {} as Record<PropertyKey, number>,
   );
 }
 
@@ -216,9 +231,11 @@ export function countBy<T, K extends PropertyKey>(array: readonly T[], key: KeyS
  * @param key - The key used for grouping. Can be a property name or a function that returns the key.
  * @returns An object where the keys are the grouped values and the values are arrays of elements that belong to each group.
  */
-export function groupBy<T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): Record<K, T[]> {
-  const result = {} as Record<K, T[]>;
-  const keyFn = toKeyFn(key);
+export function groupBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Record<K, T[]>;
+export function groupBy<T, P extends KeyableProperty<T>>(array: readonly T[], key: P): Record<Extract<T[P], PropertyKey>, T[]>;
+export function groupBy<T>(array: readonly T[], key: KeySelector<T>): Record<PropertyKey, T[]> {
+  const result = {} as Record<PropertyKey, T[]>;
+  const keyFn = toSelectorFn<T, PropertyKey>(key);
 
   for (const item of array) {
     const itemKey = keyFn(item);
@@ -226,7 +243,7 @@ export function groupBy<T, K extends PropertyKey>(array: readonly T[], key: KeyS
       setRecordEntry(result, itemKey, []);
     }
 
-    result[itemKey].push(item);
+    (result[itemKey] as T[]).push(item);
   }
 
   return result;
@@ -257,16 +274,16 @@ export function groupBy<T, K extends PropertyKey>(array: readonly T[], key: KeyS
  * @param array - The array to be sorted.
  * @param keys - The keys or functions used for sorting.
  * @param orders - The sort orders for each key.
- * @param inPlace - Indicates whether to sort the array in place or return a new sorted array.
+ * @param inPlace - Indicates whether to sort the array in place or return a new sorted array. Readonly arrays only support the default non-mutating mode.
  * @returns The sorted array.
  */
-export function orderBy<T, K extends string | number>(
-  array: readonly T[],
-  keys: ReadonlyArray<KeySelector<T, K>>,
+export function orderBy<T, const InPlace extends boolean = false>(
+  array: readonly T[] & (true extends InPlace ? T[] : unknown),
+  keys: ReadonlyArray<OrderSelector<T>>,
   orders: ReadonlyArray<'asc' | 'desc'>,
-  inPlace = false,
+  inPlace?: InPlace,
 ): T[] {
-  const keyFns = keys.map((key) => toKeyFn(key));
+  const keyFns = keys.map((key) => toSelectorFn<T, string | number | null | undefined>(key));
   const result: T[] = inPlace ? (array as T[]) : [...array];
   return result.sort((a, b) => {
     for (const [idx, keyFn] of keyFns.entries()) {
@@ -275,6 +292,10 @@ export function orderBy<T, K extends string | number>(
       // Determine the value for each item based on the key or function
       const aValue = keyFn(a);
       const bValue = keyFn(b);
+
+      if (aValue === null || aValue === undefined || bValue === null || bValue === undefined) {
+        continue;
+      }
 
       if (aValue < bValue) {
         return order === 'asc' ? -1 : 1;
@@ -316,9 +337,11 @@ export function orderBy<T, K extends string | number>(
  * @param key - The key property or function used to extract the key from each element.
  * @returns A new array containing unique elements based on the specified key.
  */
-export function uniqueBy<T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): T[] {
-  const itemMap = new Map<K, T>();
-  const keyFn = toKeyFn(key);
+export function uniqueBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): T[];
+export function uniqueBy<T, P extends KeyableProperty<T>>(array: readonly T[], key: P): T[];
+export function uniqueBy<T>(array: readonly T[], key: KeySelector<T>): T[] {
+  const itemMap = new Map<PropertyKey, T>();
+  const keyFn = toSelectorFn<T, PropertyKey>(key);
 
   for (const item of array) {
     itemMap.set(keyFn(item), item);

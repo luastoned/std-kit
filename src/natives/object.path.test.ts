@@ -52,6 +52,20 @@ describe('getValue', () => {
 });
 
 describe('setValue', () => {
+  it('constrains known paths while allowing dynamic paths', () => {
+    const data = { user: { age: 1 } };
+    const dynamicPath: string = 'user.custom';
+
+    setValue(data, 'user.age', 2);
+    setValue(data, dynamicPath, 'dynamic');
+
+    const assertTypeError = (): void => {
+      // @ts-expect-error Known paths require their resolved value type.
+      setValue(data, 'user.age', 'invalid');
+    };
+    void assertTypeError;
+  });
+
   it('sets a shallow property', () => {
     const obj = { name: 'Bob' };
     setValue(obj, 'name', 'Alice');

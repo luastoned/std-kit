@@ -1,6 +1,6 @@
 import { describe, expect, expectTypeOf, it } from 'vitest';
 
-import type { Constructor, GenericFunction, GetFieldType } from './types';
+import type { Constructor, DeepPartial, DeepReadonly, DeepRequired, GenericFunction, GetFieldType } from './types';
 
 describe('public type utilities', () => {
   it('preserves concrete function signatures', () => {
@@ -29,5 +29,29 @@ describe('public type utilities', () => {
 
     expectTypeOf<OptionalPath>().toEqualTypeOf<string | undefined>();
     expectTypeOf<OptionalArrayPath>().toEqualTypeOf<number | undefined>();
+  });
+
+  it('preserves atomic values, collections, and tuple structure in deep modifiers', () => {
+    type Model = {
+      callback: (value: string) => number;
+      createdAt: Date;
+      tuple: readonly [{ id?: number }, string];
+      settings: Map<string, { enabled?: boolean }>;
+    };
+
+    type PartialModel = DeepPartial<Model>;
+    type ReadonlyModel = DeepReadonly<Model>;
+    type RequiredModel = DeepRequired<Model>;
+
+    expectTypeOf<NonNullable<PartialModel['callback']>>().toEqualTypeOf<(value: string) => number>();
+    expectTypeOf<NonNullable<PartialModel['createdAt']>>().toEqualTypeOf<Date>();
+    expectTypeOf<NonNullable<PartialModel['tuple']>>().toEqualTypeOf<readonly [first?: { id?: number }, second?: string]>();
+    expectTypeOf<NonNullable<PartialModel['settings']>>().toEqualTypeOf<Map<string, { enabled?: boolean }>>();
+
+    expectTypeOf<ReadonlyModel['tuple']>().toEqualTypeOf<readonly [{ readonly id?: number }, string]>();
+    expectTypeOf<ReadonlyModel['settings']>().toEqualTypeOf<ReadonlyMap<string, { readonly enabled?: boolean }>>();
+
+    expectTypeOf<RequiredModel['tuple']>().toEqualTypeOf<readonly [{ id: number }, string]>();
+    expectTypeOf<RequiredModel['settings']>().toEqualTypeOf<Map<string, { enabled: boolean }>>();
   });
 });

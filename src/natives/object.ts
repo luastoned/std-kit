@@ -10,7 +10,22 @@ import {
   withActiveContainer,
 } from '~/natives/object/shared.internal';
 import { isArray, isContainer, isMutableContainer, isPlainObject } from '~/utilities/generic';
-import type { Container, DeepPartial, GetFieldType, MutableContainer, PlainObject } from '~/utilities/types';
+import type { Container, DeepMerge, DeepPartial, GetFieldType, MutableContainer, PlainObject } from '~/utilities/types';
+
+/**
+ * Merge behavior supported by {@link mergeObject}.
+ */
+export interface MergeObjectOptions {
+  strict?: boolean;
+  immutable?: boolean;
+  mergeArrays?: boolean | string | ((item: unknown, index: number) => unknown);
+  applyUndefined?: boolean;
+}
+
+/**
+ * Resolves a known path to its value type while leaving dynamic or missing paths open.
+ */
+export type SetValueAtPath<TData, TPath extends string> = GetFieldType<TData, TPath> extends undefined ? unknown : GetFieldType<TData, TPath>;
 
 /**
  * Creates a new object with only the specified keys from the source object.
@@ -118,13 +133,12 @@ export function getValue<TData, TPath extends string, TDefault = GetFieldType<TD
  *
  * @template TData - The type of the data object being modified.
  * @template TPath - The dot/bracket notation path to the property where the value will be set.
- * @template TValue - The type of the value to set at the specified path.
  * @param data - The object or array in which the value will be set.
  * @param path - The string path specifying the property to set. Supports dot notation (e.g., 'user.name') and bracket notation (e.g., 'user.posts[0]').
- * @param value - The value to set at the specified path.
+ * @param value - The value to set at the specified path. Known paths are constrained to their resolved type; dynamic or missing paths accept unknown values.
  * @returns Nothing.
  */
-export function setValue<TData, TPath extends string, TValue>(data: TData, path: TPath, value: TValue): void {
+export function setValue<TData, TPath extends string>(data: TData, path: TPath, value: SetValueAtPath<TData, TPath>): void {
   const keys = tokenizePath(path);
   if (hasForbiddenPathKeys(keys)) {
     return;
@@ -432,16 +446,20 @@ export function filterObject<T>(
  *   // { prices: [{ amount: 1000 }, { amount: 1500 }] }
  *   ```;
  *
- * @template T - The type of the object or array to map.
+ * @template TResult - The expected output structure. Defaults to `unknown` because a mapper may change values at any path.
+ * @template TInput - The type of the object or array to map.
  * @param obj - The object or array to map over.
  * @param mapper - Function called for each value with (key, value, path).
  *
  *   - key: The property name or array index (as string)
  *   - value: The current value
  *   - path: The full path to this value (e.g., 'user.settings.theme' or 'users[0].name')
- * @returns A new object/array with the same structure but transformed values.
+ * @returns A new object/array with the selected result type. Pass `mapObject<Result>(...)` when consuming the returned structure.
  */
-export function mapObject<T>(obj: T, mapper: (key: string, value: unknown, path: string, parent: unknown) => unknown): T {
+export function mapObject<TResult = unknown, TInput = unknown>(
+  obj: TInput,
+  mapper: (key: string, value: unknown, path: string, parent: unknown) => unknown,
+): TResult {
   const mappedContainers = new WeakMap<object, unknown>();
 
   function recurse(value: unknown, currentPath: string): unknown {
@@ -486,7 +504,7 @@ export function mapObject<T>(obj: T, mapper: (key: string, value: unknown, path:
 
   // Start recursion
   const transformed = mapper('', obj, '', null);
-  return recurse(transformed, '') as T;
+  return recurse(transformed, '') as TResult;
 }
 
 /**
@@ -519,16 +537,11 @@ export function mapObject<T>(obj: T, mapper: (key: string, value: unknown, path:
  * @param options - Merge options controlling immutability and undefined handling.
  * @returns A new object that is the result of deeply merging the patch into the source.
  */
-export function mergeObject<TSource extends object, TPatch extends object>(
+export function mergeObject<TSource extends object, TPatch extends object, const TOptions extends Readonly<MergeObjectOptions> = Readonly<MergeObjectOptions>>(
   source: TSource,
   patch: Readonly<TPatch>,
-  options: Readonly<{
-    strict?: boolean;
-    immutable?: boolean;
-    mergeArrays?: boolean | string | ((item: unknown, index: number) => unknown);
-    applyUndefined?: boolean;
-  }> = {},
-): TSource & TPatch {
+  options: TOptions = {} as TOptions,
+): DeepMerge<TSource, TPatch, TOptions extends { readonly applyUndefined: true } ? true : false, TOptions extends { readonly strict: true } ? true : false> {
   const normalizedOptions = normalizeMergeOptions(options);
   function merge(src: PlainObject, patchObj: PlainObject, isStrictAtThisLevel: boolean): PlainObject {
     return mergePlainObjects({
@@ -540,7 +553,12 @@ export function mergeObject<TSource extends object, TPatch extends object>(
     });
   }
 
-  return merge(source as PlainObject, patch as PlainObject, normalizedOptions.strict) as TSource & TPatch;
+  return merge(source as PlainObject, patch as PlainObject, normalizedOptions.strict) as DeepMerge<
+    TSource,
+    TPatch,
+    TOptions extends { readonly applyUndefined: true } ? true : false,
+    TOptions extends { readonly strict: true } ? true : false
+  >;
 }
 
 /**
@@ -554,15 +572,10 @@ export function mergeObject<TSource extends object, TPatch extends object>(
  * @param options - Merge options controlling immutability and undefined handling.
  * @returns A new object that is the result of deeply merging the patch into the source.
  */
-export function deepMerge<TSource extends object, TPatch extends object>(
+export function deepMerge<TSource extends object, TPatch extends object, const TOptions extends Readonly<MergeObjectOptions> = Readonly<MergeObjectOptions>>(
   source: TSource,
   patch: Readonly<TPatch>,
-  options: Readonly<{
-    strict?: boolean;
-    immutable?: boolean;
-    mergeArrays?: boolean | string | ((item: unknown, index: number) => unknown);
-    applyUndefined?: boolean;
-  }> = {},
-): TSource & TPatch {
+  options: TOptions = {} as TOptions,
+): DeepMerge<TSource, TPatch, TOptions extends { readonly applyUndefined: true } ? true : false, TOptions extends { readonly strict: true } ? true : false> {
   return mergeObject(source, patch, options);
 }

@@ -23,12 +23,12 @@
 - `interface TreeOptions<TChildKey extends PropertyKey = "children">`
 - `interface TreeQueryOptions<TChildKey extends PropertyKey = "children">`
 - `type TreeMapper<TNode> = (node: TNode, context: TreeContext<TNode>) => TNode`
-- `type TreeNode<TData extends object = Record<string, unknown>, TChildKey extends PropertyKey = "children"> = TData & Partial<Record<TChildKey, readonly TreeNode<TData, TChildKey>[]>>`
+- `type TreeNode<TData extends object = Record<string, unknown>, TChildKey extends PropertyKey = 'children'> = TData &`
 - `type TreePath = readonly number[]`
 - `type TreePredicate<TNode> = (node: TNode, context: TreeContext<TNode>) => boolean`
 - `type TreeTarget<TNode> = TreePath | TreePredicate<TNode>`
 - `type TreeUpdater<TNode> = (node: TNode, context: TreeContext<TNode>) => TNode`
-- `type TreeVisitControl = void | "skip" | "stop"`
+- `type TreeVisitControl = void | 'skip' | 'stop'`
 - `type TreeVisitor<TNode> = (node: TNode, context: TreeContext<TNode>) => TreeVisitControl`
 
 ---
@@ -99,7 +99,8 @@ Mapper used to transform tree nodes.
 ## TreeNode
 
 ```typescript
-type TreeNode<TData extends object = Record<string, unknown>, TChildKey extends PropertyKey = "children"> = TData & Partial<Record<TChildKey, readonly TreeNode<TData, TChildKey>[]>>
+type TreeNode<TData extends object = Record<string, unknown>, TChildKey extends PropertyKey = 'children'> = TData &
+  Partial<Record<TChildKey, readonly TreeNode<TData, TChildKey>[]>>
 ```
 
 Represents a recursive tree node with a configurable child key.
@@ -150,7 +151,7 @@ Updater used to transform a matched tree node.
 ## TreeVisitControl
 
 ```typescript
-type TreeVisitControl = void | "skip" | "stop"
+type TreeVisitControl = void | 'skip' | 'stop'
 ```
 
 Controls depth-first traversal in `walkTree`.

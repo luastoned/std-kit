@@ -1,6 +1,34 @@
-import { expect, describe, it } from 'vitest';
+import { expect, describe, expectTypeOf, it } from 'vitest';
 
 import { unique, compact, reverse, shuffle, flatten, fill, chunk, cluster, countBy, groupBy, orderBy, uniqueBy, cartesian, combinations } from './array';
+
+describe('array type contracts', () => {
+  it('narrows literal falsy values and key results', () => {
+    const compacted = compact([0, 1, false, '', 'ready', null, undefined] as const);
+    const items = [{ role: 'admin' as const }, { role: 'user' as const }];
+
+    expectTypeOf(compacted).toEqualTypeOf<Array<1 | 'ready'>>();
+    expectTypeOf(groupBy(items, 'role')).toEqualTypeOf<Record<'admin' | 'user', (typeof items)[number][]>>();
+    expectTypeOf(countBy(items, 'role')).toEqualTypeOf<Record<'admin' | 'user', number>>();
+  });
+
+  it('requires mutable inputs for in-place operations', () => {
+    const readonlyValues: readonly number[] = [3, 2, 1];
+    const mutableValues = [3, 2, 1];
+    const items = [{ role: 'admin' as const }];
+
+    expect(reverse(readonlyValues)).toEqual([1, 2, 3]);
+    expect(reverse(mutableValues, true)).toBe(mutableValues);
+
+    const assertTypeErrors = (): void => {
+      // @ts-expect-error Readonly inputs cannot be mutated in place.
+      reverse(readonlyValues, true);
+      // @ts-expect-error Unknown property names are rejected.
+      groupBy(items, 'missing');
+    };
+    void assertTypeErrors;
+  });
+});
 
 describe('unique', () => {
   it('should remove duplicate numbers from array', () => {
