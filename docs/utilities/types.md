@@ -12,11 +12,9 @@
 - `type DeepPartial<T> = T extends DeepAtomic`
 - `type DeepReadonly<T> = T extends DeepAtomic`
 - `type DeepRequired<T> = T extends DeepAtomic`
-- `type GenericFn<T> = (...args: T[]) => unknown`
 - `type GenericFunction<TFunc extends (...args: never[]) => unknown> = (...args: Parameters<TFunc>) => ReturnType<TFunc>`
 - `type GenericObject = Record<PropertyKey, unknown>`
 - `type GetFieldType<T, Path> = Path extends ''`
-- `type KeyFn<T> = (arg: T) => keyof T`
 - `type Maybe<T> = T | null | undefined`
 - `type Merge<T, U> = Omit<T, keyof U> & U`
 - `type Mutable<T> = { -readonly [K in keyof T]: T[K] }`
@@ -32,7 +30,6 @@
 - `type RequiredKeys<T> = { [K in keyof T]-?: {} extends Pick<T, K> ? never : K }[keyof T]`
 - `type SetOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>`
 - `type SetRequired<T, K extends keyof T> = T & Required<Pick<T, K>>`
-- `type Simplify<T> = { [K in keyof T]: T[K] } & {}`
 - `type ValueOf<T> = T[keyof T]`
 
 ---
@@ -193,16 +190,6 @@ Makes all properties in T and nested objects required recursively while preservi
 
 ---
 
-## GenericFn
-
-```typescript
-type GenericFn<T> = (...args: T[]) => unknown
-```
-
-Represents a generic function type.
-
----
-
 ## GenericFunction
 
 ```typescript
@@ -242,16 +229,6 @@ Infers the type at a dot/bracket path.
 
 **Returns:** The inferred value type for the path.
 
-
----
-
-## KeyFn
-
-```typescript
-type KeyFn<T> = (arg: T) => keyof T
-```
-
-Represents a function that extracts a key from a value.
 
 ---
 
@@ -475,21 +452,6 @@ Makes specified keys required in a type.
 - **K**: The keys to make required.
 
 **Returns:** The updated type with required keys.
-
-
----
-
-## Simplify
-
-```typescript
-type Simplify<T> = { [K in keyof T]: T[K] } & {}
-```
-
-Simplifies a type by forcing TypeScript to evaluate it. Often provides better IntelliSense than Prettify for complex types.
-
-- **T**: The type to simplify.
-
-**Returns:** The simplified type.
 
 
 ---

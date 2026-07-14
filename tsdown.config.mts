@@ -7,7 +7,7 @@ export default defineConfig([
   {
     entry: ['src/index.ts'],
     format: ['cjs', 'esm'],
-    target: ['es2024'],
+    target: ['es2022'],
     platform: 'neutral',
     outDir: 'lib',
     sourcemap: true,
@@ -20,7 +20,7 @@ export default defineConfig([
   {
     entry: ['src/node.ts'],
     format: ['cjs', 'esm'],
-    target: ['es2024'],
+    target: ['es2022'],
     platform: 'node',
     outDir: 'lib',
     sourcemap: true,

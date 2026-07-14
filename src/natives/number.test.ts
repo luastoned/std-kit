@@ -15,6 +15,11 @@ describe('math utils', () => {
     expect(roundTo(1.2355)).toBe(1.24);
     expect(roundTo(1.2345, 3)).toBe(1.235);
     expect(roundTo(1.2, 0)).toBe(1);
+    expect(roundTo(1234, -2)).toBe(1200);
+  });
+
+  it.each([1.5, Number.POSITIVE_INFINITY, 309, -309])('rejects an invalid decimal count of %s', (decimals) => {
+    expect(() => roundTo(1.23, decimals)).toThrow('roundTo decimals must be an integer between -308 and 308.');
   });
 
   it('generates random integer in inclusive range', () => {
@@ -64,6 +69,11 @@ describe('math utils', () => {
     }
   });
 
+  it('rejects non-finite random float bounds', () => {
+    expect(() => randomNum(0, Number.POSITIVE_INFINITY)).toThrow('randomNum bounds must be finite numbers.');
+    expect(() => randomNum(Number.NaN, 1)).toThrow('randomNum bounds must be finite numbers.');
+  });
+
   it('converts degrees to radians', () => {
     expect(deg2rad(180)).toBeCloseTo(Math.PI);
     expect(deg2rad(90)).toBeCloseTo(Math.PI / 2);
@@ -93,6 +103,12 @@ describe('math utils', () => {
     expect(range(5, 1, 0)).toEqual([5, 4, 3, 2, 1]); // step 0 clamped to 1
     expect(range(1, 5, -2)).toEqual([1, 2, 3, 4, 5]); // negative step clamped to 1
     expect(range(1, 5, 0.5)).toEqual([1, 2, 3, 4, 5]); // fractional step clamped to 1
+  });
+
+  it('rejects non-finite endpoints and oversized results', () => {
+    expect(() => range(0, Number.POSITIVE_INFINITY)).toThrow('range endpoints must be finite numbers.');
+    expect(() => range(Number.NaN, 1)).toThrow('range endpoints must be finite numbers.');
+    expect(() => range(0, 0xffff_ffff)).toThrow('range result exceeds the maximum JavaScript array length.');
   });
 
   it('calculates sum of numbers', () => {

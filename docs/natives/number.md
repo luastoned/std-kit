@@ -120,6 +120,9 @@ Generates a random number between the specified minimum and maximum values.
 **Returns:** A random number between the minimum and maximum values.
 
 
+**Throws:** RangeError if either bound is non-finite.
+
+
 ---
 
 ## range
@@ -134,6 +137,9 @@ Generates an array of numbers within a specified range.
 **Returns:** A readonly array of numbers within the specified range.
 
 
+**Throws:** RangeError if either endpoint is non-finite or the resulting array exceeds the maximum JavaScript array length.
+
+
 ---
 
 ## roundTo
@@ -146,6 +152,9 @@ Rounds a number to the specified number of decimal places.
 
 
 **Returns:** The rounded number.
+
+
+**Throws:** RangeError if `decimals` is not an integer between -308 and 308.
 
 
 ---

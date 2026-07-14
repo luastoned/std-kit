@@ -89,7 +89,7 @@ describe('guard', () => {
 
     it('works with async operations', async () => {
       const result = await guard(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        await Promise.resolve();
         return 'done';
       });
       expect(result).toBe('done');

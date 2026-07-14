@@ -3,11 +3,24 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { sleep, debounce, throttle } from './timer';
 
 describe('sleep', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('waits for the specified time', async () => {
-    const before = Date.now();
-    await sleep(25);
-    const after = Date.now();
-    expect(after - before).toBeGreaterThanOrEqual(20);
+    const onResolved = vi.fn();
+    const promise = sleep(25).then(onResolved);
+
+    await vi.advanceTimersByTimeAsync(24);
+    expect(onResolved).not.toHaveBeenCalled();
+
+    await vi.advanceTimersByTimeAsync(1);
+    await expect(promise).resolves.toBeUndefined();
+    expect(onResolved).toHaveBeenCalledOnce();
   });
 });
 

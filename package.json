@@ -1,6 +1,7 @@
 {
   "name": "std-kit",
   "version": "2.9.0",
+  "packageManager": "yarn@1.22.22",
   "private": false,
   "description": "NodeJS Standard Library Additions",
   "keywords": [
@@ -21,6 +22,9 @@
   "files": [
     "lib"
   ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "sideEffects": false,
   "main": "./lib/index.js",
   "module": "./lib/index.mjs",
@@ -54,15 +58,17 @@
     "build:code": "tsc --project tsconfig.build.json",
     "build:types": "tsc --project tsconfig.build.json --declaration --emitDeclarationOnly",
     "check:exports": "node scripts/check-exports.mjs",
+    "check:runtime": "node scripts/check-runtime.mjs",
     "check:package": "npm pack --dry-run",
     "clean": "rimraf coverage dist lib",
     "docs": "yarn docs:typedoc && yarn docs:transform",
     "docs:transform": "tsx scripts/transform-docs.ts",
-    "docs:typedoc": "typedoc src/index.ts src/node.ts --excludeInternal --intentionallyNotExported DeepAtomic --intentionallyNotExported GetNestedField --intentionallyNotExported GetDirectOrIndexedField --json docs/documentation.json",
+    "docs:typedoc": "typedoc src/index.ts src/node.ts --excludeInternal --gitRevision main --intentionallyNotExported DeepAtomic --intentionallyNotExported GetNestedField --intentionallyNotExported GetDirectOrIndexedField --json docs/documentation.json",
     "test": "vitest --run",
     "typecheck": "tsc --noEmit",
     "verify": "yarn typecheck && yarn lint:check && yarn format:check && yarn test",
-    "release:check": "yarn verify && yarn build && yarn docs && yarn check:exports && yarn check:package",
+    "release:artifacts": "yarn build && yarn docs && yarn check:exports && yarn check:package",
+    "release:check": "yarn verify && yarn release:artifacts",
     "prepublishOnly": "yarn release:check",
     "release": "release-it",
     "format": "yarn format:write",

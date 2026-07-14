@@ -97,13 +97,25 @@ describe('memoize', () => {
     expect(fn).toHaveBeenCalledTimes(2);
   });
 
-  it('should handle complex objects', () => {
+  it('caches object arguments by identity', () => {
     const fn = vi.fn((obj: { data: number[] }) => obj.data.reduce((sum, n) => sum + n, 0));
     const memoized = memoize(fn);
+    const value = { data: [1, 2, 3] };
 
+    expect(memoized(value)).toBe(6);
+    expect(memoized(value)).toBe(6);
     expect(memoized({ data: [1, 2, 3] })).toBe(6);
-    expect(memoized({ data: [1, 2, 3] })).toBe(6);
-    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not collide for values that serialize identically as JSON', () => {
+    const fn = vi.fn((value: unknown) => value);
+    const memoized = memoize(fn);
+
+    expect(memoized(undefined)).toBeUndefined();
+    expect(memoized(null)).toBeNull();
+    expect(memoized(Number.NaN)).toBeNaN();
+    expect(fn).toHaveBeenCalledTimes(3);
   });
 
   it('should cache undefined results', () => {
@@ -122,5 +134,16 @@ describe('memoize', () => {
     expect(memoized()).toBeNull();
     expect(memoized()).toBeNull();
     expect(fn).toHaveBeenCalledTimes(1);
+  });
+
+  it('clears every cached result', () => {
+    const fn = vi.fn((value: number) => value * 2);
+    const memoized = memoize(fn);
+
+    expect(memoized(4)).toBe(8);
+    expect(memoized(4)).toBe(8);
+    memoized.clear();
+    expect(memoized(4)).toBe(8);
+    expect(fn).toHaveBeenCalledTimes(2);
   });
 });

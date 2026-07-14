@@ -560,22 +560,3 @@ export function mergeObject<TSource extends object, TPatch extends object, const
     TOptions extends { readonly strict: true } ? true : false
   >;
 }
-
-/**
- * Deeply merges a patch object into a source object.
- *
- * @deprecated Use mergeObject instead.
- * @template TSource - Type of the source object.
- * @template TPatch - Type of the patch object.
- * @param source - The original object to be merged into.
- * @param patch - The object containing updates or new keys to be merged.
- * @param options - Merge options controlling immutability and undefined handling.
- * @returns A new object that is the result of deeply merging the patch into the source.
- */
-export function deepMerge<TSource extends object, TPatch extends object, const TOptions extends Readonly<MergeObjectOptions> = Readonly<MergeObjectOptions>>(
-  source: TSource,
-  patch: Readonly<TPatch>,
-  options: TOptions = {} as TOptions,
-): DeepMerge<TSource, TPatch, TOptions extends { readonly applyUndefined: true } ? true : false, TOptions extends { readonly strict: true } ? true : false> {
-  return mergeObject(source, patch, options);
-}

@@ -1,6 +1,21 @@
 import { expect, describe, expectTypeOf, it } from 'vitest';
 
-import { unique, compact, reverse, shuffle, flatten, fill, chunk, cluster, countBy, groupBy, orderBy, uniqueBy, cartesian, combinations } from './array';
+import {
+  unique,
+  compact,
+  reverse,
+  shuffle,
+  flatten,
+  fill,
+  chunk,
+  countBy,
+  groupBy,
+  orderBy,
+  uniqueBy,
+  cartesian,
+  combinations,
+  iterateCombinations,
+} from './array';
 
 describe('array type contracts', () => {
   it('narrows literal falsy values and key results', () => {
@@ -191,12 +206,6 @@ describe('chunk', () => {
   });
 });
 
-describe('cluster (deprecated)', () => {
-  it('should work as alias for chunk', () => {
-    expect(cluster([1, 2, 3, 4])).toEqual(chunk([1, 2, 3, 4]));
-  });
-});
-
 describe('countBy', () => {
   it('should count by property key', () => {
     const items = [{ type: 'a' }, { type: 'b' }, { type: 'a' }, { type: 'c' }];
@@ -370,7 +379,27 @@ describe('combinations', () => {
     expect(combinations([undefined])).toEqual([[undefined]]);
   });
 
-  it('rejects inputs that exceed the supported bitmask size', () => {
+  it('rejects eager results that exceed the default allocation limit', () => {
     expect(() => combinations(Array.from({ length: 31 }, (_, index) => index))).toThrow(RangeError);
+  });
+
+  it('supports an explicit eager result limit', () => {
+    expect(combinations([1, 2, 3], { maxResults: 7 })).toHaveLength(7);
+    expect(() => combinations([1, 2, 3], { maxResults: 6 })).toThrow('combinations would produce 7 results, exceeding the limit of 6.');
+  });
+
+  it.each([-1, 1.5, Number.NaN])('rejects an invalid result limit of %s', (maxResults) => {
+    expect(() => combinations([1], { maxResults })).toThrow('maxResults must be a non-negative safe integer or Infinity.');
+  });
+});
+
+describe('iterateCombinations', () => {
+  it('lazily supports inputs beyond the eager collector limit', () => {
+    const iterator = iterateCombinations(Array.from({ length: 31 }, (_, index) => index));
+
+    expect(iterator.next().value).toEqual([0]);
+    expect(iterator.next().value).toEqual([1]);
+    expect(iterator.next().value).toEqual([0, 1]);
+    iterator.return?.();
   });
 });

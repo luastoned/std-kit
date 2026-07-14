@@ -11,15 +11,6 @@
  */
 export type Prettify<T> = { [K in keyof T]: T[K] } & {};
 
-/**
- * Simplifies a type by forcing TypeScript to evaluate it. Often provides better IntelliSense than Prettify for complex types.
- *
- * @template T - The type to simplify.
- * @param T - The type to simplify.
- * @returns The simplified type.
- */
-export type Simplify<T> = { [K in keyof T]: T[K] } & {};
-
 // =============================================================================
 // Nullability Types
 // =============================================================================
@@ -54,23 +45,6 @@ export type Optional<T> = T | undefined;
 // =============================================================================
 // Function Types
 // =============================================================================
-
-/**
- * Represents a function that extracts a key from a value.
- *
- * @template T The type of the value.
- * @param arg The value from which to extract the key.
- * @returns The key extracted from the value.
- */
-export type KeyFn<T> = (arg: T) => keyof T;
-
-/**
- * Represents a generic function type.
- *
- * @template T - The type of arguments accepted by the function.
- * @returns The generic function type.
- */
-export type GenericFn<T> = (...args: T[]) => unknown;
 
 /**
  * Represents a generic function type with preserved signature.

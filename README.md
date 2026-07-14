@@ -40,6 +40,8 @@
 
 ## 📦 Install
 
+Requires Node.js 20 or newer.
+
 ```bash
 npm install std-kit
 ```
@@ -268,7 +270,7 @@ function process(items: NonEmptyArray<string>) {
 ### 💾 Node.js Specific
 
 ```ts
-import { streamToBuffer, pipeToBuffer } from 'std-kit/node';
+import { streamToBuffer } from 'std-kit/node';
 
 const buffer = await streamToBuffer(readableStream);
 ```

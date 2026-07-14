@@ -26,6 +26,16 @@ describe('cloneObject', () => {
     const cloned = cloneObject(null);
     expect(cloned).toBeNull();
   });
+
+  it('serializes Dates to strings', () => {
+    const date = new Date('2026-01-02T03:04:05.000Z');
+
+    expect(cloneObject(date)).toBe('2026-01-02T03:04:05.000Z');
+  });
+
+  it('rejects BigInts', () => {
+    expect(() => cloneObject(1n)).toThrow(TypeError);
+  });
 });
 
 describe('container guards', () => {

@@ -1,23 +1,43 @@
 import assert from 'node:assert/strict';
-import { access } from 'node:fs/promises';
-import { createRequire } from 'node:module';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 
-const projectRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
-const require = createRequire(import.meta.url);
+import ts from 'typescript';
 
-const coreEsm = await import(join(projectRoot, 'lib/index.mjs'));
-const nodeEsm = await import(join(projectRoot, 'lib/node.mjs'));
-const coreCjs = require(join(projectRoot, 'lib/index.js'));
-const nodeCjs = require(join(projectRoot, 'lib/node.cjs'));
+import { contract, entrypoints, projectRoot, sorted, validateRuntimeExports } from './check-runtime.mjs';
 
-assert.deepEqual(Object.keys(coreEsm).sort(), Object.keys(coreCjs).sort(), 'Core CJS and ESM exports differ');
-assert.deepEqual(Object.keys(nodeEsm).sort(), Object.keys(nodeCjs).sort(), 'Node CJS and ESM exports differ');
-assert.equal(typeof coreEsm.mergeObject, 'function');
-assert.equal(typeof coreEsm.createHeap, 'function');
-assert.equal(typeof nodeEsm.streamToBuffer, 'function');
+function declarationExports(relativePath) {
+  const file = join(projectRoot, relativePath);
+  const program = ts.createProgram([file], {
+    module: ts.ModuleKind.NodeNext,
+    moduleResolution: ts.ModuleResolutionKind.NodeNext,
+    skipLibCheck: true,
+  });
+  const sourceFile = program.getSourceFile(file);
+  assert.ok(sourceFile, `Missing declaration output: ${relativePath}`);
 
-await Promise.all(['index.d.ts', 'index.d.mts', 'node.d.cts', 'node.d.mts'].map((file) => access(join(projectRoot, 'lib', file))));
+  const checker = program.getTypeChecker();
+  const moduleSymbol = checker.getSymbolAtLocation(sourceFile);
+  assert.ok(moduleSymbol, `Could not inspect declaration output: ${relativePath}`);
 
-console.log(`Validated ${Object.keys(coreEsm).length} core exports and ${Object.keys(nodeEsm).length} Node exports in CJS and ESM.`);
+  return sorted(checker.getExportsOfModule(moduleSymbol).map((symbol) => symbol.name));
+}
+
+const runtimeCount = await validateRuntimeExports();
+let declarationCount = 0;
+
+for (const [name, files] of Object.entries(entrypoints)) {
+  const expected = contract[name];
+  assert.ok(expected, `Missing ${name} entrypoint in public export contract`);
+  assert.deepEqual(expected.types, sorted(expected.types), `${name} type contract must be sorted`);
+
+  const expectedDeclarations = sorted([...expected.runtime, ...expected.types]);
+  assert.equal(new Set(expectedDeclarations).size, expectedDeclarations.length, `${name} export contract contains duplicates`);
+
+  for (const declaration of files.declarations) {
+    assert.deepEqual(declarationExports(declaration), expectedDeclarations, `${declaration} exports differ from scripts/public-exports.json`);
+  }
+
+  declarationCount += expectedDeclarations.length;
+}
+
+console.log(`Validated ${runtimeCount} runtime exports and ${declarationCount} declaration exports across CJS and ESM.`);

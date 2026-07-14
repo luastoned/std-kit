@@ -6,35 +6,42 @@
 
 ## Functions
 
-- `pipeToBuffer(stream: Readable): Promise<Buffer<ArrayBufferLike>>`
-- `streamToBuffer(stream: Readable): Promise<Buffer<ArrayBufferLike>>`
+- `streamToBuffer(stream: Readable, options: Readonly<StreamToBufferOptions> = {}): Promise<Buffer<ArrayBufferLike>>`
+
+## Types
+
+- `interface StreamToBufferOptions`
 
 ---
 
-## pipeToBuffer
+## StreamToBufferOptions
 
 ```typescript
-pipeToBuffer(stream: Readable): Promise<Buffer<ArrayBufferLike>>
+interface StreamToBufferOptions {
+  readonly maxBytes?: number;
+}
 ```
 
-Pipes a readable stream to a buffer.
-
-
-**Returns:** A promise that resolves to a buffer containing the data from the stream.
-
+Options for collecting a readable stream into a buffer.
 
 ---
 
 ## streamToBuffer
 
 ```typescript
-streamToBuffer(stream: Readable): Promise<Buffer<ArrayBufferLike>>
+streamToBuffer(stream: Readable, options: Readonly<StreamToBufferOptions> = {}): Promise<Buffer<ArrayBufferLike>>
 ```
 
 Converts a readable stream into a buffer.
 
 
 **Returns:** A promise that resolves with the concatenated buffer of all chunks read from the stream.
+
+
+**Throws:** TypeError if the stream emits a chunk that cannot be converted to a buffer.
+
+
+**Throws:** RangeError if `maxBytes` is invalid or the stream exceeds it.
 
 
 ---

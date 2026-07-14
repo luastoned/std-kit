@@ -8,13 +8,13 @@
 
 - `cartesian<T = unknown>(items: readonly T[][]): T[][]`
 - `chunk<T>(array: readonly T[], size: number = 2): T[][]`
-- `cluster<T>(array: readonly T[], size: number = 2): T[][]` ~~(deprecated)~~
-- `combinations<T>(items: readonly T[]): T[][]`
+- `combinations<T>(items: readonly T[], options: Readonly<CombinationsOptions> = {}): T[][]`
 - `compact<T>(array: readonly T[]): Exclude<T, Falsy>[]`
 - `countBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Record<K, number>`
 - `fill<T>(size: number, value: T): T[]`
 - `flatten<T>(array: readonly unknown[], depth: number = Infinity): T[]`
 - `groupBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Record<K, T[]>`
+- `iterateCombinations<T>(items: readonly T[]): IterableIterator<T[]>`
 - `orderBy<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), keys: readonly OrderSelector<T>[], orders: readonly ("asc" | "desc")[], inPlace?: InPlace): T[]`
 - `reverse<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), inPlace?: InPlace): T[]`
 - `shuffle<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), inPlace?: InPlace): T[]`
@@ -23,10 +23,23 @@
 
 ## Types
 
+- `interface CombinationsOptions`
 - `type Falsy = false | 0 | 0n | '' | null | undefined`
 - `type KeyableProperty<T> = { [P in keyof T]-?: T[P] extends PropertyKey ? P : never }[keyof T]`
 - `type KeySelector<T, K extends PropertyKey = PropertyKey> = { [P in keyof T]-?: T[P] extends K ? P : never }[keyof T] | ((item: T) => K)`
 - `type OrderSelector<T> = keyof T | ((item: T) => string | number | null | undefined)`
+
+---
+
+## CombinationsOptions
+
+```typescript
+interface CombinationsOptions {
+  readonly maxResults?: number;
+}
+```
+
+Options for eagerly collecting combinations.
 
 ---
 
@@ -98,35 +111,19 @@ Splits an array into chunks of a specified size.
 
 ---
 
-## cluster
-
-```typescript
-cluster<T>(array: readonly T[], size: number = 2): T[][]
-```
-
-Splits an array into chunks of a specified size.
-
-> **Deprecated:** Use chunk instead.
-
-
-**Returns:** An array of chunks.
-
-
----
-
 ## combinations
 
 ```typescript
-combinations<T>(items: readonly T[]): T[][]
+combinations<T>(items: readonly T[], options: Readonly<CombinationsOptions> = {}): T[][]
 ```
 
-Generates all possible non-empty combinations of the elements in an array.
+Collects all possible non-empty combinations of the elements in an array.
 
 
 **Returns:** An array of arrays representing the combinations.
 
 
-**Throws:** When more than 30 input items are provided.
+**Throws:** RangeError if `maxResults` is invalid or the result would exceed it.
 
 
 ---
@@ -201,6 +198,20 @@ provided, it will be used to extract the key from each element.
 
 
 **Returns:** An object where the keys are the grouped values and the values are arrays of elements that belong to each group.
+
+
+---
+
+## iterateCombinations
+
+```typescript
+iterateCombinations<T>(items: readonly T[]): IterableIterator<T[]>
+```
+
+Lazily generates all possible non-empty combinations of the elements in an array.
+
+
+**Returns:** An iterable iterator of combinations.
 
 
 ---

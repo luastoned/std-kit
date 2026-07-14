@@ -21,6 +21,18 @@ export type KeySelector<T, K extends PropertyKey = PropertyKey> = { [P in keyof 
 export type OrderSelector<T> = keyof T | ((item: T) => string | number | null | undefined);
 
 /**
+ * Options for eagerly collecting combinations.
+ */
+export interface CombinationsOptions {
+  /**
+   * Maximum number of combinations to allocate. Defaults to 100,000.
+   */
+  readonly maxResults?: number;
+}
+
+const DEFAULT_MAX_COMBINATION_RESULTS = 100_000;
+
+/**
  * Defines a safe enumerable record entry, including reserved keys such as `__proto__`.
  */
 function setRecordEntry<T>(record: Record<PropertyKey, T>, key: PropertyKey, value: T): void {
@@ -166,19 +178,6 @@ export function chunk<T>(array: readonly T[], size = 2): T[][] {
   }
 
   return chunks;
-}
-
-/**
- * Splits an array into chunks of a specified size.
- *
- * @deprecated Use chunk instead.
- * @template T - The type of the array elements.
- * @param array - The array to be chunked.
- * @param size - The size of each chunk.
- * @returns An array of chunks.
- */
-export function cluster<T>(array: readonly T[], size = 2): T[][] {
-  return chunk(array, size);
 }
 
 /**
@@ -397,36 +396,48 @@ export function cartesian<T = unknown>(items: readonly T[][]): T[][] {
 }
 
 /**
- * Generates all possible non-empty combinations of the elements in an array.
+ * Lazily generates all possible non-empty combinations of the elements in an array.
  *
  * @template T - The type of the array elements.
- * @param items - The array of elements. At most 30 items are supported to avoid overflowing the bitmask representation.
- * @returns An array of arrays representing the combinations.
- * @throws {RangeError} When more than 30 input items are provided.
+ * @param items - The array of elements.
+ * @yields Each non-empty combination in bitmask order.
+ * @returns An iterable iterator of combinations.
  */
-export function combinations<T>(items: readonly T[]): T[][] {
-  if (items.length >= 31) {
-    throw new RangeError('combinations supports at most 30 input items.');
-  }
+export function* iterateCombinations<T>(items: readonly T[]): IterableIterator<T[]> {
+  const subsetCount = 1n << BigInt(items.length);
 
-  const result: T[][] = [];
-
-  // Iterate over each number from 1 to (2^length - 1)
-  // This will generate all possible non-empty combinations of the array elements.
-  for (let subsetMask = 1; subsetMask < 1 << items.length; subsetMask++) {
+  for (let subsetMask = 1n; subsetMask < subsetCount; subsetMask++) {
     const combination: T[] = [];
 
-    // Check each bit in `subsetMask` to see if the corresponding element should be included
     for (let bitPosition = 0; bitPosition < items.length; bitPosition++) {
-      if (subsetMask & (1 << bitPosition)) {
-        // If the bitPosition-th bit is set in `subsetMask`, include array[bitPosition] in the current combination
+      if (subsetMask & (1n << BigInt(bitPosition))) {
         combination.push(items[bitPosition] as T);
       }
     }
 
-    // Add the generated combination to the result array
-    result.push(combination);
+    yield combination;
+  }
+}
+
+/**
+ * Collects all possible non-empty combinations of the elements in an array.
+ *
+ * @template T - The type of the array elements.
+ * @param items - The array of elements.
+ * @param options - Allocation limits for the eager result.
+ * @returns An array of arrays representing the combinations.
+ * @throws RangeError if `maxResults` is invalid or the result would exceed it.
+ */
+export function combinations<T>(items: readonly T[], options: Readonly<CombinationsOptions> = {}): T[][] {
+  const maxResults = options.maxResults ?? DEFAULT_MAX_COMBINATION_RESULTS;
+  if (maxResults !== Number.POSITIVE_INFINITY && (!Number.isSafeInteger(maxResults) || maxResults < 0)) {
+    throw new RangeError('maxResults must be a non-negative safe integer or Infinity.');
   }
 
-  return result;
+  const resultCount = (1n << BigInt(items.length)) - 1n;
+  if (maxResults !== Number.POSITIVE_INFINITY && resultCount > BigInt(maxResults)) {
+    throw new RangeError(`combinations would produce ${resultCount} results, exceeding the limit of ${maxResults}.`);
+  }
+
+  return Array.from(iterateCombinations(items));
 }

@@ -6,7 +6,6 @@
 
 ## Functions
 
-- `deepMerge<TSource extends object, TPatch extends object, TOptions extends Readonly<MergeObjectOptions> = Readonly<MergeObjectOptions>>(source: TSource, patch: Readonly<TPatch>, options: TOptions = ...): DeepMerge<TSource, TPatch, TOptions extends { readonly applyUndefined: true } ? true : false, TOptions extends { readonly strict: true } ? true : false>` ~~(deprecated)~~
 - `filterObject<T>(obj: Readonly<T>, filter: (key: string, value: unknown, path: string, parent: unknown) => boolean): DeepPartial<T> | undefined`
 - `getValue<TData, TPath extends string, TDefault = GetFieldType<TData, TPath>>(data: Readonly<TData>, path: TPath, defaultValue?: TDefault): GetFieldType<TData, TPath> | TDefault`
 - `mapObject<TResult = unknown, TInput = unknown>(obj: TInput, mapper: (key: string, value: unknown, path: string, parent: unknown) => unknown): TResult`
@@ -45,22 +44,6 @@ type SetValueAtPath<TData, TPath extends string> = GetFieldType<TData, TPath> ex
 ```
 
 Resolves a known path to its value type while leaving dynamic or missing paths open.
-
----
-
-## deepMerge
-
-```typescript
-deepMerge<TSource extends object, TPatch extends object, TOptions extends Readonly<MergeObjectOptions> = Readonly<MergeObjectOptions>>(source: TSource, patch: Readonly<TPatch>, options: TOptions = ...): DeepMerge<TSource, TPatch, TOptions extends { readonly applyUndefined: true } ? true : false, TOptions extends { readonly strict: true } ? true : false>
-```
-
-Deeply merges a patch object into a source object.
-
-> **Deprecated:** Use mergeObject instead.
-
-
-**Returns:** A new object that is the result of deeply merging the patch into the source.
-
 
 ---
 
