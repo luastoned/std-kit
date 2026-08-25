@@ -68,7 +68,7 @@ export type TreeUpdater<TNode> = (node: TNode, context: TreeContext<TNode>) => T
 export type TreeTarget<TNode> = TreePath | TreePredicate<TNode>;
 
 /**
- * Shared tree configuration.
+ * Shared tree configuration. Traversal reads child arrays only from an own property of each node; inherited child collections are ignored.
  *
  * @template TChildKey - The property key used for child nodes.
  */
@@ -138,6 +138,10 @@ function normalizeTreeOptions<TChildKey extends PropertyKey = 'children'>(option
  * @internal
  */
 function getTreeChildren<TNode extends object, TChildKey extends PropertyKey>(node: TNode, childrenKey: TChildKey): readonly TNode[] {
+  if (!Object.hasOwn(node, childrenKey)) {
+    return [];
+  }
+
   const candidate = (node as Record<PropertyKey, unknown>)[childrenKey];
   return Array.isArray(candidate) ? (candidate as readonly TNode[]) : [];
 }
@@ -153,7 +157,7 @@ function getTreeChildren<TNode extends object, TChildKey extends PropertyKey>(no
  * @internal
  */
 function hasChildrenKey<TNode extends object, TChildKey extends PropertyKey>(node: TNode, childrenKey: TChildKey): boolean {
-  return childrenKey in (node as Record<PropertyKey, unknown>);
+  return Object.hasOwn(node, childrenKey);
 }
 
 /**

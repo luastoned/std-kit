@@ -1,7 +1,6 @@
 {
   "name": "std-kit",
   "version": "2.9.0",
-  "packageManager": "yarn@1.22.22",
   "private": false,
   "description": "NodeJS Standard Library Additions",
   "keywords": [
@@ -22,9 +21,6 @@
   "files": [
     "lib"
   ],
-  "engines": {
-    "node": ">=20.0.0"
-  },
   "sideEffects": false,
   "main": "./lib/index.js",
   "module": "./lib/index.mjs",
@@ -63,7 +59,7 @@
     "clean": "rimraf coverage dist lib",
     "docs": "yarn docs:typedoc && yarn docs:transform",
     "docs:transform": "tsx scripts/transform-docs.ts",
-    "docs:typedoc": "typedoc src/index.ts src/node.ts --excludeInternal --gitRevision main --intentionallyNotExported DeepAtomic --intentionallyNotExported GetNestedField --intentionallyNotExported GetDirectOrIndexedField --json docs/documentation.json",
+    "docs:typedoc": "typedoc src/index.ts src/node.ts --excludeInternal --gitRevision main --intentionallyNotExported DeepAtomic --intentionallyNotExported DeepMergeArrays --intentionallyNotExported GetNestedField --intentionallyNotExported GetDirectOrIndexedField --json docs/documentation.json",
     "test": "vitest --run",
     "typecheck": "tsc --noEmit",
     "verify": "yarn typecheck && yarn lint:check && yarn format:check && yarn test",
@@ -93,5 +89,9 @@
     "typescript": "^6.0.3",
     "vite": "^8.0.10",
     "vitest": "^4.1.5"
-  }
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "yarn@1.22.22"
 }

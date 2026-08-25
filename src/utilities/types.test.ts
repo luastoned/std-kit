@@ -31,6 +31,16 @@ describe('public type utilities', () => {
     expectTypeOf<OptionalArrayPath>().toEqualTypeOf<number | undefined>();
   });
 
+  it('accepts decimal bracket indices and rejects invalid or out-of-range tuple indices', () => {
+    type Model = { rows: Array<{ id: number }>; tuple: readonly [string, number] };
+
+    expectTypeOf<GetFieldType<Model, 'rows[12].id'>>().toEqualTypeOf<number>();
+    expectTypeOf<GetFieldType<Model, 'tuple[1]'>>().toEqualTypeOf<number>();
+    expectTypeOf<GetFieldType<Model, 'rows[item].id'>>().toEqualTypeOf<undefined>();
+    expectTypeOf<GetFieldType<Model, 'rows[-1].id'>>().toEqualTypeOf<undefined>();
+    expectTypeOf<GetFieldType<Model, 'tuple[2]'>>().toEqualTypeOf<undefined>();
+  });
+
   it('preserves atomic values, collections, and tuple structure in deep modifiers', () => {
     type Model = {
       callback: (value: string) => number;

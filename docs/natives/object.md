@@ -9,7 +9,7 @@
 - `filterObject<T>(obj: Readonly<T>, filter: (key: string, value: unknown, path: string, parent: unknown) => boolean): DeepPartial<T> | undefined`
 - `getValue<TData, TPath extends string, TDefault = GetFieldType<TData, TPath>>(data: Readonly<TData>, path: TPath, defaultValue?: TDefault): GetFieldType<TData, TPath> | TDefault`
 - `mapObject<TResult = unknown, TInput = unknown>(obj: TInput, mapper: (key: string, value: unknown, path: string, parent: unknown) => unknown): TResult`
-- `mergeObject<TSource extends object, TPatch extends object, TOptions extends Readonly<MergeObjectOptions> = Readonly<MergeObjectOptions>>(source: TSource, patch: Readonly<TPatch>, options: TOptions = ...): DeepMerge<TSource, TPatch, TOptions extends { readonly applyUndefined: true } ? true : false, TOptions extends { readonly strict: true } ? true : false>`
+- `mergeObject<TSource extends object, TPatch extends object, TOptions extends Readonly<MergeObjectOptions> = Readonly<MergeObjectOptions>>(source: TSource, patch: Readonly<TPatch>, options: TOptions = ...): DeepMerge<TSource, TPatch, TOptions extends { readonly applyUndefined: true } ? true : false, TOptions extends { readonly mergeArrays: false } ? false : true, TOptions extends { readonly strict: true } ? true : false>`
 - `omit<T extends object, K extends string | number | symbol>(obj: T, keys: readonly K[]): Omit<T, K>`
 - `pick<T extends object, K extends string | number | symbol>(obj: T, keys: readonly K[]): Pick<T, K>`
 - `queryObject<Ret = unknown, T = unknown, P extends boolean = false>(obj: unknown, filter: (key: string, value: T, path: string, parent: unknown) => boolean, path: P = ...): (P extends true ? { path: string; value: Ret } : Ret)[]`
@@ -95,7 +95,7 @@ Recursively maps over all values in an object or array tree, allowing transforma
 ## mergeObject
 
 ```typescript
-mergeObject<TSource extends object, TPatch extends object, TOptions extends Readonly<MergeObjectOptions> = Readonly<MergeObjectOptions>>(source: TSource, patch: Readonly<TPatch>, options: TOptions = ...): DeepMerge<TSource, TPatch, TOptions extends { readonly applyUndefined: true } ? true : false, TOptions extends { readonly strict: true } ? true : false>
+mergeObject<TSource extends object, TPatch extends object, TOptions extends Readonly<MergeObjectOptions> = Readonly<MergeObjectOptions>>(source: TSource, patch: Readonly<TPatch>, options: TOptions = ...): DeepMerge<TSource, TPatch, TOptions extends { readonly applyUndefined: true } ? true : false, TOptions extends { readonly mergeArrays: false } ? false : true, TOptions extends { readonly strict: true } ? true : false>
 ```
 
 Deeply merges a patch object into a source object.
@@ -111,9 +111,13 @@ Deeply merges a patch object into a source object.
 - Strict mode: When `strict` is true, only keys/items that exist in the source will be merged. New keys from the patch and non-matching array items will be
   ignored.
 - Prototype-mutating keys (`__proto__`, `constructor`, and `prototype`) are ignored at every level.
+- Cyclic patch objects and arrays encountered during merging are rejected.
 
 
 **Returns:** A new object that is the result of deeply merging the patch into the source.
+
+
+**Throws:** TypeError if a cyclic patch object or array is encountered during merging.
 
 
 ---
@@ -138,7 +142,7 @@ Creates a new object with all keys from the source object except the specified o
 pick<T extends object, K extends string | number | symbol>(obj: T, keys: readonly K[]): Pick<T, K>
 ```
 
-Creates a new object with only the specified keys from the source object.
+Creates a new object with only the specified own keys from the source object. Inherited properties are ignored.
 
 
 **Returns:** A new object containing only the specified keys.

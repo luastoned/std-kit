@@ -22,4 +22,19 @@ describe('object type contracts', () => {
     expectTypeOf(preserveUndefined).toEqualTypeOf<{ value: string }>();
     expectTypeOf(applyUndefined).toEqualTypeOf<{ value: undefined }>();
   });
+
+  it('does not promise patch-only fields for merged object arrays', () => {
+    const merged = mergeObject({ items: [{ source: 1 }, { source: 2 }] }, { items: [{ patch: 'yes' }] });
+    const replaced = mergeObject({ items: [{ source: 1 }] }, { items: [{ patch: 'yes' }] }, { mergeArrays: false });
+
+    expectTypeOf<(typeof merged.items)[number]>().toEqualTypeOf<{ source: number } | { patch: string } | { source: number; patch: string }>();
+    expectTypeOf(replaced).toEqualTypeOf<{ items: { patch: string }[] }>();
+
+    const assertTypeError = (): void => {
+      // @ts-expect-error Unmatched source items do not have patch-only fields.
+      const unsafePatchValue: string = merged.items[0]!.patch;
+      void unsafePatchValue;
+    };
+    void assertTypeError;
+  });
 });

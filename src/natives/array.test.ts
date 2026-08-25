@@ -298,6 +298,27 @@ describe('orderBy', () => {
     expect(sorted).toEqual([{ age: 20 }, { age: 25 }, { age: 30 }]);
     expect(items).toEqual([{ age: 20 }, { age: 25 }, { age: 30 }]); // original changed
   });
+
+  it('should order nullish values deterministically', () => {
+    const items = [
+      { id: 'undefined', rank: undefined },
+      { id: 'two', rank: 2 },
+      { id: 'null', rank: null },
+      { id: 'one', rank: 1 },
+    ];
+
+    expect(orderBy(items, ['rank'], ['asc']).map((item) => item.id)).toEqual(['one', 'two', 'undefined', 'null']);
+    expect(orderBy(items, ['rank'], ['desc']).map((item) => item.id)).toEqual(['undefined', 'null', 'two', 'one']);
+  });
+
+  it('should use subsequent keys to order nullish ties', () => {
+    const items = [
+      { id: 'b', rank: undefined },
+      { id: 'a', rank: null },
+    ];
+
+    expect(orderBy(items, ['rank', 'id'], ['asc', 'asc']).map((item) => item.id)).toEqual(['a', 'b']);
+  });
 });
 
 describe('uniqueBy', () => {
@@ -347,6 +368,13 @@ describe('cartesian', () => {
 
   it('should return empty array when any sub-array is empty', () => {
     expect(cartesian([[], [1, 2]])).toEqual([]);
+  });
+
+  it('should preserve array-valued elements in each tuple', () => {
+    expect(cartesian<number[]>([[[1], [2]], [[3, 4]]])).toEqual([
+      [[1], [3, 4]],
+      [[2], [3, 4]],
+    ]);
   });
 });
 

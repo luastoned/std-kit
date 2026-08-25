@@ -55,7 +55,15 @@ export function randomInt(min: number, max: number): number {
     throw new RangeError('randomInt bounds must contain at least one integer.');
   }
 
-  return Math.floor(Math.random() * (upper - lower + 1)) + lower;
+  const random = Math.random();
+  const range = upper - lower + 1;
+  if (Number.isFinite(range)) {
+    return Math.floor(random * range) + lower;
+  }
+
+  // A finite lower and upper bound can still produce an infinite span. In
+  // that case, interpolate from both ends so no intermediate value overflows.
+  return Math.floor(lower * (1 - random) + upper * random);
 }
 
 /**

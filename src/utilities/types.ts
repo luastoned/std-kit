@@ -294,34 +294,76 @@ export type OptionalKeys<T> = { [K in keyof T]-?: {} extends Pick<T, K> ? K : ne
 export type Merge<T, U> = Omit<T, keyof U> & U;
 
 /**
- * Describes the default recursive result of `mergeObject`.
+ * Extracts plain-object-like values that can participate in recursive merging.
  *
- * Arrays and atomic values are replaced by the patch type. Object properties are recursively merged. `strict` limits output keys to the source, while
- * `applyUndefined` controls whether explicit `undefined` replaces a source value.
+ * @internal
  */
-export type DeepMerge<TSource, TPatch, ApplyUndefined extends boolean = false, Strict extends boolean = false> = TPatch extends undefined
+type DeepMergeableObject<T> = T extends DeepAtomic | readonly unknown[] ? never : T extends object ? T : never;
+
+/**
+ * Describes a possible recursively merged array item.
+ *
+ * @internal
+ */
+type DeepMergeArrayItem<TSourceItem, TPatchItem, ApplyUndefined extends boolean, MergeArrays, Strict extends boolean> = [
+  DeepMergeableObject<TSourceItem>,
+] extends [never]
+  ? TPatchItem
+  : [DeepMergeableObject<TPatchItem>] extends [never]
+    ? TPatchItem
+    : DeepMerge<DeepMergeableObject<TSourceItem>, DeepMergeableObject<TPatchItem>, ApplyUndefined, MergeArrays, Strict>;
+
+/**
+ * Models replacement arrays exactly and object-array merging conservatively.
+ *
+ * @internal
+ */
+type DeepMergeArrays<
+  TSource extends readonly unknown[],
+  TPatch extends readonly unknown[],
+  ApplyUndefined extends boolean,
+  MergeArrays,
+  Strict extends boolean,
+> = MergeArrays extends false
+  ? TPatch
+  : [DeepMergeableObject<TPatch[number]>] extends [never]
+    ? TPatch
+    : Array<TSource[number] | TPatch[number] | DeepMergeArrayItem<TSource[number], TPatch[number], ApplyUndefined, MergeArrays, Strict>>;
+
+/**
+ * Describes the recursive result of `mergeObject`.
+ *
+ * Primitive arrays and arrays replaced with `mergeArrays: false` use the patch type. Merged object arrays include source, patch, and recursively merged item
+ * possibilities. Object properties are recursively merged. `strict` limits output keys to the source, while `applyUndefined` controls whether explicit
+ * `undefined` replaces a source value.
+ */
+export type DeepMerge<TSource, TPatch, ApplyUndefined extends boolean = false, MergeArrays = true, Strict extends boolean = false> = TPatch extends undefined
   ? ApplyUndefined extends true
     ? undefined
     : TSource
-  : TPatch extends DeepAtomic | readonly unknown[]
-    ? TPatch
-    : TSource extends DeepAtomic | readonly unknown[]
+  : TPatch extends readonly unknown[]
+    ? TSource extends readonly unknown[]
+      ? DeepMergeArrays<TSource, TPatch, ApplyUndefined, MergeArrays, Strict>
+      : TPatch
+    : TPatch extends DeepAtomic
       ? TPatch
-      : TSource extends object
-        ? TPatch extends object
-          ? Prettify<
-              Omit<TSource, Strict extends true ? Extract<keyof TPatch, keyof TSource> : keyof TPatch> & {
-                [K in Strict extends true ? Extract<keyof TPatch, keyof TSource> : keyof TPatch]: K extends keyof TSource
-                  ? K extends keyof TPatch
-                    ? DeepMerge<TSource[K], TPatch[K], ApplyUndefined, Strict>
-                    : never
-                  : K extends keyof TPatch
-                    ? TPatch[K]
-                    : never;
-              }
-            >
-          : TPatch
-        : TPatch;
+      : TSource extends DeepAtomic | readonly unknown[]
+        ? TPatch
+        : TSource extends object
+          ? TPatch extends object
+            ? Prettify<
+                Omit<TSource, Strict extends true ? Extract<keyof TPatch, keyof TSource> : keyof TPatch> & {
+                  [K in Strict extends true ? Extract<keyof TPatch, keyof TSource> : keyof TPatch]: K extends keyof TSource
+                    ? K extends keyof TPatch
+                      ? DeepMerge<TSource[K], TPatch[K], ApplyUndefined, MergeArrays, Strict>
+                      : never
+                    : K extends keyof TPatch
+                      ? TPatch[K]
+                      : never;
+                }
+              >
+            : TPatch
+          : TPatch;
 
 // =============================================================================
 // Array Types
@@ -348,11 +390,34 @@ export type NonEmptyArray<T> = [T, ...T[]];
 // Path & Field Access Utilities
 // =============================================================================
 /**
- * Resolves indexed access for arrays and tuples.
+ * Decimal digit accepted in a bracket index.
  *
  * @internal
  */
-type GetIndexedField<T> = T extends readonly unknown[] | unknown[] ? T[number] : undefined;
+type DecimalDigit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
+
+/**
+ * Checks whether a bracket index contains only decimal digits.
+ *
+ * @internal
+ */
+type IsArrayIndex<Index extends string> = Index extends `${DecimalDigit}${infer Rest}` ? (Rest extends '' ? true : IsArrayIndex<Rest>) : false;
+
+/**
+ * Resolves indexed access for arrays and tuples after validating the index.
+ *
+ * @internal
+ */
+type GetIndexedField<T, Index extends string> =
+  IsArrayIndex<Index> extends true
+    ? T extends readonly unknown[]
+      ? Index extends keyof T
+        ? T[Index]
+        : number extends T['length']
+          ? T[number]
+          : undefined
+      : undefined
+    : undefined;
 
 /**
  * Resolves direct property access.
@@ -385,7 +450,7 @@ type FieldOrUndefined<T, Key> = T extends null | undefined ? undefined : Key ext
  *   ```;
  *
  * @template T - The source object type.
- * @template Path - Dot/bracket path.
+ * @template Path - Dot/bracket path using decimal array indices.
  * @returns The inferred value type for the path.
  */
 export type GetFieldType<T, Path> = Path extends ''
@@ -401,9 +466,9 @@ export type GetFieldType<T, Path> = Path extends ''
  */
 type GetDirectOrIndexedField<T, Path> = T extends null | undefined
   ? undefined
-  : Path extends `${infer FieldKey}[${infer _IdxKey}]`
+  : Path extends `${infer FieldKey}[${infer IdxKey}]`
     ? FieldKey extends keyof T
-      ? GetIndexedField<T[FieldKey]>
+      ? GetIndexedField<T[FieldKey], IdxKey>
       : undefined
     : Path extends keyof T
       ? GetDirectField<T, Path>
@@ -414,8 +479,8 @@ type GetDirectOrIndexedField<T, Path> = T extends null | undefined
  *
  * @internal
  */
-type GetNestedField<T, Left extends string, Right extends string> = Left extends `${infer FieldKey}[${infer _IdxKey}]`
+type GetNestedField<T, Left extends string, Right extends string> = Left extends `${infer FieldKey}[${infer IdxKey}]`
   ? FieldKey extends keyof T
-    ? GetFieldType<GetIndexedField<T[FieldKey]>, Right>
+    ? GetFieldType<GetIndexedField<T[FieldKey], IdxKey>, Right>
     : undefined
   : GetFieldType<FieldOrUndefined<T, Left>, Right>;

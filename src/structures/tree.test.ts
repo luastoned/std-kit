@@ -87,6 +87,18 @@ describe('walkTree', () => {
 
     expect(visited).toEqual(['root']);
   });
+
+  it('ignores inherited child collections', () => {
+    const inheritedChild: ItemTreeNode = { id: 'inherited', label: 'Inherited' };
+    const root = Object.assign(Object.create({ children: [inheritedChild] }) as ItemTreeNode, { id: 'root', label: 'Root' });
+    const visited: string[] = [];
+
+    walkTree(root, (node) => {
+      visited.push(node.id);
+    });
+
+    expect(visited).toEqual(['root']);
+  });
 });
 
 describe('findTreeNode', () => {

@@ -223,7 +223,8 @@ orderBy<T, InPlace extends boolean = false>(array: readonly T[] & (true extends 
 ```
 
 Sorts an array of objects based on the specified keys and orders. If a key function is provided, it will be used to extract the key from each element. If a
-key property is provided, it will be used to extract the key from each element.
+key property is provided, it will be used to extract the key from each element. `null` and `undefined` sort after defined values in ascending order and
+before defined values in descending order. Missing values remain tied and can be ordered by subsequent keys.
 
 
 **Returns:** The sorted array.

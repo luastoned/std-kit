@@ -53,6 +53,19 @@ describe('math utils', () => {
     expect(() => randomInt(0, Number.POSITIVE_INFINITY)).toThrow(RangeError);
   });
 
+  it('returns finite integers when finite bounds have an overflowing span', () => {
+    vi.spyOn(Math, 'random').mockReturnValueOnce(0).mockReturnValueOnce(0.75);
+
+    expect(randomInt(-Number.MAX_VALUE, Number.MAX_VALUE)).toBe(-Number.MAX_VALUE);
+
+    const result = randomInt(-Number.MAX_VALUE, Number.MAX_VALUE);
+    expect(Number.isFinite(result)).toBe(true);
+    expect(Number.isInteger(result)).toBe(true);
+    expect(result).toBeGreaterThanOrEqual(-Number.MAX_VALUE);
+    expect(result).toBeLessThanOrEqual(Number.MAX_VALUE);
+    vi.restoreAllMocks();
+  });
+
   it('generates random float in exclusive upper bound range', () => {
     for (let idx = 0; idx < 100; idx++) {
       const num = randomNum(5, 10);

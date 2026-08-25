@@ -8,6 +8,8 @@
     "node": true
   },
   "ignorePatterns": [
+    "/build",
+    "/node_modules",
     "docs/**",
     "lib/**",
     "coverage/**",

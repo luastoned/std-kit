@@ -28,6 +28,12 @@ describe('pick', () => {
     const obj = { user: { name: 'Bob' }, settings: { theme: 'dark' }, count: 5 };
     expect(pick(obj, ['user', 'count'])).toEqual({ user: { name: 'Bob' }, count: 5 });
   });
+
+  it('should ignore inherited properties', () => {
+    const obj = Object.assign(Object.create({ inherited: 1 }) as { inherited: number; own: number }, { own: 2 });
+
+    expect(pick(obj, ['inherited', 'own'])).toEqual({ own: 2 });
+  });
 });
 
 describe('omit', () => {

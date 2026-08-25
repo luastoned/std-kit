@@ -8,7 +8,7 @@
 
 - `type Constructor<T = unknown, Args extends unknown[] = any[]> = new (...args: Args) => T`
 - `type Container = GenericObject | readonly unknown[]`
-- `type DeepMerge<TSource, TPatch, ApplyUndefined extends boolean = false, Strict extends boolean = false> = TPatch extends undefined`
+- `type DeepMerge<TSource, TPatch, ApplyUndefined extends boolean = false, MergeArrays = true, Strict extends boolean = false> = TPatch extends undefined`
 - `type DeepPartial<T> = T extends DeepAtomic`
 - `type DeepReadonly<T> = T extends DeepAtomic`
 - `type DeepRequired<T> = T extends DeepAtomic`
@@ -57,35 +57,40 @@ Represents an object or array container.
 ## DeepMerge
 
 ```typescript
-type DeepMerge<TSource, TPatch, ApplyUndefined extends boolean = false, Strict extends boolean = false> = TPatch extends undefined
+type DeepMerge<TSource, TPatch, ApplyUndefined extends boolean = false, MergeArrays = true, Strict extends boolean = false> = TPatch extends undefined
   ? ApplyUndefined extends true
     ? undefined
     : TSource
-  : TPatch extends DeepAtomic | readonly unknown[]
-    ? TPatch
-    : TSource extends DeepAtomic | readonly unknown[]
+  : TPatch extends readonly unknown[]
+    ? TSource extends readonly unknown[]
+      ? DeepMergeArrays<TSource, TPatch, ApplyUndefined, MergeArrays, Strict>
+      : TPatch
+    : TPatch extends DeepAtomic
       ? TPatch
-      : TSource extends object
-        ? TPatch extends object
-          ? Prettify<
-              Omit<TSource, Strict extends true ? Extract<keyof TPatch, keyof TSource> : keyof TPatch> & {
-                [K in Strict extends true ? Extract<keyof TPatch, keyof TSource> : keyof TPatch]: K extends keyof TSource
-                  ? K extends keyof TPatch
-                    ? DeepMerge<TSource[K], TPatch[K], ApplyUndefined, Strict>
-                    : never
-                  : K extends keyof TPatch
-                    ? TPatch[K]
-                    : never;
-              }
-            >
+      : TSource extends DeepAtomic | readonly unknown[]
+        ? TPatch
+        : TSource extends object
+          ? TPatch extends object
+            ? Prettify<
+                Omit<TSource, Strict extends true ? Extract<keyof TPatch, keyof TSource> : keyof TPatch> & {
+                  [K in Strict extends true ? Extract<keyof TPatch, keyof TSource> : keyof TPatch]: K extends keyof TSource
+                    ? K extends keyof TPatch
+                      ? DeepMerge<TSource[K], TPatch[K], ApplyUndefined, MergeArrays, Strict>
+                      : never
+                    : K extends keyof TPatch
+                      ? TPatch[K]
+                      : never;
+                }
+              >
+            : TPatch
           : TPatch
-        : TPatch
 ```
 
-Describes the default recursive result of `mergeObject`.
+Describes the recursive result of `mergeObject`.
 
-Arrays and atomic values are replaced by the patch type. Object properties are recursively merged. `strict` limits output keys to the source, while
-`applyUndefined` controls whether explicit `undefined` replaces a source value.
+Primitive arrays and arrays replaced with `mergeArrays: false` use the patch type. Merged object arrays include source, patch, and recursively merged item
+possibilities. Object properties are recursively merged. `strict` limits output keys to the source, while `applyUndefined` controls whether explicit
+`undefined` replaces a source value.
 
 ---
 

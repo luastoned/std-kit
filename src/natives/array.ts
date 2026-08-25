@@ -250,7 +250,8 @@ export function groupBy<T>(array: readonly T[], key: KeySelector<T>): Record<Pro
 
 /**
  * Sorts an array of objects based on the specified keys and orders. If a key function is provided, it will be used to extract the key from each element. If a
- * key property is provided, it will be used to extract the key from each element.
+ * key property is provided, it will be used to extract the key from each element. `null` and `undefined` sort after defined values in ascending order and
+ * before defined values in descending order. Missing values remain tied and can be ordered by subsequent keys.
  *
  * @example
  *   ```ts
@@ -292,8 +293,15 @@ export function orderBy<T, const InPlace extends boolean = false>(
       const aValue = keyFn(a);
       const bValue = keyFn(b);
 
-      if (aValue === null || aValue === undefined || bValue === null || bValue === undefined) {
+      const aIsMissing = aValue === null || aValue === undefined;
+      const bIsMissing = bValue === null || bValue === undefined;
+      if (aIsMissing && bIsMissing) {
         continue;
+      }
+
+      if (aIsMissing || bIsMissing) {
+        const comparison = aIsMissing ? 1 : -1;
+        return order === 'asc' ? comparison : -comparison;
       }
 
       if (aValue < bValue) {
@@ -369,7 +377,7 @@ function* cartesianIt<T = unknown>(items: readonly T[][]): IterableIterator<T[]>
 
   for (const rem of remainder) {
     for (const item of first) {
-      yield [item].concat(...rem);
+      yield [item, ...rem];
     }
   }
 }

@@ -28,7 +28,7 @@ export interface MergeObjectOptions {
 export type SetValueAtPath<TData, TPath extends string> = GetFieldType<TData, TPath> extends undefined ? unknown : GetFieldType<TData, TPath>;
 
 /**
- * Creates a new object with only the specified keys from the source object.
+ * Creates a new object with only the specified own keys from the source object. Inherited properties are ignored.
  *
  * @template T - The type of the source object.
  * @template K - The keys to pick from the source object.
@@ -39,7 +39,7 @@ export type SetValueAtPath<TData, TPath extends string> = GetFieldType<TData, TP
 export function pick<T extends object, K extends keyof T>(obj: T, keys: readonly K[]): Pick<T, K> {
   const result = {} as Pick<T, K>;
   for (const key of keys) {
-    if (key in obj) {
+    if (Object.hasOwn(obj, key)) {
       setOwnEnumerableProperty(result as Record<PropertyKey, unknown>, key, obj[key]);
     }
   }
@@ -521,6 +521,7 @@ export function mapObject<TResult = unknown, TInput = unknown>(
  * - Strict mode: When `strict` is true, only keys/items that exist in the source will be merged. New keys from the patch and non-matching array items will be
  *   ignored.
  * - Prototype-mutating keys (`__proto__`, `constructor`, and `prototype`) are ignored at every level.
+ * - Cyclic patch objects and arrays encountered during merging are rejected.
  *
  * @example
  *   ```ts
@@ -536,27 +537,68 @@ export function mapObject<TResult = unknown, TInput = unknown>(
  * @param patch - The object containing updates or new keys to be merged.
  * @param options - Merge options controlling immutability and undefined handling.
  * @returns A new object that is the result of deeply merging the patch into the source.
+ * @throws TypeError if a cyclic patch object or array is encountered during merging.
  */
 export function mergeObject<TSource extends object, TPatch extends object, const TOptions extends Readonly<MergeObjectOptions> = Readonly<MergeObjectOptions>>(
   source: TSource,
   patch: Readonly<TPatch>,
   options: TOptions = {} as TOptions,
-): DeepMerge<TSource, TPatch, TOptions extends { readonly applyUndefined: true } ? true : false, TOptions extends { readonly strict: true } ? true : false> {
+): DeepMerge<
+  TSource,
+  TPatch,
+  TOptions extends { readonly applyUndefined: true } ? true : false,
+  TOptions extends { readonly mergeArrays: false } ? false : true,
+  TOptions extends { readonly strict: true } ? true : false
+> {
   const normalizedOptions = normalizeMergeOptions(options);
+  const patchVisiting = new WeakSet<object>();
+
+  function clonePatchValue(value: unknown): unknown {
+    if (isArray(value)) {
+      if (patchVisiting.has(value)) {
+        throw new TypeError('mergeObject does not support cyclic patch values.');
+      }
+
+      patchVisiting.add(value);
+      try {
+        return value.map(clonePatchValue);
+      } finally {
+        patchVisiting.delete(value);
+      }
+    }
+
+    if (isPlainObject(value)) {
+      return merge({}, value as PlainObject, false);
+    }
+
+    return value;
+  }
+
   function merge(src: PlainObject, patchObj: PlainObject, isStrictAtThisLevel: boolean): PlainObject {
-    return mergePlainObjects({
-      src,
-      patch: patchObj,
-      options: normalizedOptions,
-      isStrictAtThisLevel,
-      mergeNested: merge,
-    });
+    if (patchVisiting.has(patchObj)) {
+      throw new TypeError('mergeObject does not support cyclic patch values.');
+    }
+
+    patchVisiting.add(patchObj);
+    try {
+      return mergePlainObjects({
+        src,
+        patch: patchObj,
+        options: normalizedOptions,
+        isStrictAtThisLevel,
+        mergeNested: merge,
+        clonePatchValue,
+      });
+    } finally {
+      patchVisiting.delete(patchObj);
+    }
   }
 
   return merge(source as PlainObject, patch as PlainObject, normalizedOptions.strict) as DeepMerge<
     TSource,
     TPatch,
     TOptions extends { readonly applyUndefined: true } ? true : false,
+    TOptions extends { readonly mergeArrays: false } ? false : true,
     TOptions extends { readonly strict: true } ? true : false
   >;
 }

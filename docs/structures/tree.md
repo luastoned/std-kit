@@ -69,7 +69,7 @@ interface TreeOptions<TChildKey extends PropertyKey = "children"> {
 }
 ```
 
-Shared tree configuration.
+Shared tree configuration. Traversal reads child arrays only from an own property of each node; inherited child collections are ignored.
 
 ---
 
