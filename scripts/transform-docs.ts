@@ -1,6 +1,8 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+import ts from 'typescript';
+
 interface TypeDocText {
   kind: string;
   text: string;
@@ -76,7 +78,7 @@ interface TypeDocIntersectionType {
 
 interface TypeDocLiteralType {
   type: 'literal';
-  value: string | number | boolean | null;
+  value: string | number | boolean | null | { value: string; negative: boolean };
 }
 
 interface TypeDocIntrinsicType {
@@ -112,6 +114,30 @@ interface TypeDocPredicateType {
   asserts?: boolean;
 }
 
+interface TypeDocConditionalType {
+  type: 'conditional';
+  checkType: TypeDocType;
+  extendsType: TypeDocType;
+  trueType: TypeDocType;
+  falseType: TypeDocType;
+}
+
+interface TypeDocMappedType {
+  type: 'mapped';
+  parameter: string;
+  parameterType: TypeDocType;
+  templateType: TypeDocType;
+  nameType?: TypeDocType;
+  readonlyModifier?: '+' | '-';
+  optionalModifier?: '+' | '-';
+}
+
+interface TypeDocInferredType {
+  type: 'inferred';
+  name: string;
+  constraint?: TypeDocType;
+}
+
 interface TypeDocUnknownType {
   type: string;
   [key: string]: unknown;
@@ -131,6 +157,9 @@ type TypeDocType =
   | TypeDocTypeParameterType
   | TypeDocQueryType
   | TypeDocPredicateType
+  | TypeDocConditionalType
+  | TypeDocMappedType
+  | TypeDocInferredType
   | TypeDocUnknownType;
 
 interface ItemInfo {
@@ -143,6 +172,7 @@ interface ItemInfo {
 
 const docsPath = join(process.cwd(), 'docs/documentation.json');
 const documentation = JSON.parse(readFileSync(docsPath, 'utf-8')) as TypeDocNode;
+const sourceFiles = new Map<string, ts.SourceFile>();
 
 const isTypeDocType = (value: unknown): value is TypeDocType =>
   typeof value === 'object' && value !== null && 'type' in value && typeof (value as { type: unknown }).type === 'string';
@@ -177,15 +207,20 @@ function buildTypeString(type?: TypeDocType): string {
       const typeArgs = type.typeArguments?.map((arg) => buildTypeString(arg)).join(', ');
       return typeArgs ? `${type.name}<${typeArgs}>` : type.name;
     }
-    case 'array':
-      return `${buildTypeString(type.elementType)}[]`;
+    case 'array': {
+      const element = buildTypeString(type.elementType);
+      return `${type.elementType.type === 'union' || type.elementType.type === 'intersection' || type.elementType.type === 'conditional' || type.elementType.type === 'typeOperator' ? `(${element})` : element}[]`;
+    }
     case 'typeOperator':
       return `${type.operator} ${buildTypeString(type.target)}`;
     case 'union':
       return type.types.map((inner) => buildTypeString(inner)).join(' | ');
     case 'intersection':
-      return type.types.map((inner) => buildTypeString(inner)).join(' & ');
+      return type.types.map((inner) => (inner.type === 'conditional' ? `(${buildTypeString(inner)})` : buildTypeString(inner))).join(' & ');
     case 'literal':
+      if (typeof type.value === 'object' && type.value !== null) {
+        return `${type.value.negative ? '-' : ''}${type.value.value}n`;
+      }
       return typeof type.value === 'string' ? `"${type.value}"` : String(type.value);
     case 'tuple':
       return `[${type.elements.map((element) => buildTypeString(element)).join(', ')}]`;
@@ -199,12 +234,26 @@ function buildTypeString(type?: TypeDocType): string {
       const targetType = type.targetType ? ` is ${buildTypeString(type.targetType)}` : '';
       return type.asserts ? `asserts ${type.name}${targetType}` : `${type.name}${targetType}`;
     }
+    case 'conditional':
+      return `${buildTypeString(type.checkType)} extends ${buildTypeString(type.extendsType)} ? ${buildTypeString(type.trueType)} : ${buildTypeString(type.falseType)}`;
+    case 'mapped': {
+      const readonlyModifier = type.readonlyModifier === '+' ? 'readonly ' : type.readonlyModifier === '-' ? '-readonly ' : '';
+      const optionalModifier = type.optionalModifier === '+' ? '?' : type.optionalModifier === '-' ? '-?' : '';
+      const nameType = type.nameType ? ` as ${buildTypeString(type.nameType)}` : '';
+      return `{ ${readonlyModifier}[${type.parameter} in ${buildTypeString(type.parameterType)}${nameType}]${optionalModifier}: ${buildTypeString(type.templateType)} }`;
+    }
+    case 'inferred':
+      return `infer ${type.name}${type.constraint ? ` extends ${buildTypeString(type.constraint)}` : ''}`;
     case 'reflection': {
       const reflectionSig = type.declaration?.signatures?.[0];
       if (reflectionSig) {
         const params = buildParameters(reflectionSig.parameters);
         const returnType = buildTypeString(reflectionSig.type);
         return `(${params}) => ${returnType}`;
+      }
+      const members = type.declaration?.children?.map((member) => buildInterfaceMember(member));
+      if (members && members.length > 0) {
+        return `{ ${members.join('; ')} }`;
       }
       return 'object';
     }
@@ -220,13 +269,25 @@ const buildTypeParameters = (typeParameters?: TypeDocNode[]): string => {
 
   const rendered = typeParameters
     .map((tp) => {
+      const constraint = tp.type && isTypeDocType(tp.type) ? ` extends ${buildTypeString(tp.type)}` : '';
       const defaultType = tp.default && isTypeDocType(tp.default) ? ` = ${buildTypeString(tp.default)}` : '';
-      return `${tp.name}${defaultType}`;
+      return `${tp.name}${constraint}${defaultType}`;
     })
     .join(', ');
 
   return rendered ? `<${rendered}>` : '';
 };
+
+function buildInterfaceMember(member: TypeDocNode): string {
+  const readonlyPrefix = member.flags?.isReadonly ? 'readonly ' : '';
+  const optionalSuffix = member.flags?.isOptional ? '?' : '';
+  const signature = member.signatures?.[0];
+  if (signature) {
+    return buildSignatureFromNode(`${readonlyPrefix}${member.name}${optionalSuffix}`, signature);
+  }
+
+  return `${readonlyPrefix}${member.name}${optionalSuffix}: ${buildTypeString(member.type)}`;
+}
 
 const buildParameters = (parameters?: TypeDocNode[]): string => {
   if (!parameters || parameters.length === 0) {
@@ -260,16 +321,40 @@ function buildFunctionSignature(func: TypeDocNode): string {
   }
 
   if (func.signatures && func.signatures.length > 0) {
-    return buildSignatureFromNode(func.name, func.signatures[0]);
+    return func.signatures.map((signature) => buildSignatureFromNode(func.name, signature)).join('\n');
   }
 
   return func.name;
+}
+
+function buildInterfaceSignature(interfaceNode: TypeDocNode): string {
+  const typeParamStr = buildTypeParameters(interfaceNode.typeParameters);
+  const members = interfaceNode.children?.map((member) => `  ${buildInterfaceMember(member)};`).join('\n') ?? '';
+  return `interface ${interfaceNode.name}${typeParamStr} {${members ? `\n${members}\n` : ''}}`;
 }
 
 function buildTypeAliasSignature(typeAlias: TypeDocNode): string {
   const typeParamStr = buildTypeParameters(typeAlias.typeParameters);
   const typeStr = buildTypeString(typeAlias.type);
   return `type ${typeAlias.name}${typeParamStr} = ${typeStr}`;
+}
+
+function getTypeAliasSource(typeAlias: TypeDocNode): string | undefined {
+  const source = getSourceInfo(typeAlias);
+  if (!source?.fileName) return undefined;
+
+  const sourcePath = join(process.cwd(), 'src', source.fileName.replace(/^src\//, ''));
+  let sourceFile = sourceFiles.get(sourcePath);
+  if (!sourceFile) {
+    sourceFile = ts.createSourceFile(sourcePath, readFileSync(sourcePath, 'utf-8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+    sourceFiles.set(sourcePath, sourceFile);
+  }
+
+  const declaration = sourceFile.statements.find((statement) => ts.isTypeAliasDeclaration(statement) && statement.name.text === typeAlias.name);
+  return declaration
+    ?.getText(sourceFile)
+    .replace(/^export\s+/, '')
+    .replace(/;$/, '');
 }
 
 const getBestComment = (node: TypeDocNode): TypeDocComment | undefined => {
@@ -300,7 +385,7 @@ function generateMarkdown(moduleName: string, items: ItemInfo[]): string {
     markdown += '## Functions\n\n';
     for (const func of functions) {
       const deprecatedTag = func.deprecated ? ' ~~(deprecated)~~' : '';
-      markdown += `- \`${func.signature}\`${deprecatedTag}\n`;
+      markdown += `- \`${func.signature.split('\n')[0]?.replace(/ \{$/, '')}\`${deprecatedTag}\n`;
     }
     markdown += '\n';
   }
@@ -309,7 +394,7 @@ function generateMarkdown(moduleName: string, items: ItemInfo[]): string {
     markdown += '## Types\n\n';
     for (const type of types) {
       const deprecatedTag = type.deprecated ? ' ~~(deprecated)~~' : '';
-      markdown += `- \`${type.signature}\`${deprecatedTag}\n`;
+      markdown += `- \`${type.signature.split('\n')[0]?.replace(/ \{$/, '')}\`${deprecatedTag}\n`;
     }
     markdown += '\n';
   }
@@ -337,6 +422,8 @@ function generateMarkdown(moduleName: string, items: ItemInfo[]): string {
             markdown += `- **${tag.name}**: ${content}\n`;
           } else if (tagName === 'returns') {
             markdown += `\n**Returns:** ${content}\n\n`;
+          } else if (tagName === 'throws') {
+            markdown += `\n**Throws:** ${content}\n\n`;
           } else if (tagName === 'template') {
             markdown += `- **Type Parameter ${tag.name}**: ${content}\n`;
           }
@@ -367,12 +454,17 @@ function processModules(): void {
   for (const child of declarations) {
     const isFunction = child.kind === 64 || child.kind === 32;
     const isTypeAlias = child.kind === 2097152;
-    if (!isFunction && !isTypeAlias) continue;
+    const isInterface = child.kind === 256;
+    if (!isFunction && !isTypeAlias && !isInterface) continue;
 
     const source = getSourceInfo(child);
     if (!source?.fileName) continue;
 
-    const signature = isTypeAlias ? buildTypeAliasSignature(child) : buildFunctionSignature(child);
+    const signature = isTypeAlias
+      ? (getTypeAliasSource(child) ?? buildTypeAliasSignature(child))
+      : isInterface
+        ? buildInterfaceSignature(child)
+        : buildFunctionSignature(child);
     const comment = getBestComment(child);
     const deprecated = comment?.blockTags?.some((tag) => tag.tag === '@deprecated') || false;
 
@@ -381,7 +473,7 @@ function processModules(): void {
       signature,
       comment,
       deprecated,
-      isType: isTypeAlias,
+      isType: isTypeAlias || isInterface,
     };
 
     if (!itemsByFile.has(source.fileName)) {

@@ -5,13 +5,30 @@ import {
   hasForbiddenPathKeys,
   isArrayIndexSegment,
   normalizeFilterPredicates,
+  setOwnEnumerableProperty,
   tokenizePath,
+  withActiveContainer,
 } from '~/natives/object/shared.internal';
-import { isArray, isContainer, isMutableContainer, isObject } from '~/utilities/generic';
-import type { Container, DeepPartial, GetFieldType, MutableContainer, PlainObject } from '~/utilities/types';
+import { isArray, isContainer, isMutableContainer, isPlainObject } from '~/utilities/generic';
+import type { Container, DeepMerge, DeepPartial, GetFieldType, MutableContainer, PlainObject } from '~/utilities/types';
 
 /**
- * Creates a new object with only the specified keys from the source object.
+ * Merge behavior supported by {@link mergeObject}.
+ */
+export interface MergeObjectOptions {
+  strict?: boolean;
+  immutable?: boolean;
+  mergeArrays?: boolean | string | ((item: unknown, index: number) => unknown);
+  applyUndefined?: boolean;
+}
+
+/**
+ * Resolves a known path to its value type while leaving dynamic or missing paths open.
+ */
+export type SetValueAtPath<TData, TPath extends string> = GetFieldType<TData, TPath> extends undefined ? unknown : GetFieldType<TData, TPath>;
+
+/**
+ * Creates a new object with only the specified own keys from the source object. Inherited properties are ignored.
  *
  * @template T - The type of the source object.
  * @template K - The keys to pick from the source object.
@@ -22,8 +39,8 @@ import type { Container, DeepPartial, GetFieldType, MutableContainer, PlainObjec
 export function pick<T extends object, K extends keyof T>(obj: T, keys: readonly K[]): Pick<T, K> {
   const result = {} as Pick<T, K>;
   for (const key of keys) {
-    if (key in obj) {
-      result[key] = obj[key];
+    if (Object.hasOwn(obj, key)) {
+      setOwnEnumerableProperty(result as Record<PropertyKey, unknown>, key, obj[key]);
     }
   }
 
@@ -116,13 +133,12 @@ export function getValue<TData, TPath extends string, TDefault = GetFieldType<TD
  *
  * @template TData - The type of the data object being modified.
  * @template TPath - The dot/bracket notation path to the property where the value will be set.
- * @template TValue - The type of the value to set at the specified path.
  * @param data - The object or array in which the value will be set.
  * @param path - The string path specifying the property to set. Supports dot notation (e.g., 'user.name') and bracket notation (e.g., 'user.posts[0]').
- * @param value - The value to set at the specified path.
+ * @param value - The value to set at the specified path. Known paths are constrained to their resolved type; dynamic or missing paths accept unknown values.
  * @returns Nothing.
  */
-export function setValue<TData, TPath extends string, TValue>(data: TData, path: TPath, value: TValue): void {
+export function setValue<TData, TPath extends string>(data: TData, path: TPath, value: SetValueAtPath<TData, TPath>): void {
   const keys = tokenizePath(path);
   if (hasForbiddenPathKeys(keys)) {
     return;
@@ -219,16 +235,7 @@ export function queryObject<Ret = unknown, T = unknown, P extends boolean = fals
    */
   function traverse(value: unknown, currentPath = '', currentKey = '', parent: unknown = null): void {
     const container = isContainer(value);
-    if (container) {
-      const containerRef = value as object;
-      if (visiting.has(containerRef)) {
-        return;
-      }
-      visiting.add(containerRef);
-    }
-
-    // Check if the current node matches criteria
-    try {
+    const visitValue = (): void => {
       if (filter(currentKey, value as T, currentPath, parent)) {
         if (path) {
           results.push({ path: currentPath, value: value as Ret } as P extends true ? { path: string; value: Ret } : Ret);
@@ -242,11 +249,14 @@ export function queryObject<Ret = unknown, T = unknown, P extends boolean = fals
           traverse(childValue, childPath, key, value);
         });
       }
-    } finally {
-      if (container) {
-        visiting.delete(value as object);
-      }
+    };
+
+    if (!container) {
+      visitValue();
+      return;
     }
+
+    withActiveContainer(value as object, visiting, () => undefined, visitValue);
   }
 
   // Early return for non-object values
@@ -364,16 +374,16 @@ export function filterObject<T>(
 
       // Both key and value match - keep as-is
       if (keyMatches && valueMatches) {
-        result[key] = propValue;
+        setOwnEnumerableProperty(result, key, propValue);
         hasMatchingItems = true;
         continue;
       }
 
       // Key matches but value doesn't, or key doesn't match - check if it's a container
       if (isContainer(propValue)) {
-        const filteredValue = recurse(propValue, keyPath, parent);
+        const filteredValue = recurse(propValue, keyPath, obj);
         if (filteredValue !== undefined) {
-          result[key] = filteredValue;
+          setOwnEnumerableProperty(result, key, filteredValue);
           hasMatchingItems = true;
         }
       }
@@ -402,26 +412,24 @@ export function filterObject<T>(
       return undefined;
     }
 
-    if (visiting.has(value as object)) {
-      return undefined;
-    }
-    visiting.add(value as object);
+    return withActiveContainer(
+      value as object,
+      visiting,
+      () => undefined,
+      () => {
+        // Handle arrays
+        if (isArray(value)) {
+          return filterArray(value, currentPath);
+        }
 
-    try {
-      // Handle arrays
-      if (isArray(value)) {
-        return filterArray(value, currentPath);
-      }
+        // Handle objects
+        if (isPlainObject(value)) {
+          return filterObjectProps(value as Record<string, unknown>, currentPath, value);
+        }
 
-      // Handle objects
-      if (isObject(value)) {
-        return filterObjectProps(value as Record<string, unknown>, currentPath, parent);
-      }
-
-      return undefined;
-    } finally {
-      visiting.delete(value as object);
-    }
+        return undefined;
+      },
+    );
   }
 
   return recurse(obj, '', null) as DeepPartial<T> | undefined;
@@ -438,16 +446,20 @@ export function filterObject<T>(
  *   // { prices: [{ amount: 1000 }, { amount: 1500 }] }
  *   ```;
  *
- * @template T - The type of the object or array to map.
+ * @template TResult - The expected output structure. Defaults to `unknown` because a mapper may change values at any path.
+ * @template TInput - The type of the object or array to map.
  * @param obj - The object or array to map over.
  * @param mapper - Function called for each value with (key, value, path).
  *
  *   - key: The property name or array index (as string)
  *   - value: The current value
  *   - path: The full path to this value (e.g., 'user.settings.theme' or 'users[0].name')
- * @returns A new object/array with the same structure but transformed values.
+ * @returns A new object/array with the selected result type. Pass `mapObject<Result>(...)` when consuming the returned structure.
  */
-export function mapObject<T>(obj: T, mapper: (key: string, value: unknown, path: string, parent: unknown) => unknown): T {
+export function mapObject<TResult = unknown, TInput = unknown>(
+  obj: TInput,
+  mapper: (key: string, value: unknown, path: string, parent: unknown) => unknown,
+): TResult {
   const mappedContainers = new WeakMap<object, unknown>();
 
   function recurse(value: unknown, currentPath: string): unknown {
@@ -470,7 +482,7 @@ export function mapObject<T>(obj: T, mapper: (key: string, value: unknown, path:
     }
 
     // Handle objects
-    if (isObject(value)) {
+    if (isPlainObject(value)) {
       if (mappedContainers.has(value)) {
         return mappedContainers.get(value) as Record<string, unknown>;
       }
@@ -480,7 +492,7 @@ export function mapObject<T>(obj: T, mapper: (key: string, value: unknown, path:
       for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
         const keyPath = buildChildPath(currentPath, key, false);
         const transformed = mapper(key, val, keyPath, value);
-        result[key] = isContainer(transformed) ? recurse(transformed, keyPath) : transformed;
+        setOwnEnumerableProperty(result, key, isContainer(transformed) ? recurse(transformed, keyPath) : transformed);
       }
 
       return result;
@@ -492,7 +504,7 @@ export function mapObject<T>(obj: T, mapper: (key: string, value: unknown, path:
 
   // Start recursion
   const transformed = mapper('', obj, '', null);
-  return recurse(transformed, '') as T;
+  return recurse(transformed, '') as TResult;
 }
 
 /**
@@ -508,6 +520,8 @@ export function mapObject<T>(obj: T, mapper: (key: string, value: unknown, path:
  *   - If function: Arrays are merged by matching the result of the key extractor function (item, index) => key.
  * - Strict mode: When `strict` is true, only keys/items that exist in the source will be merged. New keys from the patch and non-matching array items will be
  *   ignored.
+ * - Prototype-mutating keys (`__proto__`, `constructor`, and `prototype`) are ignored at every level.
+ * - Cyclic patch objects and arrays encountered during merging are rejected.
  *
  * @example
  *   ```ts
@@ -523,51 +537,68 @@ export function mapObject<T>(obj: T, mapper: (key: string, value: unknown, path:
  * @param patch - The object containing updates or new keys to be merged.
  * @param options - Merge options controlling immutability and undefined handling.
  * @returns A new object that is the result of deeply merging the patch into the source.
+ * @throws TypeError if a cyclic patch object or array is encountered during merging.
  */
-export function mergeObject<TSource extends object, TPatch extends object>(
+export function mergeObject<TSource extends object, TPatch extends object, const TOptions extends Readonly<MergeObjectOptions> = Readonly<MergeObjectOptions>>(
   source: TSource,
   patch: Readonly<TPatch>,
-  options: Readonly<{
-    strict?: boolean;
-    immutable?: boolean;
-    mergeArrays?: boolean | string | ((item: unknown, index: number) => unknown);
-    applyUndefined?: boolean;
-  }> = {},
-): TSource & TPatch {
+  options: TOptions = {} as TOptions,
+): DeepMerge<
+  TSource,
+  TPatch,
+  TOptions extends { readonly applyUndefined: true } ? true : false,
+  TOptions extends { readonly mergeArrays: false } ? false : true,
+  TOptions extends { readonly strict: true } ? true : false
+> {
   const normalizedOptions = normalizeMergeOptions(options);
-  function merge(src: PlainObject, patchObj: PlainObject, isStrictAtThisLevel: boolean): PlainObject {
-    return mergePlainObjects({
-      src,
-      patch: patchObj,
-      options: normalizedOptions,
-      isStrictAtThisLevel,
-      mergeNested: merge,
-    });
+  const patchVisiting = new WeakSet<object>();
+
+  function clonePatchValue(value: unknown): unknown {
+    if (isArray(value)) {
+      if (patchVisiting.has(value)) {
+        throw new TypeError('mergeObject does not support cyclic patch values.');
+      }
+
+      patchVisiting.add(value);
+      try {
+        return value.map(clonePatchValue);
+      } finally {
+        patchVisiting.delete(value);
+      }
+    }
+
+    if (isPlainObject(value)) {
+      return merge({}, value as PlainObject, false);
+    }
+
+    return value;
   }
 
-  return merge(source as PlainObject, patch as PlainObject, normalizedOptions.strict) as TSource & TPatch;
-}
+  function merge(src: PlainObject, patchObj: PlainObject, isStrictAtThisLevel: boolean): PlainObject {
+    if (patchVisiting.has(patchObj)) {
+      throw new TypeError('mergeObject does not support cyclic patch values.');
+    }
 
-/**
- * Deeply merges a patch object into a source object.
- *
- * @deprecated Use mergeObject instead.
- * @template TSource - Type of the source object.
- * @template TPatch - Type of the patch object.
- * @param source - The original object to be merged into.
- * @param patch - The object containing updates or new keys to be merged.
- * @param options - Merge options controlling immutability and undefined handling.
- * @returns A new object that is the result of deeply merging the patch into the source.
- */
-export function deepMerge<TSource extends object, TPatch extends object>(
-  source: TSource,
-  patch: Readonly<TPatch>,
-  options: Readonly<{
-    strict?: boolean;
-    immutable?: boolean;
-    mergeArrays?: boolean | string | ((item: unknown, index: number) => unknown);
-    applyUndefined?: boolean;
-  }> = {},
-): TSource & TPatch {
-  return mergeObject(source, patch, options);
+    patchVisiting.add(patchObj);
+    try {
+      return mergePlainObjects({
+        src,
+        patch: patchObj,
+        options: normalizedOptions,
+        isStrictAtThisLevel,
+        mergeNested: merge,
+        clonePatchValue,
+      });
+    } finally {
+      patchVisiting.delete(patchObj);
+    }
+  }
+
+  return merge(source as PlainObject, patch as PlainObject, normalizedOptions.strict) as DeepMerge<
+    TSource,
+    TPatch,
+    TOptions extends { readonly applyUndefined: true } ? true : false,
+    TOptions extends { readonly mergeArrays: false } ? false : true,
+    TOptions extends { readonly strict: true } ? true : false
+  >;
 }

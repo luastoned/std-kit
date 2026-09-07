@@ -6,32 +6,30 @@
 
 ## Types
 
-- `type Constructor<T = unknown> = (...args: unknown[]) => T`
+- `type Constructor<T = unknown, Args extends unknown[] = any[]> = new (...args: Args) => T`
 - `type Container = GenericObject | readonly unknown[]`
-- `type DeepPartial<T> = unknown`
-- `type DeepReadonly<T> = unknown`
-- `type DeepRequired<T> = unknown`
-- `type GenericFn<T> = (...args: T[]) => unknown`
-- `type GenericFunction<TFunc> = (...args: Parameters<TFunc>) => ReturnType<TFunc>`
+- `type DeepMerge<TSource, TPatch, ApplyUndefined extends boolean = false, MergeArrays = true, Strict extends boolean = false> = TPatch extends undefined`
+- `type DeepPartial<T> = T extends DeepAtomic`
+- `type DeepReadonly<T> = T extends DeepAtomic`
+- `type DeepRequired<T> = T extends DeepAtomic`
+- `type GenericFunction<TFunc extends (...args: never[]) => unknown> = (...args: Parameters<TFunc>) => ReturnType<TFunc>`
 - `type GenericObject = Record<PropertyKey, unknown>`
-- `type GetFieldType<T, Path> = unknown`
-- `type KeyFn<T> = (arg: T) => keyof T`
+- `type GetFieldType<T, Path> = Path extends ''`
 - `type Maybe<T> = T | null | undefined`
 - `type Merge<T, U> = Omit<T, keyof U> & U`
-- `type Mutable<T> = unknown`
+- `type Mutable<T> = { -readonly [K in keyof T]: T[K] }`
 - `type MutableContainer = Record<string, unknown> | unknown[]`
-- `type NonEmptyArray<T> = [T, unknown]`
+- `type NonEmptyArray<T> = [T, ...T[]]`
 - `type Nullable<T> = T | null`
-- `type OmitByValue<T, ValueType> = Pick<T, unknown[keyof T]>`
+- `type OmitByValue<T, ValueType> = Pick<T, { [K in keyof T]: T[K] extends ValueType ? never : K }[keyof T]>`
 - `type Optional<T> = T | undefined`
-- `type OptionalKeys<T> = unknown[keyof T]`
-- `type PickByValue<T, ValueType> = Pick<T, unknown[keyof T]>`
+- `type OptionalKeys<T> = { [K in keyof T]-?: {} extends Pick<T, K> ? K : never }[keyof T]`
+- `type PickByValue<T, ValueType> = Pick<T, { [K in keyof T]: T[K] extends ValueType ? K : never }[keyof T]>`
 - `type PlainObject = Record<string, unknown>`
-- `type Prettify<T> = unknown & object`
-- `type RequiredKeys<T> = unknown[keyof T]`
-- `type SetOptional<T, K> = Omit<T, K> & Partial<Pick<T, K>>`
-- `type SetRequired<T, K> = T & Required<Pick<T, K>>`
-- `type Simplify<T> = unknown & object`
+- `type Prettify<T> = { [K in keyof T]: T[K] } & {}`
+- `type RequiredKeys<T> = { [K in keyof T]-?: {} extends Pick<T, K> ? never : K }[keyof T]`
+- `type SetOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>`
+- `type SetRequired<T, K extends keyof T> = T & Required<Pick<T, K>>`
 - `type ValueOf<T> = T[keyof T]`
 
 ---
@@ -39,7 +37,7 @@
 ## Constructor
 
 ```typescript
-type Constructor<T = unknown> = (...args: unknown[]) => T
+type Constructor<T = unknown, Args extends unknown[] = any[]> = new (...args: Args) => T
 ```
 
 Represents a constructor function type.
@@ -56,13 +54,72 @@ Represents an object or array container.
 
 ---
 
+## DeepMerge
+
+```typescript
+type DeepMerge<TSource, TPatch, ApplyUndefined extends boolean = false, MergeArrays = true, Strict extends boolean = false> = TPatch extends undefined
+  ? ApplyUndefined extends true
+    ? undefined
+    : TSource
+  : TPatch extends readonly unknown[]
+    ? TSource extends readonly unknown[]
+      ? DeepMergeArrays<TSource, TPatch, ApplyUndefined, MergeArrays, Strict>
+      : TPatch
+    : TPatch extends DeepAtomic
+      ? TPatch
+      : TSource extends DeepAtomic | readonly unknown[]
+        ? TPatch
+        : TSource extends object
+          ? TPatch extends object
+            ? Prettify<
+                Omit<TSource, Strict extends true ? Extract<keyof TPatch, keyof TSource> : keyof TPatch> & {
+                  [K in Strict extends true ? Extract<keyof TPatch, keyof TSource> : keyof TPatch]: K extends keyof TSource
+                    ? K extends keyof TPatch
+                      ? DeepMerge<TSource[K], TPatch[K], ApplyUndefined, MergeArrays, Strict>
+                      : never
+                    : K extends keyof TPatch
+                      ? TPatch[K]
+                      : never;
+                }
+              >
+            : TPatch
+          : TPatch
+```
+
+Describes the recursive result of `mergeObject`.
+
+Primitive arrays and arrays replaced with `mergeArrays: false` use the patch type. Merged object arrays include source, patch, and recursively merged item
+possibilities. Object properties are recursively merged. `strict` limits output keys to the source, while `applyUndefined` controls whether explicit
+`undefined` replaces a source value.
+
+---
+
 ## DeepPartial
 
 ```typescript
-type DeepPartial<T> = unknown
+type DeepPartial<T> = T extends DeepAtomic
+  ? T
+  : T extends Promise<infer Value>
+    ? Promise<DeepPartial<Value>>
+    : T extends Map<infer Key, infer Value>
+      ? Map<Key, DeepPartial<Value>>
+      : T extends ReadonlyMap<infer Key, infer Value>
+        ? ReadonlyMap<Key, DeepPartial<Value>>
+        : T extends Set<infer Value>
+          ? Set<DeepPartial<Value>>
+          : T extends ReadonlySet<infer Value>
+            ? ReadonlySet<DeepPartial<Value>>
+            : T extends WeakMap<infer Key, infer Value>
+              ? WeakMap<Key, DeepPartial<Value>>
+              : T extends WeakSet<infer Value>
+                ? WeakSet<Value>
+                : T extends object
+                  ? { [P in keyof T]?: DeepPartial<T[P]> }
+                  : T
 ```
 
-Makes all properties in T and nested objects optional recursively.
+Makes all properties in T and nested objects optional recursively. Functions and built-ins are preserved, collections retain their container semantics, and
+tuples retain their positions.
 
 - **T**: The type to make deeply partial.
 
@@ -74,10 +131,29 @@ Makes all properties in T and nested objects optional recursively.
 ## DeepReadonly
 
 ```typescript
-type DeepReadonly<T> = unknown
+type DeepReadonly<T> = T extends DeepAtomic
+  ? T
+  : T extends Promise<infer Value>
+    ? Promise<DeepReadonly<Value>>
+    : T extends Map<infer Key, infer Value>
+      ? ReadonlyMap<DeepReadonly<Key>, DeepReadonly<Value>>
+      : T extends ReadonlyMap<infer Key, infer Value>
+        ? ReadonlyMap<DeepReadonly<Key>, DeepReadonly<Value>>
+        : T extends Set<infer Value>
+          ? ReadonlySet<DeepReadonly<Value>>
+          : T extends ReadonlySet<infer Value>
+            ? ReadonlySet<DeepReadonly<Value>>
+            : T extends WeakMap<infer Key, infer Value>
+              ? WeakMap<Key, DeepReadonly<Value>>
+              : T extends WeakSet<infer Value>
+                ? WeakSet<Value>
+                : T extends object
+                  ? { readonly [P in keyof T]: DeepReadonly<T[P]> }
+                  : T
 ```
 
-Makes all properties in T and nested objects readonly recursively.
+Makes all properties in T and nested objects readonly recursively. Mutable maps and sets become their readonly counterparts, while functions and built-ins
+are preserved.
 
 - **T**: The type to make deeply readonly.
 
@@ -89,10 +165,28 @@ Makes all properties in T and nested objects readonly recursively.
 ## DeepRequired
 
 ```typescript
-type DeepRequired<T> = unknown
+type DeepRequired<T> = T extends DeepAtomic
+  ? T
+  : T extends Promise<infer Value>
+    ? Promise<DeepRequired<Value>>
+    : T extends Map<infer Key, infer Value>
+      ? Map<Key, DeepRequired<Value>>
+      : T extends ReadonlyMap<infer Key, infer Value>
+        ? ReadonlyMap<Key, DeepRequired<Value>>
+        : T extends Set<infer Value>
+          ? Set<DeepRequired<Value>>
+          : T extends ReadonlySet<infer Value>
+            ? ReadonlySet<DeepRequired<Value>>
+            : T extends WeakMap<infer Key, infer Value>
+              ? WeakMap<Key, DeepRequired<Value>>
+              : T extends WeakSet<infer Value>
+                ? WeakSet<Value>
+                : T extends object
+                  ? { [P in keyof T]-?: DeepRequired<T[P]> }
+                  : T
 ```
 
-Makes all properties in T and nested objects required recursively.
+Makes all properties in T and nested objects required recursively while preserving functions, built-ins, collections, and tuple structure.
 
 - **T**: The type to make deeply required.
 
@@ -101,20 +195,10 @@ Makes all properties in T and nested objects required recursively.
 
 ---
 
-## GenericFn
-
-```typescript
-type GenericFn<T> = (...args: T[]) => unknown
-```
-
-Represents a generic function type.
-
----
-
 ## GenericFunction
 
 ```typescript
-type GenericFunction<TFunc> = (...args: Parameters<TFunc>) => ReturnType<TFunc>
+type GenericFunction<TFunc extends (...args: never[]) => unknown> = (...args: Parameters<TFunc>) => ReturnType<TFunc>
 ```
 
 Represents a generic function type with preserved signature.
@@ -138,7 +222,11 @@ Represents a generic object with dynamic keys and unknown values.
 ## GetFieldType
 
 ```typescript
-type GetFieldType<T, Path> = unknown
+type GetFieldType<T, Path> = Path extends ''
+  ? T
+  : Path extends `${infer Left}.${infer Right}`
+    ? GetNestedField<T, Left, Right>
+    : GetDirectOrIndexedField<T, Path>
 ```
 
 Infers the type at a dot/bracket path.
@@ -146,16 +234,6 @@ Infers the type at a dot/bracket path.
 
 **Returns:** The inferred value type for the path.
 
-
----
-
-## KeyFn
-
-```typescript
-type KeyFn<T> = (arg: T) => keyof T
-```
-
-Represents a function that extracts a key from a value.
 
 ---
 
@@ -193,7 +271,7 @@ Merges two object types, with U's properties taking precedence over T's.
 ## Mutable
 
 ```typescript
-type Mutable<T> = unknown
+type Mutable<T> = { -readonly [K in keyof T]: T[K] }
 ```
 
 Removes readonly modifiers from all properties in a type.
@@ -218,7 +296,7 @@ Represents a mutable container used for nested assignments.
 ## NonEmptyArray
 
 ```typescript
-type NonEmptyArray<T> = [T, unknown]
+type NonEmptyArray<T> = [T, ...T[]]
 ```
 
 Represents an array that is guaranteed to have at least one element.
@@ -248,7 +326,7 @@ Represents a type that can be either a value of type T or null.
 ## OmitByValue
 
 ```typescript
-type OmitByValue<T, ValueType> = Pick<T, unknown[keyof T]>
+type OmitByValue<T, ValueType> = Pick<T, { [K in keyof T]: T[K] extends ValueType ? never : K }[keyof T]>
 ```
 
 Omits properties from T where the value type extends ValueType.
@@ -279,7 +357,7 @@ Represents a type that can be either a value of type T or undefined.
 ## OptionalKeys
 
 ```typescript
-type OptionalKeys<T> = unknown[keyof T]
+type OptionalKeys<T> = { [K in keyof T]-?: {} extends Pick<T, K> ? K : never }[keyof T]
 ```
 
 Extracts the union of all optional keys from a type.
@@ -294,7 +372,7 @@ Extracts the union of all optional keys from a type.
 ## PickByValue
 
 ```typescript
-type PickByValue<T, ValueType> = Pick<T, unknown[keyof T]>
+type PickByValue<T, ValueType> = Pick<T, { [K in keyof T]: T[K] extends ValueType ? K : never }[keyof T]>
 ```
 
 Picks properties from T where the value type extends ValueType.
@@ -324,7 +402,7 @@ Represents a plain object with string keys and unknown values.
 ## Prettify
 
 ```typescript
-type Prettify<T> = unknown & object
+type Prettify<T> = { [K in keyof T]: T[K] } & {}
 ```
 
 Represents a type that prettifies another type by preserving its properties. Useful for improving type display in IDE tooltips.
@@ -339,7 +417,7 @@ Represents a type that prettifies another type by preserving its properties. Use
 ## RequiredKeys
 
 ```typescript
-type RequiredKeys<T> = unknown[keyof T]
+type RequiredKeys<T> = { [K in keyof T]-?: {} extends Pick<T, K> ? never : K }[keyof T]
 ```
 
 Extracts the union of all required keys from a type.
@@ -354,7 +432,7 @@ Extracts the union of all required keys from a type.
 ## SetOptional
 
 ```typescript
-type SetOptional<T, K> = Omit<T, K> & Partial<Pick<T, K>>
+type SetOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 ```
 
 Makes specified keys optional in a type.
@@ -370,7 +448,7 @@ Makes specified keys optional in a type.
 ## SetRequired
 
 ```typescript
-type SetRequired<T, K> = T & Required<Pick<T, K>>
+type SetRequired<T, K extends keyof T> = T & Required<Pick<T, K>>
 ```
 
 Makes specified keys required in a type.
@@ -379,21 +457,6 @@ Makes specified keys required in a type.
 - **K**: The keys to make required.
 
 **Returns:** The updated type with required keys.
-
-
----
-
-## Simplify
-
-```typescript
-type Simplify<T> = unknown & object
-```
-
-Simplifies a type by forcing TypeScript to evaluate it. Often provides better IntelliSense than Prettify for complex types.
-
-- **T**: The type to simplify.
-
-**Returns:** The simplified type.
 
 
 ---

@@ -87,6 +87,18 @@ describe('walkTree', () => {
 
     expect(visited).toEqual(['root']);
   });
+
+  it('ignores inherited child collections', () => {
+    const inheritedChild: ItemTreeNode = { id: 'inherited', label: 'Inherited' };
+    const root = Object.assign(Object.create({ children: [inheritedChild] }) as ItemTreeNode, { id: 'root', label: 'Root' });
+    const visited: string[] = [];
+
+    walkTree(root, (node) => {
+      visited.push(node.id);
+    });
+
+    expect(visited).toEqual(['root']);
+  });
 });
 
 describe('findTreeNode', () => {
@@ -100,6 +112,11 @@ describe('queryTree', () => {
   it('returns matching nodes and respects maxResults', () => {
     const result = queryTree(sampleTree(), (node) => node.id.includes('1'), { maxResults: 1 });
     expect(result.map((node) => node.id)).toEqual(['a1']);
+  });
+
+  it('returns no results when maxResults is non-positive', () => {
+    expect(queryTree(sampleTree(), () => true, { maxResults: 0 })).toEqual([]);
+    expect(queryTree(sampleTree(), () => true, { maxResults: -1 })).toEqual([]);
   });
 });
 

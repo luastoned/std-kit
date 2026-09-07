@@ -90,6 +90,19 @@ describe('createHeap', () => {
     expect(heap.size).toBe(3);
     expect(heap.toArray()).not.toContain(999);
   });
+
+  it('preserves undefined values when popping', () => {
+    const rank = (value: number | undefined): number => value ?? 2;
+    const heap = createHeap<number | undefined>({
+      compare: (a, b) => rank(a) - rank(b),
+      items: [1, undefined],
+    });
+
+    expect(heap.pop()).toBe(1);
+    expect(heap.size).toBe(1);
+    expect(heap.pop()).toBeUndefined();
+    expect(heap.size).toBe(0);
+  });
 });
 
 describe('createMinHeap', () => {

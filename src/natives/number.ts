@@ -19,27 +19,59 @@ export function clamp(value: number, rangeA: number, rangeB: number): number {
 }
 
 /**
- * Rounds a number to the specified number of decimal places.
+ * Rounds a number to the specified number of decimal places using JavaScript floating-point arithmetic.
+ * Non-finite inputs are preserved. Results outside the finite number range become infinity.
  *
  * @param value - The number to round.
- * @param decimals - The number of decimal places to round to. Default is 2.
+ * @param decimals - Integer number of decimal places between -308 and 308. Default is 2.
  * @returns The rounded number.
+ * @throws RangeError if `decimals` is not an integer between -308 and 308.
  */
 export function roundTo(value: number, decimals = 2): number {
-  return Math.round(value * 10 ** decimals) / 10 ** decimals;
+  if (!Number.isInteger(decimals) || Math.abs(decimals) > 308) {
+    throw new RangeError('roundTo decimals must be an integer between -308 and 308.');
+  }
+
+  const factor = 10 ** decimals;
+  const scaled = value * factor;
+  // If scaling overflows, the requested precision is finer than the spacing between representable values.
+  if (Number.isFinite(value) && !Number.isFinite(scaled)) {
+    return value;
+  }
+
+  return Math.round(scaled) / factor;
 }
 
 /**
  * Generates a random integer between the specified minimum and maximum values (inclusive).
  *
- * @param min - One bound of the range.
- * @param max - The other bound of the range.
+ * Fractional bounds are normalized inward so every possible result is an integer contained by the original bounds.
+ *
+ * @param min - One finite bound of the range.
+ * @param max - The other finite bound of the range.
  * @returns A random integer between the minimum and maximum values.
+ * @throws {RangeError} When the bounds are non-finite or contain no integer.
  */
 export function randomInt(min: number, max: number): number {
-  const lower = Math.min(min, max);
-  const upper = Math.max(min, max);
-  return Math.floor(Math.random() * (upper - lower + 1)) + lower;
+  if (!Number.isFinite(min) || !Number.isFinite(max)) {
+    throw new RangeError('randomInt bounds must be finite numbers.');
+  }
+
+  const lower = Math.ceil(Math.min(min, max));
+  const upper = Math.floor(Math.max(min, max));
+  if (lower > upper) {
+    throw new RangeError('randomInt bounds must contain at least one integer.');
+  }
+
+  const random = Math.random();
+  const range = upper - lower + 1;
+  if (Number.isFinite(range)) {
+    return Math.floor(random * range) + lower;
+  }
+
+  // A finite lower and upper bound can still produce an infinite span. In
+  // that case, interpolate from both ends so no intermediate value overflows.
+  return Math.floor(lower * (1 - random) + upper * random);
 }
 
 /**
@@ -48,11 +80,19 @@ export function randomInt(min: number, max: number): number {
  * @param min - One bound of the range.
  * @param max - The other bound of the range.
  * @returns A random number between the minimum and maximum values.
+ * @throws RangeError if either bound is non-finite.
  */
 export function randomNum(min: number, max: number): number {
+  if (!Number.isFinite(min) || !Number.isFinite(max)) {
+    throw new RangeError('randomNum bounds must be finite numbers.');
+  }
+
   const lower = Math.min(min, max);
   const upper = Math.max(min, max);
-  return Math.random() * (upper - lower) + lower;
+  const random = Math.random();
+  const span = upper - lower;
+  // Opposite-sign finite bounds can have an infinite span.
+  return Number.isFinite(span) ? random * span + lower : lower * (1 - random) + upper * random;
 }
 
 /**
@@ -93,11 +133,20 @@ export function rad2deg(radians: number): number {
  * @param end - The ending number of the range.
  * @param step - The positive distance between numbers in the range. Default is 1. If not a positive integer, it will be clamped to 1.
  * @returns A readonly array of numbers within the specified range.
+ * @throws RangeError if either endpoint is non-finite or the resulting array exceeds the maximum JavaScript array length.
  */
 export function range(start: number, end: number, step = 1): readonly number[] {
+  if (!Number.isFinite(start) || !Number.isFinite(end)) {
+    throw new RangeError('range endpoints must be finite numbers.');
+  }
+
   const clampedStep = step <= 0 || !Number.isFinite(step) ? 1 : Math.max(1, Math.floor(step));
   const direction = start <= end ? 1 : -1;
   const length = Math.floor(Math.abs(end - start) / clampedStep) + 1;
+  if (!Number.isSafeInteger(length) || length > 0xffff_ffff) {
+    throw new RangeError('range result exceeds the maximum JavaScript array length.');
+  }
+
   return Array.from({ length }, (_, i) => start + i * clampedStep * direction);
 }
 

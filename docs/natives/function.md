@@ -6,21 +6,50 @@
 
 ## Functions
 
-- `memoize<Args, Ret>(fn: (...args: Args) => Ret, options: object = {}): (...args: Args) => Ret`
-- `once<Args, Ret>(fn: (...args: Args) => Ret): (...args: Args) => Ret`
+- `memoize<Args extends unknown[], Ret>(fn: (...args: Args) => Ret, options: Readonly<MemoizeOptions<Args>> = {}): MemoizedFunction<Args, Ret>`
+- `once<Args extends unknown[], Ret>(fn: (...args: Args) => Ret): (...args: Args) => Ret`
+
+## Types
+
+- `interface MemoizedFunction<Args extends unknown[], Ret>`
+- `interface MemoizeOptions<Args extends unknown[]>`
+
+---
+
+## MemoizedFunction
+
+```typescript
+interface MemoizedFunction<Args extends unknown[], Ret> {
+  clear(): void;
+}
+```
+
+A memoized function with explicit cache lifecycle control.
+
+---
+
+## MemoizeOptions
+
+```typescript
+interface MemoizeOptions<Args extends unknown[]> {
+  readonly keyFn?: (...args: Args) => unknown;
+}
+```
+
+Options for creating a memoized function.
 
 ---
 
 ## memoize
 
 ```typescript
-memoize<Args, Ret>(fn: (...args: Args) => Ret, options: object = {}): (...args: Args) => Ret
+memoize<Args extends unknown[], Ret>(fn: (...args: Args) => Ret, options: Readonly<MemoizeOptions<Args>> = {}): MemoizedFunction<Args, Ret>
 ```
 
-Creates a memoized version of a function that caches results based on arguments. Uses a Map to store cached results with the serialized arguments as the key.
+Creates a memoized version of a function that caches results by primitive value and object identity.
 
 
-**Returns:** A memoized version of the function.
+**Returns:** A memoized version of the function with a `clear()` method.
 
 
 ---
@@ -28,7 +57,7 @@ Creates a memoized version of a function that caches results based on arguments.
 ## once
 
 ```typescript
-once<Args, Ret>(fn: (...args: Args) => Ret): (...args: Args) => Ret
+once<Args extends unknown[], Ret>(fn: (...args: Args) => Ret): (...args: Args) => Ret
 ```
 
 Creates a function that can only be called once. Subsequent calls return the result of the first invocation.

@@ -61,7 +61,7 @@ export interface Queue {
  */
 export function defer<Args extends readonly unknown[], Ret>(fn: (...args: Args) => Ret | Promise<Ret>, ...args: Args): DeferredTask<Awaited<Ret>> {
   return function deferredTask(): Promise<Awaited<Ret>> {
-    return Promise.resolve(fn(...args)) as Promise<Awaited<Ret>>;
+    return Promise.resolve().then(() => fn(...args)) as Promise<Awaited<Ret>>;
   };
 }
 

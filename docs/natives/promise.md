@@ -6,13 +6,43 @@
 
 ## Functions
 
-- `defer<Args, Ret>(fn: (...args: Args) => Ret | Promise<Ret>, ...args: Args): DeferredTask<Awaited<Ret>>`
+- `defer<Args extends readonly unknown[], Ret>(fn: (...args: Args) => Ret | Promise<Ret>, ...args: Args): DeferredTask<Awaited<Ret>>`
 - `queue(options: Readonly<QueueOptions> = {}): Queue`
 - `threads<T>(parallel: number, tasks: readonly DeferredTask<T>[]): Promise<T[]>`
 
 ## Types
 
+- `interface Queue`
+- `interface QueueOptions`
 - `type DeferredTask<T> = () => Promise<T>`
+
+---
+
+## Queue
+
+```typescript
+interface Queue {
+  readonly activeCount: number;
+  readonly pendingCount: number;
+  add<T>(task: () => T | Promise<T>): Promise<Awaited<T>>;
+  clear(reason?: unknown): void;
+}
+```
+
+Reusable promise task queue.
+
+---
+
+## QueueOptions
+
+```typescript
+interface QueueOptions {
+  readonly concurrency?: number;
+  readonly interval?: number;
+}
+```
+
+Options used to create a promise task queue.
 
 ---
 
@@ -29,7 +59,7 @@ A deferred async task that resolves to `T` when executed.
 ## defer
 
 ```typescript
-defer<Args, Ret>(fn: (...args: Args) => Ret | Promise<Ret>, ...args: Args): DeferredTask<Awaited<Ret>>
+defer<Args extends readonly unknown[], Ret>(fn: (...args: Args) => Ret | Promise<Ret>, ...args: Args): DeferredTask<Awaited<Ret>>
 ```
 
 Wraps a function call so it can be executed later as a promise task.

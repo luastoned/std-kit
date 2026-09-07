@@ -1,24 +1,72 @@
 import { isArray, isFunction } from '~/utilities/generic';
 
 /**
- * Internal helper type for key selection by property name or selector function.
- *
- * @internal
+ * Values removed by {@link compact}. `NaN` is also removed at runtime but cannot be represented as a distinct TypeScript type.
  */
-type KeySelector<T, K extends PropertyKey> = K | ((item: T) => K);
+export type Falsy = false | 0 | 0n | '' | null | undefined;
+
+/**
+ * Property names whose values can safely be used as record keys.
+ */
+export type KeyableProperty<T> = { [P in keyof T]-?: T[P] extends PropertyKey ? P : never }[keyof T];
+
+/**
+ * Selects a record key from an array item.
+ */
+export type KeySelector<T, K extends PropertyKey = PropertyKey> = { [P in keyof T]-?: T[P] extends K ? P : never }[keyof T] | ((item: T) => K);
+
+/**
+ * Selects a directly orderable value from an array item.
+ */
+export type OrderSelector<T> = keyof T | ((item: T) => string | number | null | undefined);
+
+/**
+ * Options for eagerly collecting combinations.
+ */
+export interface CombinationsOptions {
+  /**
+   * Maximum number of combinations to allocate. Defaults to 100,000.
+   */
+  readonly maxResults?: number;
+}
+
+/**
+ * Options for eagerly collecting Cartesian-product tuples.
+ */
+export interface CartesianOptions {
+  /**
+   * Maximum number of tuples to allocate. Defaults to 100,000. Set to Infinity to disable the limit.
+   */
+  readonly maxResults?: number;
+}
+
+const DEFAULT_MAX_CARTESIAN_RESULTS = 100_000;
+const DEFAULT_MAX_COMBINATION_RESULTS = 100_000;
+
+/**
+ * Defines a safe enumerable record entry, including reserved keys such as `__proto__`.
+ */
+function setRecordEntry<T>(record: Record<PropertyKey, T>, key: PropertyKey, value: T): void {
+  Object.defineProperty(record, key, {
+    configurable: true,
+    enumerable: true,
+    value,
+    writable: true,
+  });
+}
 
 /**
  * Builds a normalized key selector function.
  *
  * @internal
  */
-function toKeyFn<T, K extends PropertyKey>(key: KeySelector<T, K>): (item: T) => K {
-  if (isFunction(key)) {
-    return key as (item: T) => K;
+function toSelectorFn<T, Value>(selector: keyof T | ((item: T) => Value)): (item: T) => Value {
+  if (isFunction(selector)) {
+    return selector as (item: T) => Value;
   }
 
-  return function keySelector(item: T): K {
-    return item[key as keyof T & K] as K;
+  return function valueSelector(item: T): Value {
+    return item[selector as keyof T] as Value;
   };
 }
 
@@ -46,10 +94,10 @@ export function unique<T>(array: readonly T[]): T[] {
  *
  * @template T - The type of elements in the array.
  * @param array - The input array.
- * @returns A new array with only truthy values.
+ * @returns A new array with only truthy values. Literal falsy members are excluded from the element type.
  */
-export function compact<T>(array: readonly T[]): NonNullable<T>[] {
-  return array.filter(Boolean) as NonNullable<T>[];
+export function compact<T>(array: readonly T[]): Array<Exclude<T, Falsy>> {
+  return array.filter(Boolean) as Array<Exclude<T, Falsy>>;
 }
 
 /**
@@ -57,10 +105,10 @@ export function compact<T>(array: readonly T[]): NonNullable<T>[] {
  *
  * @template T - The type of elements in the array.
  * @param array - The array to be reversed.
- * @param inPlace - Specifies whether to reverse the array in place or create a new reversed array.
+ * @param inPlace - Specifies whether to reverse the array in place or create a new reversed array. Readonly arrays only support the default non-mutating mode.
  * @returns The reversed array.
  */
-export function reverse<T>(array: readonly T[], inPlace = false): T[] {
+export function reverse<T, const InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), inPlace?: InPlace): T[] {
   const result: T[] = inPlace ? (array as T[]) : [...array];
   return result.reverse();
 }
@@ -70,10 +118,10 @@ export function reverse<T>(array: readonly T[], inPlace = false): T[] {
  *
  * @template T - The type of elements in the array.
  * @param array - The array to shuffle.
- * @param inPlace - Specifies whether to shuffle the array in place or create a new shuffled array.
+ * @param inPlace - Specifies whether to shuffle the array in place or create a new shuffled array. Readonly arrays only support the default non-mutating mode.
  * @returns The shuffled array.
  */
-export function shuffle<T>(array: readonly T[], inPlace = false): T[] {
+export function shuffle<T, const InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), inPlace?: InPlace): T[] {
   const result: T[] = inPlace ? (array as T[]) : [...array];
 
   // Fisher-Yates shuffle algorithm
@@ -144,19 +192,6 @@ export function chunk<T>(array: readonly T[], size = 2): T[][] {
 }
 
 /**
- * Splits an array into chunks of a specified size.
- *
- * @deprecated Use chunk instead.
- * @template T - The type of the array elements.
- * @param array - The array to be chunked.
- * @param size - The size of each chunk.
- * @returns An array of chunks.
- */
-export function cluster<T>(array: readonly T[], size = 2): T[][] {
-  return chunk(array, size);
-}
-
-/**
  * Counts the occurrences of each unique key in an array. If a key function is provided, it will be used to extract the key from each element. If a key property
  * is provided, it will be used to extract the key from each element.
  *
@@ -164,17 +199,20 @@ export function cluster<T>(array: readonly T[], size = 2): T[][] {
  * @template K - The type of the key used for counting.
  * @param array - The array to count the occurrences in.
  * @param key - The key used for counting. Can be a property name or a function that returns the key.
- * @returns An object that maps each unique key to its count.
+ * @returns An object that maps each observed key to its count. Unobserved keys are absent.
  */
-export function countBy<T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): Record<K, number> {
-  const keyFn = toKeyFn(key);
+export function countBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Partial<Record<K, number>>;
+export function countBy<T, P extends KeyableProperty<T>>(array: readonly T[], key: P): Partial<Record<Extract<T[P], PropertyKey>, number>>;
+export function countBy<T>(array: readonly T[], key: KeySelector<T>): Record<PropertyKey, number> {
+  const keyFn = toSelectorFn<T, PropertyKey>(key);
   return array.reduce(
     (acc, item) => {
       const itemKey = keyFn(item);
-      acc[itemKey] = (acc[itemKey] || 0) + 1;
+      const count = Object.hasOwn(acc, itemKey) ? acc[itemKey] : 0;
+      setRecordEntry(acc, itemKey, (count ?? 0) + 1);
       return acc;
     },
-    {} as Record<K, number>,
+    {} as Record<PropertyKey, number>,
   );
 }
 
@@ -201,19 +239,21 @@ export function countBy<T, K extends PropertyKey>(array: readonly T[], key: KeyS
  * @template K - The type of the key used for grouping.
  * @param array - The array to group.
  * @param key - The key used for grouping. Can be a property name or a function that returns the key.
- * @returns An object where the keys are the grouped values and the values are arrays of elements that belong to each group.
+ * @returns An object mapping observed keys to their groups. Unobserved keys are absent.
  */
-export function groupBy<T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): Record<K, T[]> {
-  const result = {} as Record<K, T[]>;
-  const keyFn = toKeyFn(key);
+export function groupBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Partial<Record<K, T[]>>;
+export function groupBy<T, P extends KeyableProperty<T>>(array: readonly T[], key: P): Partial<Record<Extract<T[P], PropertyKey>, T[]>>;
+export function groupBy<T>(array: readonly T[], key: KeySelector<T>): Record<PropertyKey, T[]> {
+  const result = {} as Record<PropertyKey, T[]>;
+  const keyFn = toSelectorFn<T, PropertyKey>(key);
 
   for (const item of array) {
     const itemKey = keyFn(item);
-    if (!isArray(result[itemKey])) {
-      result[itemKey] = [];
+    if (!Object.hasOwn(result, itemKey)) {
+      setRecordEntry(result, itemKey, []);
     }
 
-    result[itemKey].push(item);
+    (result[itemKey] as T[]).push(item);
   }
 
   return result;
@@ -221,7 +261,8 @@ export function groupBy<T, K extends PropertyKey>(array: readonly T[], key: KeyS
 
 /**
  * Sorts an array of objects based on the specified keys and orders. If a key function is provided, it will be used to extract the key from each element. If a
- * key property is provided, it will be used to extract the key from each element.
+ * key property is provided, it will be used to extract the key from each element. `null` and `undefined` sort after defined values in ascending order and
+ * before defined values in descending order. Missing values remain tied and can be ordered by subsequent keys.
  *
  * @example
  *   ```ts
@@ -244,16 +285,16 @@ export function groupBy<T, K extends PropertyKey>(array: readonly T[], key: KeyS
  * @param array - The array to be sorted.
  * @param keys - The keys or functions used for sorting.
  * @param orders - The sort orders for each key.
- * @param inPlace - Indicates whether to sort the array in place or return a new sorted array.
+ * @param inPlace - Indicates whether to sort the array in place or return a new sorted array. Readonly arrays only support the default non-mutating mode.
  * @returns The sorted array.
  */
-export function orderBy<T, K extends string | number>(
-  array: readonly T[],
-  keys: ReadonlyArray<KeySelector<T, K>>,
+export function orderBy<T, const InPlace extends boolean = false>(
+  array: readonly T[] & (true extends InPlace ? T[] : unknown),
+  keys: ReadonlyArray<OrderSelector<T>>,
   orders: ReadonlyArray<'asc' | 'desc'>,
-  inPlace = false,
+  inPlace?: InPlace,
 ): T[] {
-  const keyFns = keys.map((key) => toKeyFn(key));
+  const keyFns = keys.map((key) => toSelectorFn<T, string | number | null | undefined>(key));
   const result: T[] = inPlace ? (array as T[]) : [...array];
   return result.sort((a, b) => {
     for (const [idx, keyFn] of keyFns.entries()) {
@@ -262,6 +303,17 @@ export function orderBy<T, K extends string | number>(
       // Determine the value for each item based on the key or function
       const aValue = keyFn(a);
       const bValue = keyFn(b);
+
+      const aIsMissing = aValue === null || aValue === undefined;
+      const bIsMissing = bValue === null || bValue === undefined;
+      if (aIsMissing && bIsMissing) {
+        continue;
+      }
+
+      if (aIsMissing || bIsMissing) {
+        const comparison = aIsMissing ? 1 : -1;
+        return order === 'asc' ? comparison : -comparison;
+      }
 
       if (aValue < bValue) {
         return order === 'asc' ? -1 : 1;
@@ -303,9 +355,11 @@ export function orderBy<T, K extends string | number>(
  * @param key - The key property or function used to extract the key from each element.
  * @returns A new array containing unique elements based on the specified key.
  */
-export function uniqueBy<T, K extends PropertyKey>(array: readonly T[], key: KeySelector<T, K>): T[] {
-  const itemMap = new Map<K, T>();
-  const keyFn = toKeyFn(key);
+export function uniqueBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): T[];
+export function uniqueBy<T, P extends KeyableProperty<T>>(array: readonly T[], key: P): T[];
+export function uniqueBy<T>(array: readonly T[], key: KeySelector<T>): T[] {
+  const itemMap = new Map<PropertyKey, T>();
+  const keyFn = toSelectorFn<T, PropertyKey>(key);
 
   for (const item of array) {
     itemMap.set(keyFn(item), item);
@@ -315,27 +369,33 @@ export function uniqueBy<T, K extends PropertyKey>(array: readonly T[], key: Key
 }
 
 /**
- * Generates an iterable iterator that produces all possible combinations of elements from the input arrays.
+ * Lazily generates Cartesian-product tuples, advancing the first input array fastest.
+ * Empty input or any empty input array produces no tuples. Do not mutate inputs during iteration.
  *
  * @template T - The type of the elements in the input arrays.
  * @param items - An array of arrays containing the elements to combine.
  * @yields The next cartesian-product tuple from the input arrays.
  * @returns An iterable iterator that produces all possible combinations of elements.
  */
-function* cartesianIt<T = unknown>(items: readonly T[][]): IterableIterator<T[]> {
-  if (items.length === 0) return;
+export function* iterateCartesian<T = unknown>(items: readonly (readonly T[])[]): IterableIterator<T[]> {
+  if (items.length === 0 || items.some((item) => item.length === 0)) return;
 
-  const [first, ...rest] = items;
-  if (first === undefined) {
-    return;
-  }
+  const indices = items.map(() => 0);
+  while (true) {
+    yield items.map((item, index) => item[indices[index] as number] as T);
 
-  const remainder = rest.length > 0 ? cartesianIt(rest) : [[]];
-
-  for (const rem of remainder) {
-    for (const item of first) {
-      yield [item].concat(...rem);
+    // Advance the first dimension fastest to preserve the eager collector's ordering.
+    let dimension = 0;
+    for (; dimension < items.length; dimension++) {
+      const nextIndex = (indices[dimension] as number) + 1;
+      if (nextIndex < (items[dimension] as readonly T[]).length) {
+        indices[dimension] = nextIndex;
+        break;
+      }
+      indices[dimension] = 0;
     }
+
+    if (dimension === items.length) return;
   }
 }
 
@@ -354,41 +414,69 @@ function* cartesianIt<T = unknown>(items: readonly T[][]): IterableIterator<T[]>
  *   ```;
  *
  * @param items - The array of arrays to calculate the cartesian product from.
- * @returns The cartesian product as a 2D array.
+ * @param options - Allocation limits for the eager result.
+ * @returns The Cartesian product as a 2D array, with the first input array advancing fastest.
+ * @throws RangeError if `maxResults` is invalid or the result would exceed it.
  */
-export function cartesian<T = unknown>(items: readonly T[][]): T[][] {
-  return [...cartesianIt(items)];
+export function cartesian<T = unknown>(items: readonly (readonly T[])[], options: Readonly<CartesianOptions> = {}): T[][] {
+  const maxResults = options.maxResults ?? DEFAULT_MAX_CARTESIAN_RESULTS;
+  if (maxResults !== Number.POSITIVE_INFINITY && (!Number.isSafeInteger(maxResults) || maxResults < 0)) {
+    throw new RangeError('maxResults must be a non-negative safe integer or Infinity.');
+  }
+
+  if (items.length === 0 || items.some((item) => item.length === 0)) return [];
+
+  const resultCount = items.reduce((count, item) => count * BigInt(item.length), 1n);
+  if (maxResults !== Number.POSITIVE_INFINITY && resultCount > BigInt(maxResults)) {
+    throw new RangeError(`cartesian would produce ${resultCount} results, exceeding the limit of ${maxResults}.`);
+  }
+
+  return Array.from(iterateCartesian(items));
 }
 
 /**
- * Generates all possible non-empty combinations of the elements in an array.
+ * Lazily generates all possible non-empty combinations of the elements in an array.
  *
  * @template T - The type of the array elements.
  * @param items - The array of elements.
- * @returns An array of arrays representing the combinations.
+ * @yields Each non-empty combination in bitmask order.
+ * @returns An iterable iterator of combinations.
  */
-export function combinations<T>(items: readonly T[]): T[][] {
-  const result: T[][] = [];
+export function* iterateCombinations<T>(items: readonly T[]): IterableIterator<T[]> {
+  const subsetCount = 1n << BigInt(items.length);
 
-  // Iterate over each number from 1 to (2^length - 1)
-  // This will generate all possible non-empty combinations of the array elements.
-  for (let subsetMask = 1; subsetMask < 1 << items.length; subsetMask++) {
+  for (let subsetMask = 1n; subsetMask < subsetCount; subsetMask++) {
     const combination: T[] = [];
 
-    // Check each bit in `subsetMask` to see if the corresponding element should be included
     for (let bitPosition = 0; bitPosition < items.length; bitPosition++) {
-      if (subsetMask & (1 << bitPosition)) {
-        // If the bitPosition-th bit is set in `subsetMask`, include array[bitPosition] in the current combination
-        const item = items[bitPosition];
-        if (item !== undefined) {
-          combination.push(item);
-        }
+      if (subsetMask & (1n << BigInt(bitPosition))) {
+        combination.push(items[bitPosition] as T);
       }
     }
 
-    // Add the generated combination to the result array
-    result.push(combination);
+    yield combination;
+  }
+}
+
+/**
+ * Collects all possible non-empty combinations of the elements in an array.
+ *
+ * @template T - The type of the array elements.
+ * @param items - The array of elements.
+ * @param options - Allocation limits for the eager result.
+ * @returns An array of arrays representing the combinations.
+ * @throws RangeError if `maxResults` is invalid or the result would exceed it.
+ */
+export function combinations<T>(items: readonly T[], options: Readonly<CombinationsOptions> = {}): T[][] {
+  const maxResults = options.maxResults ?? DEFAULT_MAX_COMBINATION_RESULTS;
+  if (maxResults !== Number.POSITIVE_INFINITY && (!Number.isSafeInteger(maxResults) || maxResults < 0)) {
+    throw new RangeError('maxResults must be a non-negative safe integer or Infinity.');
   }
 
-  return result;
+  const resultCount = (1n << BigInt(items.length)) - 1n;
+  if (maxResults !== Number.POSITIVE_INFINITY && resultCount > BigInt(maxResults)) {
+    throw new RangeError(`combinations would produce ${resultCount} results, exceeding the limit of ${maxResults}.`);
+  }
+
+  return Array.from(iterateCombinations(items));
 }

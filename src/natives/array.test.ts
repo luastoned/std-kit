@@ -1,6 +1,66 @@
-import { expect, describe, it } from 'vitest';
+import { expect, describe, expectTypeOf, it } from 'vitest';
 
-import { unique, compact, reverse, shuffle, flatten, fill, chunk, cluster, countBy, groupBy, orderBy, uniqueBy, cartesian, combinations } from './array';
+import {
+  unique,
+  compact,
+  reverse,
+  shuffle,
+  flatten,
+  fill,
+  chunk,
+  countBy,
+  groupBy,
+  orderBy,
+  uniqueBy,
+  cartesian,
+  combinations,
+  iterateCombinations,
+  iterateCartesian,
+} from './array';
+
+describe('array type contracts', () => {
+  it('narrows literal falsy values and key results', () => {
+    const compacted = compact([0, 1, false, '', 'ready', null, undefined] as const);
+    const items = [{ role: 'admin' as const }, { role: 'user' as const }];
+
+    expectTypeOf(compacted).toEqualTypeOf<Array<1 | 'ready'>>();
+    expectTypeOf(groupBy(items, 'role')).toEqualTypeOf<Partial<Record<'admin' | 'user', (typeof items)[number][]>>>();
+    expectTypeOf(countBy(items, 'role')).toEqualTypeOf<Partial<Record<'admin' | 'user', number>>>();
+  });
+
+  it('includes undefined for unobserved literal keys in both selector overloads', () => {
+    const items: { role: 'admin' | 'user' }[] = [];
+    expectTypeOf(groupBy(items, 'role').admin).toEqualTypeOf<typeof items | undefined>();
+    expectTypeOf(groupBy(items, (item) => item.role).admin).toEqualTypeOf<typeof items | undefined>();
+    expectTypeOf(countBy(items, 'role').admin).toEqualTypeOf<number | undefined>();
+    expectTypeOf(countBy(items, (item) => item.role).admin).toEqualTypeOf<number | undefined>();
+  });
+
+  it('omits keys absent from the input', () => {
+    const items: { role: 'admin' | 'user' }[] = [{ role: 'user' }];
+    expect(groupBy(items, 'role')).toEqual({ user: items });
+    expect(countBy(items, 'role')).toEqual({ user: 1 });
+    expect(groupBy([], () => 'admin' as const)).toEqual({});
+    expect(countBy([], () => 'admin' as const)).toEqual({});
+  });
+
+  it('requires mutable inputs for in-place operations', () => {
+    const readonlyValues: readonly number[] = [3, 2, 1];
+    const mutableValues = [3, 2, 1];
+    const items = [{ role: 'admin' as const }];
+
+    expect(reverse(readonlyValues)).toEqual([1, 2, 3]);
+    expect(reverse(mutableValues, true)).toBe(mutableValues);
+
+    const assertTypeErrors = (): void => {
+      // @ts-expect-error Readonly inputs cannot be mutated in place.
+      reverse(readonlyValues, true);
+      // @ts-expect-error Unknown property names are rejected.
+      groupBy(items, 'missing');
+    };
+    void assertTypeErrors;
+  });
+});
 
 describe('unique', () => {
   it('should remove duplicate numbers from array', () => {
@@ -163,12 +223,6 @@ describe('chunk', () => {
   });
 });
 
-describe('cluster (deprecated)', () => {
-  it('should work as alias for chunk', () => {
-    expect(cluster([1, 2, 3, 4])).toEqual(chunk([1, 2, 3, 4]));
-  });
-});
-
 describe('countBy', () => {
   it('should count by property key', () => {
     const items = [{ type: 'a' }, { type: 'b' }, { type: 'a' }, { type: 'c' }];
@@ -182,6 +236,14 @@ describe('countBy', () => {
 
   it('should count numbers correctly', () => {
     expect(countBy([1, 2, 1, 3, 2, 1], (x) => x)).toEqual({ 1: 3, 2: 2, 3: 1 });
+  });
+
+  it('supports reserved property names safely', () => {
+    const result = countBy(['__proto__', 'constructor', '__proto__'], (value) => value);
+
+    expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
+    expect(result.__proto__).toBe(2);
+    expect(result.constructor).toBe(1);
   });
 });
 
@@ -207,6 +269,14 @@ describe('groupBy', () => {
       odd: [1, 3, 5],
       even: [2, 4, 6],
     });
+  });
+
+  it('supports reserved property names safely', () => {
+    const result = groupBy(['__proto__', 'constructor'], (value) => value);
+
+    expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
+    expect(result.__proto__).toEqual(['__proto__']);
+    expect(result.constructor).toEqual(['constructor']);
   });
 });
 
@@ -244,6 +314,27 @@ describe('orderBy', () => {
     const sorted = orderBy(items, ['age'], ['asc'], true);
     expect(sorted).toEqual([{ age: 20 }, { age: 25 }, { age: 30 }]);
     expect(items).toEqual([{ age: 20 }, { age: 25 }, { age: 30 }]); // original changed
+  });
+
+  it('should order nullish values deterministically', () => {
+    const items = [
+      { id: 'undefined', rank: undefined },
+      { id: 'two', rank: 2 },
+      { id: 'null', rank: null },
+      { id: 'one', rank: 1 },
+    ];
+
+    expect(orderBy(items, ['rank'], ['asc']).map((item) => item.id)).toEqual(['one', 'two', 'undefined', 'null']);
+    expect(orderBy(items, ['rank'], ['desc']).map((item) => item.id)).toEqual(['undefined', 'null', 'two', 'one']);
+  });
+
+  it('should use subsequent keys to order nullish ties', () => {
+    const items = [
+      { id: 'b', rank: undefined },
+      { id: 'a', rank: null },
+    ];
+
+    expect(orderBy(items, ['rank', 'id'], ['asc', 'asc']).map((item) => item.id)).toEqual(['a', 'b']);
   });
 });
 
@@ -295,6 +386,73 @@ describe('cartesian', () => {
   it('should return empty array when any sub-array is empty', () => {
     expect(cartesian([[], [1, 2]])).toEqual([]);
   });
+
+  it('should preserve array-valued elements in each tuple', () => {
+    expect(cartesian<number[]>([[[1], [2]], [[3, 4]]])).toEqual([
+      [[1], [3, 4]],
+      [[2], [3, 4]],
+    ]);
+  });
+});
+
+describe('Cartesian allocation limits', () => {
+  it('accepts readonly dimensions and an exact result limit', () => {
+    const items = [
+      [1, 2],
+      [3, 4],
+    ] as const;
+    expect(cartesian(items, { maxResults: 4 })).toEqual([
+      [1, 3],
+      [2, 3],
+      [1, 4],
+      [2, 4],
+    ]);
+    expect(() => cartesian(items, { maxResults: 3 })).toThrow('cartesian would produce 4 results, exceeding the limit of 3.');
+  });
+
+  it('rejects products above the default limit and permits an explicit override', () => {
+    const items = [Array<number>(100_001).fill(1)];
+    expect(() => cartesian(items)).toThrow(RangeError);
+    expect(cartesian(items, { maxResults: Infinity })).toHaveLength(100_001);
+  });
+
+  it('accepts empty products with a zero limit even after large dimensions', () => {
+    expect(cartesian([], { maxResults: 0 })).toEqual([]);
+    expect(cartesian([Array<number>(100_001).fill(1), []], { maxResults: 0 })).toEqual([]);
+    expect(() => cartesian([[1]], { maxResults: 0 })).toThrow(RangeError);
+  });
+
+  it.each([-1, 1.5, NaN, -Infinity, Number.MAX_SAFE_INTEGER + 1])('rejects invalid maxResults %s even for empty input', (maxResults) => {
+    expect(() => cartesian([], { maxResults })).toThrow('maxResults must be a non-negative safe integer or Infinity.');
+  });
+});
+
+describe('iterateCartesian', () => {
+  it('preserves ordering and undefined elements', () => {
+    expect([
+      ...iterateCartesian([
+        [undefined, 1],
+        [2, 3],
+      ]),
+    ]).toEqual([
+      [undefined, 2],
+      [1, 2],
+      [undefined, 3],
+      [1, 3],
+    ]);
+    expect([...iterateCartesian([])]).toEqual([]);
+    expect([...iterateCartesian([[1], []])]).toEqual([]);
+  });
+
+  it('lazily traverses products beyond the eager limit without recursive stack growth', () => {
+    const items = Array.from({ length: 10_000 }, () => [0, 1] as const);
+    const iterator = iterateCartesian(items);
+    const first = iterator.next().value;
+    expect(first).toEqual(Array<number>(10_000).fill(0));
+    expect(iterator.next().value).toEqual([1, ...Array<number>(9_999).fill(0)]);
+    expect(first).toEqual(Array<number>(10_000).fill(0));
+    iterator.return?.();
+  });
 });
 
 describe('combinations', () => {
@@ -320,5 +478,33 @@ describe('combinations', () => {
 
   it('should return single combination for single element', () => {
     expect(combinations(['x'])).toEqual([['x']]);
+  });
+
+  it('preserves undefined elements', () => {
+    expect(combinations([undefined])).toEqual([[undefined]]);
+  });
+
+  it('rejects eager results that exceed the default allocation limit', () => {
+    expect(() => combinations(Array.from({ length: 31 }, (_, index) => index))).toThrow(RangeError);
+  });
+
+  it('supports an explicit eager result limit', () => {
+    expect(combinations([1, 2, 3], { maxResults: 7 })).toHaveLength(7);
+    expect(() => combinations([1, 2, 3], { maxResults: 6 })).toThrow('combinations would produce 7 results, exceeding the limit of 6.');
+  });
+
+  it.each([-1, 1.5, Number.NaN])('rejects an invalid result limit of %s', (maxResults) => {
+    expect(() => combinations([1], { maxResults })).toThrow('maxResults must be a non-negative safe integer or Infinity.');
+  });
+});
+
+describe('iterateCombinations', () => {
+  it('lazily supports inputs beyond the eager collector limit', () => {
+    const iterator = iterateCombinations(Array.from({ length: 31 }, (_, index) => index));
+
+    expect(iterator.next().value).toEqual([0]);
+    expect(iterator.next().value).toEqual([1]);
+    expect(iterator.next().value).toEqual([0, 1]);
+    iterator.return?.();
   });
 });

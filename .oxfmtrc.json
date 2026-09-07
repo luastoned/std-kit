@@ -2,12 +2,14 @@
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "arrowParens": "always",
   "ignorePatterns": [
+    "/build",
     "docs/**",
     "lib/**",
     "coverage/**",
     "/dist",
     "/node_modules"
   ],
+  "insertFinalNewline": true,
   "jsdoc": {
     "commentLineStrategy": "multiline",
     "lineWrappingStyle": "balance",
@@ -31,7 +33,7 @@
     ],
     "newlinesBetween": true
   },
-  "sortPackageJson": false,
+  "sortPackageJson": true,
   "tabWidth": 2,
   "trailingComma": "all",
   "useTabs": false

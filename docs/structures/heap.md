@@ -12,7 +12,42 @@
 
 ## Types
 
+- `interface Heap<T>`
+- `interface HeapOptions<T>`
 - `type HeapCompare<T> = (a: T, b: T) => number`
+
+---
+
+## Heap
+
+```typescript
+interface Heap<T> {
+  readonly size: number;
+  clear(): void;
+  isEmpty(): boolean;
+  peek(): T | undefined;
+  pop(): T | undefined;
+  push(item: T): number;
+  pushPop(item: T): T;
+  replace(item: T): T | undefined;
+  toArray(): T[];
+}
+```
+
+Public heap API.
+
+---
+
+## HeapOptions
+
+```typescript
+interface HeapOptions<T> {
+  compare: HeapCompare<T>;
+  items?: readonly T[];
+}
+```
+
+Options used to create a heap.
 
 ---
 

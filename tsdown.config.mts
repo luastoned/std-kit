@@ -1,11 +1,13 @@
 import { defineConfig } from 'tsdown';
 
+// Keep the configuration explicitly ESM without changing the package's CommonJS default.
+
 export default defineConfig([
   // Main bundle - browser/universal compatible
   {
     entry: ['src/index.ts'],
     format: ['cjs', 'esm'],
-    target: ['es2024'],
+    target: ['es2022'],
     platform: 'neutral',
     outDir: 'lib',
     sourcemap: true,
@@ -18,7 +20,7 @@ export default defineConfig([
   {
     entry: ['src/node.ts'],
     format: ['cjs', 'esm'],
-    target: ['es2024'],
+    target: ['es2022'],
     platform: 'node',
     outDir: 'lib',
     sourcemap: true,

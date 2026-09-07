@@ -6,33 +6,110 @@
 
 ## Functions
 
-- `cartesian<T = unknown>(items: readonly T[][]): T[][]`
+- `cartesian<T = unknown>(items: readonly (readonly T[])[], options: Readonly<CartesianOptions> = {}): T[][]`
 - `chunk<T>(array: readonly T[], size: number = 2): T[][]`
-- `cluster<T>(array: readonly T[], size: number = 2): T[][]` ~~(deprecated)~~
-- `combinations<T>(items: readonly T[]): T[][]`
-- `compact<T>(array: readonly T[]): NonNullable<T>[]`
-- `countBy<T, K>(array: readonly T[], key: K | ((item: T) => K)): Record<K, number>`
+- `combinations<T>(items: readonly T[], options: Readonly<CombinationsOptions> = {}): T[][]`
+- `compact<T>(array: readonly T[]): Exclude<T, Falsy>[]`
+- `countBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Partial<Record<K, number>>`
 - `fill<T>(size: number, value: T): T[]`
 - `flatten<T>(array: readonly unknown[], depth: number = Infinity): T[]`
-- `groupBy<T, K>(array: readonly T[], key: K | ((item: T) => K)): Record<K, T[]>`
-- `orderBy<T, K>(array: readonly T[], keys: readonly K | ((item: T) => K)[], orders: readonly "asc" | "desc"[], inPlace: boolean = false): T[]`
-- `reverse<T>(array: readonly T[], inPlace: boolean = false): T[]`
-- `shuffle<T>(array: readonly T[], inPlace: boolean = false): T[]`
+- `groupBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Partial<Record<K, T[]>>`
+- `iterateCartesian<T = unknown>(items: readonly (readonly T[])[]): IterableIterator<T[]>`
+- `iterateCombinations<T>(items: readonly T[]): IterableIterator<T[]>`
+- `orderBy<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), keys: readonly OrderSelector<T>[], orders: readonly ("asc" | "desc")[], inPlace?: InPlace): T[]`
+- `reverse<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), inPlace?: InPlace): T[]`
+- `shuffle<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), inPlace?: InPlace): T[]`
 - `unique<T>(array: readonly T[]): T[]`
-- `uniqueBy<T, K>(array: readonly T[], key: K | ((item: T) => K)): T[]`
+- `uniqueBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): T[]`
+
+## Types
+
+- `interface CartesianOptions`
+- `interface CombinationsOptions`
+- `type Falsy = false | 0 | 0n | '' | null | undefined`
+- `type KeyableProperty<T> = { [P in keyof T]-?: T[P] extends PropertyKey ? P : never }[keyof T]`
+- `type KeySelector<T, K extends PropertyKey = PropertyKey> = { [P in keyof T]-?: T[P] extends K ? P : never }[keyof T] | ((item: T) => K)`
+- `type OrderSelector<T> = keyof T | ((item: T) => string | number | null | undefined)`
+
+---
+
+## CartesianOptions
+
+```typescript
+interface CartesianOptions {
+  readonly maxResults?: number;
+}
+```
+
+Options for eagerly collecting Cartesian-product tuples.
+
+---
+
+## CombinationsOptions
+
+```typescript
+interface CombinationsOptions {
+  readonly maxResults?: number;
+}
+```
+
+Options for eagerly collecting combinations.
+
+---
+
+## Falsy
+
+```typescript
+type Falsy = false | 0 | 0n | '' | null | undefined
+```
+
+Values removed by compact. `NaN` is also removed at runtime but cannot be represented as a distinct TypeScript type.
+
+---
+
+## KeyableProperty
+
+```typescript
+type KeyableProperty<T> = { [P in keyof T]-?: T[P] extends PropertyKey ? P : never }[keyof T]
+```
+
+Property names whose values can safely be used as record keys.
+
+---
+
+## KeySelector
+
+```typescript
+type KeySelector<T, K extends PropertyKey = PropertyKey> = { [P in keyof T]-?: T[P] extends K ? P : never }[keyof T] | ((item: T) => K)
+```
+
+Selects a record key from an array item.
+
+---
+
+## OrderSelector
+
+```typescript
+type OrderSelector<T> = keyof T | ((item: T) => string | number | null | undefined)
+```
+
+Selects a directly orderable value from an array item.
 
 ---
 
 ## cartesian
 
 ```typescript
-cartesian<T = unknown>(items: readonly T[][]): T[][]
+cartesian<T = unknown>(items: readonly (readonly T[])[], options: Readonly<CartesianOptions> = {}): T[][]
 ```
 
 Calculates the cartesian product of the given array of arrays.
 
 
-**Returns:** The cartesian product as a 2D array.
+**Returns:** The Cartesian product as a 2D array, with the first input array advancing fastest.
+
+
+**Throws:** RangeError if `maxResults` is invalid or the result would exceed it.
 
 
 ---
@@ -51,32 +128,19 @@ Splits an array into chunks of a specified size.
 
 ---
 
-## cluster
-
-```typescript
-cluster<T>(array: readonly T[], size: number = 2): T[][]
-```
-
-Splits an array into chunks of a specified size.
-
-> **Deprecated:** Use chunk instead.
-
-
-**Returns:** An array of chunks.
-
-
----
-
 ## combinations
 
 ```typescript
-combinations<T>(items: readonly T[]): T[][]
+combinations<T>(items: readonly T[], options: Readonly<CombinationsOptions> = {}): T[][]
 ```
 
-Generates all possible non-empty combinations of the elements in an array.
+Collects all possible non-empty combinations of the elements in an array.
 
 
 **Returns:** An array of arrays representing the combinations.
+
+
+**Throws:** RangeError if `maxResults` is invalid or the result would exceed it.
 
 
 ---
@@ -84,13 +148,13 @@ Generates all possible non-empty combinations of the elements in an array.
 ## compact
 
 ```typescript
-compact<T>(array: readonly T[]): NonNullable<T>[]
+compact<T>(array: readonly T[]): Exclude<T, Falsy>[]
 ```
 
 Returns a new array with all falsy values removed. Falsy values include: false, null, 0, "", undefined, and NaN.
 
 
-**Returns:** A new array with only truthy values.
+**Returns:** A new array with only truthy values. Literal falsy members are excluded from the element type.
 
 
 ---
@@ -98,14 +162,15 @@ Returns a new array with all falsy values removed. Falsy values include: false, 
 ## countBy
 
 ```typescript
-countBy<T, K>(array: readonly T[], key: K | ((item: T) => K)): Record<K, number>
+countBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Partial<Record<K, number>>
+countBy<T, P extends string | number | symbol>(array: readonly T[], key: P): Partial<Record<Extract<T[P], PropertyKey>, number>>
 ```
 
 Counts the occurrences of each unique key in an array. If a key function is provided, it will be used to extract the key from each element. If a key property
 is provided, it will be used to extract the key from each element.
 
 
-**Returns:** An object that maps each unique key to its count.
+**Returns:** An object that maps each observed key to its count. Unobserved keys are absent.
 
 
 ---
@@ -141,14 +206,44 @@ Flattens a nested array up to the specified depth.
 ## groupBy
 
 ```typescript
-groupBy<T, K>(array: readonly T[], key: K | ((item: T) => K)): Record<K, T[]>
+groupBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Partial<Record<K, T[]>>
+groupBy<T, P extends string | number | symbol>(array: readonly T[], key: P): Partial<Record<Extract<T[P], PropertyKey>, T[]>>
 ```
 
 Groups the elements of an array by a specified key. If a key function is provided, it will be used to extract the key from each element. If a key property is
 provided, it will be used to extract the key from each element.
 
 
-**Returns:** An object where the keys are the grouped values and the values are arrays of elements that belong to each group.
+**Returns:** An object mapping observed keys to their groups. Unobserved keys are absent.
+
+
+---
+
+## iterateCartesian
+
+```typescript
+iterateCartesian<T = unknown>(items: readonly (readonly T[])[]): IterableIterator<T[]>
+```
+
+Lazily generates Cartesian-product tuples, advancing the first input array fastest.
+Empty input or any empty input array produces no tuples. Do not mutate inputs during iteration.
+
+
+**Returns:** An iterable iterator that produces all possible combinations of elements.
+
+
+---
+
+## iterateCombinations
+
+```typescript
+iterateCombinations<T>(items: readonly T[]): IterableIterator<T[]>
+```
+
+Lazily generates all possible non-empty combinations of the elements in an array.
+
+
+**Returns:** An iterable iterator of combinations.
 
 
 ---
@@ -156,11 +251,12 @@ provided, it will be used to extract the key from each element.
 ## orderBy
 
 ```typescript
-orderBy<T, K>(array: readonly T[], keys: readonly K | ((item: T) => K)[], orders: readonly "asc" | "desc"[], inPlace: boolean = false): T[]
+orderBy<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), keys: readonly OrderSelector<T>[], orders: readonly ("asc" | "desc")[], inPlace?: InPlace): T[]
 ```
 
 Sorts an array of objects based on the specified keys and orders. If a key function is provided, it will be used to extract the key from each element. If a
-key property is provided, it will be used to extract the key from each element.
+key property is provided, it will be used to extract the key from each element. `null` and `undefined` sort after defined values in ascending order and
+before defined values in descending order. Missing values remain tied and can be ordered by subsequent keys.
 
 
 **Returns:** The sorted array.
@@ -171,7 +267,7 @@ key property is provided, it will be used to extract the key from each element.
 ## reverse
 
 ```typescript
-reverse<T>(array: readonly T[], inPlace: boolean = false): T[]
+reverse<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), inPlace?: InPlace): T[]
 ```
 
 Reverses the elements of an array.
@@ -185,7 +281,7 @@ Reverses the elements of an array.
 ## shuffle
 
 ```typescript
-shuffle<T>(array: readonly T[], inPlace: boolean = false): T[]
+shuffle<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), inPlace?: InPlace): T[]
 ```
 
 Shuffles the elements of an array using the Fisher-Yates algorithm.
@@ -213,7 +309,8 @@ Returns a new array with unique elements from the input array.
 ## uniqueBy
 
 ```typescript
-uniqueBy<T, K>(array: readonly T[], key: K | ((item: T) => K)): T[]
+uniqueBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): T[]
+uniqueBy<T, P extends string | number | symbol>(array: readonly T[], key: P): T[]
 ```
 
 Returns a new array containing unique elements from the input array based on the specified key. If a key function is provided, it will be used to extract the

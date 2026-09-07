@@ -6,7 +6,7 @@
 
 ## Functions
 
-- `cloneObject<T>(item: T): unknown`
+- `cloneObject<T>(item: T): T extends undefined ? undefined : T`
 - `isArray<T = unknown>(item: unknown): item is T[] | readonly T[]`
 - `isBoolean(item: unknown): item is boolean`
 - `isContainer(item: unknown): item is Container`
@@ -27,23 +27,29 @@
 - `isString(item: unknown): item is string`
 - `isSymbol(item: unknown): item is symbol`
 - `isUndefined(item: unknown): item is undefined`
-- `isWeakMap<K, V = unknown>(item: unknown): item is WeakMap<K, V>`
-- `isWeakSet<T>(item: unknown): item is WeakSet<T>`
+- `isWeakMap<K extends object, V = unknown>(item: unknown): item is WeakMap<K, V>`
+- `isWeakSet<T extends object>(item: unknown): item is WeakSet<T>`
 
 ---
 
 ## cloneObject
 
 ```typescript
-cloneObject<T>(item: T): unknown
+cloneObject<T>(item: T): T extends undefined ? undefined : T
 ```
 
-Creates a deep clone of an item using JSON.parse/JSON.stringify serialization. Supports most JSON-compatible types including objects, arrays, strings,
-numbers, booleans, and null. Cannot clone functions, Dates, RegExps, Maps, Sets, ArrayBuffers, typed arrays, or circular references. For more complex cloning
-needs, consider using structuredClone() which supports additional types.
+Creates a deep clone of JSON-compatible data using a JSON stringify/parse round trip. Despite its historical name, this behaves more like a `cloneJson`
+helper than a general-purpose object clone.
+
+Dates are converted to strings; `undefined`, functions, and symbols may be omitted or converted to `null`; and `NaN` and infinities become `null`. BigInts
+and circular references throw, while Maps, Sets, RegExps, ArrayBuffers, typed arrays, and custom prototypes are not preserved. The return type matches the
+input only when the input is JSON-compatible. Use `structuredClone()` when those values or circular references must be retained.
 
 
 **Returns:** The cloned item or undefined if the input is undefined.
+
+
+**Throws:** TypeError if the input contains a BigInt or a circular reference.
 
 
 ---
@@ -331,7 +337,7 @@ Checks if the given item is undefined.
 ## isWeakMap
 
 ```typescript
-isWeakMap<K, V = unknown>(item: unknown): item is WeakMap<K, V>
+isWeakMap<K extends object, V = unknown>(item: unknown): item is WeakMap<K, V>
 ```
 
 Checks if the given item is an instance of WeakMap.
@@ -345,7 +351,7 @@ Checks if the given item is an instance of WeakMap.
 ## isWeakSet
 
 ```typescript
-isWeakSet<T>(item: unknown): item is WeakSet<T>
+isWeakSet<T extends object>(item: unknown): item is WeakSet<T>
 ```
 
 Checks if the given item is a WeakSet.

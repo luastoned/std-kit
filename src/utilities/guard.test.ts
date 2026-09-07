@@ -1,3 +1,5 @@
+import { runInNewContext } from 'node:vm';
+
 import { describe, it, expect } from 'vitest';
 
 import { guard } from './guard';
@@ -89,7 +91,7 @@ describe('guard', () => {
 
     it('works with async operations', async () => {
       const result = await guard(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        await Promise.resolve();
         return 'done';
       });
       expect(result).toBe('done');
@@ -98,6 +100,14 @@ describe('guard', () => {
     it('handles Promise.resolve correctly', async () => {
       const result = await guard(() => Promise.resolve({ data: 'test' }));
       expect(result).toEqual({ data: 'test' });
+    });
+
+    it('handles promises from another realm', async () => {
+      const fulfilled = runInNewContext('Promise.resolve(42)') as Promise<number>;
+      const rejected = runInNewContext("Promise.reject(new Error('foreign rejection'))") as Promise<number>;
+
+      await expect(guard(() => fulfilled)).resolves.toBe(42);
+      await expect(guard(() => rejected)).resolves.toBeUndefined();
     });
   });
 

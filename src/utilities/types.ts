@@ -11,15 +11,6 @@
  */
 export type Prettify<T> = { [K in keyof T]: T[K] } & {};
 
-/**
- * Simplifies a type by forcing TypeScript to evaluate it. Often provides better IntelliSense than Prettify for complex types.
- *
- * @template T - The type to simplify.
- * @param T - The type to simplify.
- * @returns The simplified type.
- */
-export type Simplify<T> = { [K in keyof T]: T[K] } & {};
-
 // =============================================================================
 // Nullability Types
 // =============================================================================
@@ -56,37 +47,21 @@ export type Optional<T> = T | undefined;
 // =============================================================================
 
 /**
- * Represents a function that extracts a key from a value.
- *
- * @template T The type of the value.
- * @param arg The value from which to extract the key.
- * @returns The key extracted from the value.
- */
-export type KeyFn<T> = (arg: T) => keyof T;
-
-/**
- * Represents a generic function type.
- *
- * @template T - The type of arguments accepted by the function.
- * @returns The generic function type.
- */
-export type GenericFn<T> = (...args: T[]) => unknown;
-
-/**
  * Represents a generic function type with preserved signature.
  *
  * @template TFunc - The type of the function.
  * @returns The generic function type.
  */
-export type GenericFunction<TFunc extends (...args: unknown[]) => unknown> = (...args: Parameters<TFunc>) => ReturnType<TFunc>;
+export type GenericFunction<TFunc extends (...args: never[]) => unknown> = (...args: Parameters<TFunc>) => ReturnType<TFunc>;
 
 /**
  * Represents a constructor function type.
  *
  * @template T - The type that the constructor creates.
+ * @template Args - The constructor argument tuple. Defaults to an unconstrained argument list.
  * @returns The constructor type.
  */
-export type Constructor<T = unknown> = new (...args: unknown[]) => T;
+export type Constructor<T = unknown, Args extends unknown[] = any[]> = new (...args: Args) => T;
 
 // =============================================================================
 // Object Types
@@ -178,7 +153,13 @@ export type OmitByValue<T, ValueType> = Pick<T, { [K in keyof T]: T[K] extends V
 // =============================================================================
 
 /**
- * Makes all properties in T and nested objects optional recursively.
+ * Object-like values whose internal structure should not be remapped by deep utility types.
+ */
+type DeepAtomic = Date | RegExp | Error | ArrayBuffer | ArrayBufferView | ((...args: never[]) => unknown);
+
+/**
+ * Makes all properties in T and nested objects optional recursively. Functions and built-ins are preserved, collections retain their container semantics, and
+ * tuples retain their positions.
  *
  * @example
  *   ```ts
@@ -196,25 +177,80 @@ export type OmitByValue<T, ValueType> = Pick<T, { [K in keyof T]: T[K] extends V
  * @param T - The type to make deeply partial.
  * @returns The deeply partial type.
  */
-export type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
+export type DeepPartial<T> = T extends DeepAtomic
+  ? T
+  : T extends Promise<infer Value>
+    ? Promise<DeepPartial<Value>>
+    : T extends Map<infer Key, infer Value>
+      ? Map<Key, DeepPartial<Value>>
+      : T extends ReadonlyMap<infer Key, infer Value>
+        ? ReadonlyMap<Key, DeepPartial<Value>>
+        : T extends Set<infer Value>
+          ? Set<DeepPartial<Value>>
+          : T extends ReadonlySet<infer Value>
+            ? ReadonlySet<DeepPartial<Value>>
+            : T extends WeakMap<infer Key, infer Value>
+              ? WeakMap<Key, DeepPartial<Value>>
+              : T extends WeakSet<infer Value>
+                ? WeakSet<Value>
+                : T extends object
+                  ? { [P in keyof T]?: DeepPartial<T[P]> }
+                  : T;
 
 /**
- * Makes all properties in T and nested objects readonly recursively.
+ * Makes all properties in T and nested objects readonly recursively. Mutable maps and sets become their readonly counterparts, while functions and built-ins
+ * are preserved.
  *
  * @template T - The type to make deeply readonly.
  * @param T - The type to make deeply readonly.
  * @returns The deeply readonly type.
  */
-export type DeepReadonly<T> = T extends object ? { readonly [P in keyof T]: DeepReadonly<T[P]> } : T;
+export type DeepReadonly<T> = T extends DeepAtomic
+  ? T
+  : T extends Promise<infer Value>
+    ? Promise<DeepReadonly<Value>>
+    : T extends Map<infer Key, infer Value>
+      ? ReadonlyMap<DeepReadonly<Key>, DeepReadonly<Value>>
+      : T extends ReadonlyMap<infer Key, infer Value>
+        ? ReadonlyMap<DeepReadonly<Key>, DeepReadonly<Value>>
+        : T extends Set<infer Value>
+          ? ReadonlySet<DeepReadonly<Value>>
+          : T extends ReadonlySet<infer Value>
+            ? ReadonlySet<DeepReadonly<Value>>
+            : T extends WeakMap<infer Key, infer Value>
+              ? WeakMap<Key, DeepReadonly<Value>>
+              : T extends WeakSet<infer Value>
+                ? WeakSet<Value>
+                : T extends object
+                  ? { readonly [P in keyof T]: DeepReadonly<T[P]> }
+                  : T;
 
 /**
- * Makes all properties in T and nested objects required recursively.
+ * Makes all properties in T and nested objects required recursively while preserving functions, built-ins, collections, and tuple structure.
  *
  * @template T - The type to make deeply required.
  * @param T - The type to make deeply required.
  * @returns The deeply required type.
  */
-export type DeepRequired<T> = T extends object ? { [P in keyof T]-?: DeepRequired<T[P]> } : T;
+export type DeepRequired<T> = T extends DeepAtomic
+  ? T
+  : T extends Promise<infer Value>
+    ? Promise<DeepRequired<Value>>
+    : T extends Map<infer Key, infer Value>
+      ? Map<Key, DeepRequired<Value>>
+      : T extends ReadonlyMap<infer Key, infer Value>
+        ? ReadonlyMap<Key, DeepRequired<Value>>
+        : T extends Set<infer Value>
+          ? Set<DeepRequired<Value>>
+          : T extends ReadonlySet<infer Value>
+            ? ReadonlySet<DeepRequired<Value>>
+            : T extends WeakMap<infer Key, infer Value>
+              ? WeakMap<Key, DeepRequired<Value>>
+              : T extends WeakSet<infer Value>
+                ? WeakSet<Value>
+                : T extends object
+                  ? { [P in keyof T]-?: DeepRequired<T[P]> }
+                  : T;
 
 // =============================================================================
 // Type Extraction Utilities
@@ -257,6 +293,78 @@ export type OptionalKeys<T> = { [K in keyof T]-?: {} extends Pick<T, K> ? K : ne
  */
 export type Merge<T, U> = Omit<T, keyof U> & U;
 
+/**
+ * Extracts plain-object-like values that can participate in recursive merging.
+ *
+ * @internal
+ */
+type DeepMergeableObject<T> = T extends DeepAtomic | readonly unknown[] ? never : T extends object ? T : never;
+
+/**
+ * Describes a possible recursively merged array item.
+ *
+ * @internal
+ */
+type DeepMergeArrayItem<TSourceItem, TPatchItem, ApplyUndefined extends boolean, MergeArrays, Strict extends boolean> = [
+  DeepMergeableObject<TSourceItem>,
+] extends [never]
+  ? TPatchItem
+  : [DeepMergeableObject<TPatchItem>] extends [never]
+    ? TPatchItem
+    : DeepMerge<DeepMergeableObject<TSourceItem>, DeepMergeableObject<TPatchItem>, ApplyUndefined, MergeArrays, Strict>;
+
+/**
+ * Models replacement arrays exactly and object-array merging conservatively.
+ *
+ * @internal
+ */
+type DeepMergeArrays<
+  TSource extends readonly unknown[],
+  TPatch extends readonly unknown[],
+  ApplyUndefined extends boolean,
+  MergeArrays,
+  Strict extends boolean,
+> = MergeArrays extends false
+  ? TPatch
+  : [DeepMergeableObject<TPatch[number]>] extends [never]
+    ? TPatch
+    : Array<TSource[number] | TPatch[number] | DeepMergeArrayItem<TSource[number], TPatch[number], ApplyUndefined, MergeArrays, Strict>>;
+
+/**
+ * Describes the recursive result of `mergeObject`.
+ *
+ * Primitive arrays and arrays replaced with `mergeArrays: false` use the patch type. Merged object arrays include source, patch, and recursively merged item
+ * possibilities. Object properties are recursively merged. `strict` limits output keys to the source, while `applyUndefined` controls whether explicit
+ * `undefined` replaces a source value.
+ */
+export type DeepMerge<TSource, TPatch, ApplyUndefined extends boolean = false, MergeArrays = true, Strict extends boolean = false> = TPatch extends undefined
+  ? ApplyUndefined extends true
+    ? undefined
+    : TSource
+  : TPatch extends readonly unknown[]
+    ? TSource extends readonly unknown[]
+      ? DeepMergeArrays<TSource, TPatch, ApplyUndefined, MergeArrays, Strict>
+      : TPatch
+    : TPatch extends DeepAtomic
+      ? TPatch
+      : TSource extends DeepAtomic | readonly unknown[]
+        ? TPatch
+        : TSource extends object
+          ? TPatch extends object
+            ? Prettify<
+                Omit<TSource, Strict extends true ? Extract<keyof TPatch, keyof TSource> : keyof TPatch> & {
+                  [K in Strict extends true ? Extract<keyof TPatch, keyof TSource> : keyof TPatch]: K extends keyof TSource
+                    ? K extends keyof TPatch
+                      ? DeepMerge<TSource[K], TPatch[K], ApplyUndefined, MergeArrays, Strict>
+                      : never
+                    : K extends keyof TPatch
+                      ? TPatch[K]
+                      : never;
+                }
+              >
+            : TPatch
+          : TPatch;
+
 // =============================================================================
 // Array Types
 // =============================================================================
@@ -282,11 +390,34 @@ export type NonEmptyArray<T> = [T, ...T[]];
 // Path & Field Access Utilities
 // =============================================================================
 /**
- * Resolves indexed access for arrays and tuples.
+ * Decimal digit accepted in a bracket index.
  *
  * @internal
  */
-type GetIndexedField<T> = T extends readonly unknown[] | unknown[] ? T[number] : undefined;
+type DecimalDigit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
+
+/**
+ * Checks whether a bracket index contains only decimal digits.
+ *
+ * @internal
+ */
+type IsArrayIndex<Index extends string> = Index extends `${DecimalDigit}${infer Rest}` ? (Rest extends '' ? true : IsArrayIndex<Rest>) : false;
+
+/**
+ * Resolves indexed access for arrays and tuples after validating the index.
+ *
+ * @internal
+ */
+type GetIndexedField<T, Index extends string> =
+  IsArrayIndex<Index> extends true
+    ? T extends readonly unknown[]
+      ? Index extends keyof T
+        ? T[Index]
+        : number extends T['length']
+          ? T[number]
+          : undefined
+      : undefined
+    : undefined;
 
 /**
  * Resolves direct property access.
@@ -300,7 +431,7 @@ type GetDirectField<T, Path extends keyof T> = T[Path];
  *
  * @internal
  */
-type FieldOrUndefined<T, Key> = Key extends keyof T ? T[Key] | Extract<T, undefined> : undefined;
+type FieldOrUndefined<T, Key> = T extends null | undefined ? undefined : Key extends keyof T ? T[Key] : undefined;
 
 /**
  * Infers the type at a dot/bracket path.
@@ -319,7 +450,7 @@ type FieldOrUndefined<T, Key> = Key extends keyof T ? T[Key] | Extract<T, undefi
  *   ```;
  *
  * @template T - The source object type.
- * @template Path - Dot/bracket path.
+ * @template Path - Dot/bracket path using decimal array indices.
  * @returns The inferred value type for the path.
  */
 export type GetFieldType<T, Path> = Path extends ''
@@ -333,21 +464,23 @@ export type GetFieldType<T, Path> = Path extends ''
  *
  * @internal
  */
-type GetDirectOrIndexedField<T, Path> = Path extends `${infer FieldKey}[${infer _IdxKey}]`
-  ? FieldKey extends keyof T
-    ? GetIndexedField<T[FieldKey]>
-    : undefined
-  : Path extends keyof T
-    ? GetDirectField<T, Path>
-    : undefined;
+type GetDirectOrIndexedField<T, Path> = T extends null | undefined
+  ? undefined
+  : Path extends `${infer FieldKey}[${infer IdxKey}]`
+    ? FieldKey extends keyof T
+      ? GetIndexedField<T[FieldKey], IdxKey>
+      : undefined
+    : Path extends keyof T
+      ? GetDirectField<T, Path>
+      : undefined;
 
 /**
  * Recursively resolves nested path segments.
  *
  * @internal
  */
-type GetNestedField<T, Left extends string, Right extends string> = Left extends `${infer FieldKey}[${infer _IdxKey}]`
+type GetNestedField<T, Left extends string, Right extends string> = Left extends `${infer FieldKey}[${infer IdxKey}]`
   ? FieldKey extends keyof T
-    ? GetFieldType<GetIndexedField<T[FieldKey]>, Right>
+    ? GetFieldType<GetIndexedField<T[FieldKey], IdxKey>, Right>
     : undefined
   : GetFieldType<FieldOrUndefined<T, Left>, Right>;

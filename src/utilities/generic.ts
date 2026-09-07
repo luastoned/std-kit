@@ -163,7 +163,12 @@ export function isMutableContainer(item: unknown): item is MutableContainer {
  * @returns A boolean indicating whether the item is a plain object.
  */
 export function isPlainObject(item: unknown): item is Record<PropertyKey, unknown> {
-  return isObject(item) && item.constructor === Object;
+  if (!isObject(item)) {
+    return false;
+  }
+
+  const prototype = Object.getPrototypeOf(item);
+  return prototype === null || prototype === Object.prototype;
 }
 
 /**
@@ -242,7 +247,7 @@ export function isUndefined(item: unknown): item is undefined {
  * @param item - The item to be checked.
  * @returns A boolean indicating whether the item is an instance of WeakMap.
  */
-export function isWeakMap<K extends WeakKey, V = unknown>(item: unknown): item is WeakMap<K, V> {
+export function isWeakMap<K extends object, V = unknown>(item: unknown): item is WeakMap<K, V> {
   return item instanceof WeakMap;
 }
 
@@ -253,14 +258,17 @@ export function isWeakMap<K extends WeakKey, V = unknown>(item: unknown): item i
  * @param item - The item to check.
  * @returns A boolean indicating whether the item is a WeakSet.
  */
-export function isWeakSet<T extends WeakKey>(item: unknown): item is WeakSet<T> {
+export function isWeakSet<T extends object>(item: unknown): item is WeakSet<T> {
   return item instanceof WeakSet;
 }
 
 /**
- * Creates a deep clone of an item using JSON.parse/JSON.stringify serialization. Supports most JSON-compatible types including objects, arrays, strings,
- * numbers, booleans, and null. Cannot clone functions, Dates, RegExps, Maps, Sets, ArrayBuffers, typed arrays, or circular references. For more complex cloning
- * needs, consider using structuredClone() which supports additional types.
+ * Creates a deep clone of JSON-compatible data using a JSON stringify/parse round trip. Despite its historical name, this behaves more like a `cloneJson`
+ * helper than a general-purpose object clone.
+ *
+ * Dates are converted to strings; `undefined`, functions, and symbols may be omitted or converted to `null`; and `NaN` and infinities become `null`. BigInts
+ * and circular references throw, while Maps, Sets, RegExps, ArrayBuffers, typed arrays, and custom prototypes are not preserved. The return type matches the
+ * input only when the input is JSON-compatible. Use `structuredClone()` when those values or circular references must be retained.
  *
  * @example
  *   ```ts
@@ -275,6 +283,7 @@ export function isWeakSet<T extends WeakKey>(item: unknown): item is WeakSet<T> 
  *
  * @param item - The item to clone.
  * @returns The cloned item or undefined if the input is undefined.
+ * @throws TypeError if the input contains a BigInt or a circular reference.
  */
 export function cloneObject<T>(item: T): T extends undefined ? undefined : T {
   return (item !== undefined ? JSON.parse(JSON.stringify(item)) : undefined) as T extends undefined ? undefined : T;

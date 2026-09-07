@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 import { clamp, roundTo, randomInt, randomNum, deg2rad, rad2deg, range, sum, mean, lerp } from './number';
 
@@ -15,6 +15,28 @@ describe('math utils', () => {
     expect(roundTo(1.2355)).toBe(1.24);
     expect(roundTo(1.2345, 3)).toBe(1.235);
     expect(roundTo(1.2, 0)).toBe(1);
+    expect(roundTo(1234, -2)).toBe(1200);
+  });
+
+  it('preserves finite values when decimal scaling would overflow', () => {
+    expect(roundTo(1e308, 2)).toBe(1e308);
+    expect(roundTo(-1e308, 2)).toBe(-1e308);
+    expect(roundTo(Number.MAX_VALUE, 308)).toBe(Number.MAX_VALUE);
+    expect(roundTo(12.5, 308)).toBe(12.5);
+  });
+
+  it('retains rounding behavior for extreme precision and non-finite values', () => {
+    expect(roundTo(1e-308, 308)).toBe(1e-308);
+    expect(roundTo(1.4e308, -308)).toBe(1e308);
+    expect(roundTo(Number.MAX_VALUE, -308)).toBe(Infinity);
+    expect(roundTo(Infinity)).toBe(Infinity);
+    expect(roundTo(-Infinity)).toBe(-Infinity);
+    expect(roundTo(NaN)).toBeNaN();
+    expect(roundTo(-0)).toBe(-0);
+  });
+
+  it.each([1.5, Number.POSITIVE_INFINITY, 309, -309])('rejects an invalid decimal count of %s', (decimals) => {
+    expect(() => roundTo(1.23, decimals)).toThrow('roundTo decimals must be an integer between -308 and 308.');
   });
 
   it('generates random integer in inclusive range', () => {
@@ -35,6 +57,32 @@ describe('math utils', () => {
     }
   });
 
+  it('normalizes fractional random integer bounds', () => {
+    vi.spyOn(Math, 'random').mockReturnValueOnce(0).mockReturnValueOnce(0.999999);
+
+    expect(randomInt(1.2, 3.8)).toBe(2);
+    expect(randomInt(1.2, 3.8)).toBe(3);
+    vi.restoreAllMocks();
+  });
+
+  it('rejects ranges with no finite integer', () => {
+    expect(() => randomInt(1.2, 1.8)).toThrow(RangeError);
+    expect(() => randomInt(0, Number.POSITIVE_INFINITY)).toThrow(RangeError);
+  });
+
+  it('returns finite integers when finite bounds have an overflowing span', () => {
+    vi.spyOn(Math, 'random').mockReturnValueOnce(0).mockReturnValueOnce(0.75);
+
+    expect(randomInt(-Number.MAX_VALUE, Number.MAX_VALUE)).toBe(-Number.MAX_VALUE);
+
+    const result = randomInt(-Number.MAX_VALUE, Number.MAX_VALUE);
+    expect(Number.isFinite(result)).toBe(true);
+    expect(Number.isInteger(result)).toBe(true);
+    expect(result).toBeGreaterThanOrEqual(-Number.MAX_VALUE);
+    expect(result).toBeLessThanOrEqual(Number.MAX_VALUE);
+    vi.restoreAllMocks();
+  });
+
   it('generates random float in exclusive upper bound range', () => {
     for (let idx = 0; idx < 100; idx++) {
       const num = randomNum(5, 10);
@@ -49,6 +97,31 @@ describe('math utils', () => {
       expect(num).toBeGreaterThanOrEqual(5);
       expect(num).toBeLessThan(10);
     }
+  });
+
+  it.each([0, 0.25, 0.5, 0.75, 1 - Number.EPSILON])('keeps overflowing random float spans finite at sample %s', (sample) => {
+    vi.spyOn(Math, 'random').mockReturnValue(sample);
+    try {
+      for (const bounds of [
+        [-Number.MAX_VALUE, Number.MAX_VALUE],
+        [Number.MAX_VALUE, -Number.MAX_VALUE],
+      ] as const) {
+        const result = randomNum(...bounds);
+        expect(Number.isFinite(result)).toBe(true);
+        expect(result).toBeGreaterThanOrEqual(-Number.MAX_VALUE);
+        expect(result).toBeLessThanOrEqual(Number.MAX_VALUE);
+        if (sample === 0.5) expect(result).toBe(0);
+        if (sample === 0) expect(result).toBe(-Number.MAX_VALUE);
+      }
+      expect(randomNum(Number.MAX_VALUE, Number.MAX_VALUE)).toBe(Number.MAX_VALUE);
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+
+  it('rejects non-finite random float bounds', () => {
+    expect(() => randomNum(0, Number.POSITIVE_INFINITY)).toThrow('randomNum bounds must be finite numbers.');
+    expect(() => randomNum(Number.NaN, 1)).toThrow('randomNum bounds must be finite numbers.');
   });
 
   it('converts degrees to radians', () => {
@@ -80,6 +153,12 @@ describe('math utils', () => {
     expect(range(5, 1, 0)).toEqual([5, 4, 3, 2, 1]); // step 0 clamped to 1
     expect(range(1, 5, -2)).toEqual([1, 2, 3, 4, 5]); // negative step clamped to 1
     expect(range(1, 5, 0.5)).toEqual([1, 2, 3, 4, 5]); // fractional step clamped to 1
+  });
+
+  it('rejects non-finite endpoints and oversized results', () => {
+    expect(() => range(0, Number.POSITIVE_INFINITY)).toThrow('range endpoints must be finite numbers.');
+    expect(() => range(Number.NaN, 1)).toThrow('range endpoints must be finite numbers.');
+    expect(() => range(0, 0xffff_ffff)).toThrow('range result exceeds the maximum JavaScript array length.');
   });
 
   it('calculates sum of numbers', () => {

@@ -97,8 +97,13 @@ randomInt(min: number, max: number): number
 
 Generates a random integer between the specified minimum and maximum values (inclusive).
 
+Fractional bounds are normalized inward so every possible result is an integer contained by the original bounds.
+
 
 **Returns:** A random integer between the minimum and maximum values.
+
+
+**Throws:** When the bounds are non-finite or contain no integer.
 
 
 ---
@@ -115,6 +120,9 @@ Generates a random number between the specified minimum and maximum values.
 **Returns:** A random number between the minimum and maximum values.
 
 
+**Throws:** RangeError if either bound is non-finite.
+
+
 ---
 
 ## range
@@ -129,6 +137,9 @@ Generates an array of numbers within a specified range.
 **Returns:** A readonly array of numbers within the specified range.
 
 
+**Throws:** RangeError if either endpoint is non-finite or the resulting array exceeds the maximum JavaScript array length.
+
+
 ---
 
 ## roundTo
@@ -137,10 +148,14 @@ Generates an array of numbers within a specified range.
 roundTo(value: number, decimals: number = 2): number
 ```
 
-Rounds a number to the specified number of decimal places.
+Rounds a number to the specified number of decimal places using JavaScript floating-point arithmetic.
+Non-finite inputs are preserved. Results outside the finite number range become infinity.
 
 
 **Returns:** The rounded number.
+
+
+**Throws:** RangeError if `decimals` is not an integer between -308 and 308.
 
 
 ---
