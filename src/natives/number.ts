@@ -19,7 +19,8 @@ export function clamp(value: number, rangeA: number, rangeB: number): number {
 }
 
 /**
- * Rounds a number to the specified number of decimal places.
+ * Rounds a number to the specified number of decimal places using JavaScript floating-point arithmetic.
+ * Non-finite inputs are preserved. Results outside the finite number range become infinity.
  *
  * @param value - The number to round.
  * @param decimals - Integer number of decimal places between -308 and 308. Default is 2.
@@ -31,7 +32,14 @@ export function roundTo(value: number, decimals = 2): number {
     throw new RangeError('roundTo decimals must be an integer between -308 and 308.');
   }
 
-  return Math.round(value * 10 ** decimals) / 10 ** decimals;
+  const factor = 10 ** decimals;
+  const scaled = value * factor;
+  // If scaling overflows, the requested precision is finer than the spacing between representable values.
+  if (Number.isFinite(value) && !Number.isFinite(scaled)) {
+    return value;
+  }
+
+  return Math.round(scaled) / factor;
 }
 
 /**
@@ -81,7 +89,10 @@ export function randomNum(min: number, max: number): number {
 
   const lower = Math.min(min, max);
   const upper = Math.max(min, max);
-  return Math.random() * (upper - lower) + lower;
+  const random = Math.random();
+  const span = upper - lower;
+  // Opposite-sign finite bounds can have an infinite span.
+  return Number.isFinite(span) ? random * span + lower : lower * (1 - random) + upper * random;
 }
 
 /**

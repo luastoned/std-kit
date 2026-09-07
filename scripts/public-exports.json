@@ -45,6 +45,7 @@
       "isUndefined",
       "isWeakMap",
       "isWeakSet",
+      "iterateCartesian",
       "iterateCombinations",
       "lerp",
       "mapObject",
@@ -78,6 +79,7 @@
       "walkTree"
     ],
     "types": [
+      "CartesianOptions",
       "CombinationsOptions",
       "Constructor",
       "Container",

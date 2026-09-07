@@ -148,7 +148,8 @@ Generates an array of numbers within a specified range.
 roundTo(value: number, decimals: number = 2): number
 ```
 
-Rounds a number to the specified number of decimal places.
+Rounds a number to the specified number of decimal places using JavaScript floating-point arithmetic.
+Non-finite inputs are preserved. Results outside the finite number range become infinity.
 
 
 **Returns:** The rounded number.

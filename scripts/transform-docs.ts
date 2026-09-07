@@ -209,7 +209,7 @@ function buildTypeString(type?: TypeDocType): string {
     }
     case 'array': {
       const element = buildTypeString(type.elementType);
-      return `${type.elementType.type === 'union' || type.elementType.type === 'intersection' || type.elementType.type === 'conditional' ? `(${element})` : element}[]`;
+      return `${type.elementType.type === 'union' || type.elementType.type === 'intersection' || type.elementType.type === 'conditional' || type.elementType.type === 'typeOperator' ? `(${element})` : element}[]`;
     }
     case 'typeOperator':
       return `${type.operator} ${buildTypeString(type.target)}`;

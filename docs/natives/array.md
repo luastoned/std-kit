@@ -6,14 +6,15 @@
 
 ## Functions
 
-- `cartesian<T = unknown>(items: readonly T[][]): T[][]`
+- `cartesian<T = unknown>(items: readonly (readonly T[])[], options: Readonly<CartesianOptions> = {}): T[][]`
 - `chunk<T>(array: readonly T[], size: number = 2): T[][]`
 - `combinations<T>(items: readonly T[], options: Readonly<CombinationsOptions> = {}): T[][]`
 - `compact<T>(array: readonly T[]): Exclude<T, Falsy>[]`
-- `countBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Record<K, number>`
+- `countBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Partial<Record<K, number>>`
 - `fill<T>(size: number, value: T): T[]`
 - `flatten<T>(array: readonly unknown[], depth: number = Infinity): T[]`
-- `groupBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Record<K, T[]>`
+- `groupBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Partial<Record<K, T[]>>`
+- `iterateCartesian<T = unknown>(items: readonly (readonly T[])[]): IterableIterator<T[]>`
 - `iterateCombinations<T>(items: readonly T[]): IterableIterator<T[]>`
 - `orderBy<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), keys: readonly OrderSelector<T>[], orders: readonly ("asc" | "desc")[], inPlace?: InPlace): T[]`
 - `reverse<T, InPlace extends boolean = false>(array: readonly T[] & (true extends InPlace ? T[] : unknown), inPlace?: InPlace): T[]`
@@ -23,11 +24,24 @@
 
 ## Types
 
+- `interface CartesianOptions`
 - `interface CombinationsOptions`
 - `type Falsy = false | 0 | 0n | '' | null | undefined`
 - `type KeyableProperty<T> = { [P in keyof T]-?: T[P] extends PropertyKey ? P : never }[keyof T]`
 - `type KeySelector<T, K extends PropertyKey = PropertyKey> = { [P in keyof T]-?: T[P] extends K ? P : never }[keyof T] | ((item: T) => K)`
 - `type OrderSelector<T> = keyof T | ((item: T) => string | number | null | undefined)`
+
+---
+
+## CartesianOptions
+
+```typescript
+interface CartesianOptions {
+  readonly maxResults?: number;
+}
+```
+
+Options for eagerly collecting Cartesian-product tuples.
 
 ---
 
@@ -86,13 +100,16 @@ Selects a directly orderable value from an array item.
 ## cartesian
 
 ```typescript
-cartesian<T = unknown>(items: readonly T[][]): T[][]
+cartesian<T = unknown>(items: readonly (readonly T[])[], options: Readonly<CartesianOptions> = {}): T[][]
 ```
 
 Calculates the cartesian product of the given array of arrays.
 
 
-**Returns:** The cartesian product as a 2D array.
+**Returns:** The Cartesian product as a 2D array, with the first input array advancing fastest.
+
+
+**Throws:** RangeError if `maxResults` is invalid or the result would exceed it.
 
 
 ---
@@ -145,15 +162,15 @@ Returns a new array with all falsy values removed. Falsy values include: false, 
 ## countBy
 
 ```typescript
-countBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Record<K, number>
-countBy<T, P extends string | number | symbol>(array: readonly T[], key: P): Record<Extract<T[P], PropertyKey>, number>
+countBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Partial<Record<K, number>>
+countBy<T, P extends string | number | symbol>(array: readonly T[], key: P): Partial<Record<Extract<T[P], PropertyKey>, number>>
 ```
 
 Counts the occurrences of each unique key in an array. If a key function is provided, it will be used to extract the key from each element. If a key property
 is provided, it will be used to extract the key from each element.
 
 
-**Returns:** An object that maps each unique key to its count.
+**Returns:** An object that maps each observed key to its count. Unobserved keys are absent.
 
 
 ---
@@ -189,15 +206,30 @@ Flattens a nested array up to the specified depth.
 ## groupBy
 
 ```typescript
-groupBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Record<K, T[]>
-groupBy<T, P extends string | number | symbol>(array: readonly T[], key: P): Record<Extract<T[P], PropertyKey>, T[]>
+groupBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Partial<Record<K, T[]>>
+groupBy<T, P extends string | number | symbol>(array: readonly T[], key: P): Partial<Record<Extract<T[P], PropertyKey>, T[]>>
 ```
 
 Groups the elements of an array by a specified key. If a key function is provided, it will be used to extract the key from each element. If a key property is
 provided, it will be used to extract the key from each element.
 
 
-**Returns:** An object where the keys are the grouped values and the values are arrays of elements that belong to each group.
+**Returns:** An object mapping observed keys to their groups. Unobserved keys are absent.
+
+
+---
+
+## iterateCartesian
+
+```typescript
+iterateCartesian<T = unknown>(items: readonly (readonly T[])[]): IterableIterator<T[]>
+```
+
+Lazily generates Cartesian-product tuples, advancing the first input array fastest.
+Empty input or any empty input array produces no tuples. Do not mutate inputs during iteration.
+
+
+**Returns:** An iterable iterator that produces all possible combinations of elements.
 
 
 ---

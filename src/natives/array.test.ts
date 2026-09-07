@@ -15,6 +15,7 @@ import {
   cartesian,
   combinations,
   iterateCombinations,
+  iterateCartesian,
 } from './array';
 
 describe('array type contracts', () => {
@@ -23,8 +24,24 @@ describe('array type contracts', () => {
     const items = [{ role: 'admin' as const }, { role: 'user' as const }];
 
     expectTypeOf(compacted).toEqualTypeOf<Array<1 | 'ready'>>();
-    expectTypeOf(groupBy(items, 'role')).toEqualTypeOf<Record<'admin' | 'user', (typeof items)[number][]>>();
-    expectTypeOf(countBy(items, 'role')).toEqualTypeOf<Record<'admin' | 'user', number>>();
+    expectTypeOf(groupBy(items, 'role')).toEqualTypeOf<Partial<Record<'admin' | 'user', (typeof items)[number][]>>>();
+    expectTypeOf(countBy(items, 'role')).toEqualTypeOf<Partial<Record<'admin' | 'user', number>>>();
+  });
+
+  it('includes undefined for unobserved literal keys in both selector overloads', () => {
+    const items: { role: 'admin' | 'user' }[] = [];
+    expectTypeOf(groupBy(items, 'role').admin).toEqualTypeOf<typeof items | undefined>();
+    expectTypeOf(groupBy(items, (item) => item.role).admin).toEqualTypeOf<typeof items | undefined>();
+    expectTypeOf(countBy(items, 'role').admin).toEqualTypeOf<number | undefined>();
+    expectTypeOf(countBy(items, (item) => item.role).admin).toEqualTypeOf<number | undefined>();
+  });
+
+  it('omits keys absent from the input', () => {
+    const items: { role: 'admin' | 'user' }[] = [{ role: 'user' }];
+    expect(groupBy(items, 'role')).toEqual({ user: items });
+    expect(countBy(items, 'role')).toEqual({ user: 1 });
+    expect(groupBy([], () => 'admin' as const)).toEqual({});
+    expect(countBy([], () => 'admin' as const)).toEqual({});
   });
 
   it('requires mutable inputs for in-place operations', () => {
@@ -375,6 +392,66 @@ describe('cartesian', () => {
       [[1], [3, 4]],
       [[2], [3, 4]],
     ]);
+  });
+});
+
+describe('Cartesian allocation limits', () => {
+  it('accepts readonly dimensions and an exact result limit', () => {
+    const items = [
+      [1, 2],
+      [3, 4],
+    ] as const;
+    expect(cartesian(items, { maxResults: 4 })).toEqual([
+      [1, 3],
+      [2, 3],
+      [1, 4],
+      [2, 4],
+    ]);
+    expect(() => cartesian(items, { maxResults: 3 })).toThrow('cartesian would produce 4 results, exceeding the limit of 3.');
+  });
+
+  it('rejects products above the default limit and permits an explicit override', () => {
+    const items = [Array<number>(100_001).fill(1)];
+    expect(() => cartesian(items)).toThrow(RangeError);
+    expect(cartesian(items, { maxResults: Infinity })).toHaveLength(100_001);
+  });
+
+  it('accepts empty products with a zero limit even after large dimensions', () => {
+    expect(cartesian([], { maxResults: 0 })).toEqual([]);
+    expect(cartesian([Array<number>(100_001).fill(1), []], { maxResults: 0 })).toEqual([]);
+    expect(() => cartesian([[1]], { maxResults: 0 })).toThrow(RangeError);
+  });
+
+  it.each([-1, 1.5, NaN, -Infinity, Number.MAX_SAFE_INTEGER + 1])('rejects invalid maxResults %s even for empty input', (maxResults) => {
+    expect(() => cartesian([], { maxResults })).toThrow('maxResults must be a non-negative safe integer or Infinity.');
+  });
+});
+
+describe('iterateCartesian', () => {
+  it('preserves ordering and undefined elements', () => {
+    expect([
+      ...iterateCartesian([
+        [undefined, 1],
+        [2, 3],
+      ]),
+    ]).toEqual([
+      [undefined, 2],
+      [1, 2],
+      [undefined, 3],
+      [1, 3],
+    ]);
+    expect([...iterateCartesian([])]).toEqual([]);
+    expect([...iterateCartesian([[1], []])]).toEqual([]);
+  });
+
+  it('lazily traverses products beyond the eager limit without recursive stack growth', () => {
+    const items = Array.from({ length: 10_000 }, () => [0, 1] as const);
+    const iterator = iterateCartesian(items);
+    const first = iterator.next().value;
+    expect(first).toEqual(Array<number>(10_000).fill(0));
+    expect(iterator.next().value).toEqual([1, ...Array<number>(9_999).fill(0)]);
+    expect(first).toEqual(Array<number>(10_000).fill(0));
+    iterator.return?.();
   });
 });
 

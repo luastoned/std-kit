@@ -30,6 +30,17 @@ export interface CombinationsOptions {
   readonly maxResults?: number;
 }
 
+/**
+ * Options for eagerly collecting Cartesian-product tuples.
+ */
+export interface CartesianOptions {
+  /**
+   * Maximum number of tuples to allocate. Defaults to 100,000. Set to Infinity to disable the limit.
+   */
+  readonly maxResults?: number;
+}
+
+const DEFAULT_MAX_CARTESIAN_RESULTS = 100_000;
 const DEFAULT_MAX_COMBINATION_RESULTS = 100_000;
 
 /**
@@ -188,10 +199,10 @@ export function chunk<T>(array: readonly T[], size = 2): T[][] {
  * @template K - The type of the key used for counting.
  * @param array - The array to count the occurrences in.
  * @param key - The key used for counting. Can be a property name or a function that returns the key.
- * @returns An object that maps each unique key to its count.
+ * @returns An object that maps each observed key to its count. Unobserved keys are absent.
  */
-export function countBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Record<K, number>;
-export function countBy<T, P extends KeyableProperty<T>>(array: readonly T[], key: P): Record<Extract<T[P], PropertyKey>, number>;
+export function countBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Partial<Record<K, number>>;
+export function countBy<T, P extends KeyableProperty<T>>(array: readonly T[], key: P): Partial<Record<Extract<T[P], PropertyKey>, number>>;
 export function countBy<T>(array: readonly T[], key: KeySelector<T>): Record<PropertyKey, number> {
   const keyFn = toSelectorFn<T, PropertyKey>(key);
   return array.reduce(
@@ -228,10 +239,10 @@ export function countBy<T>(array: readonly T[], key: KeySelector<T>): Record<Pro
  * @template K - The type of the key used for grouping.
  * @param array - The array to group.
  * @param key - The key used for grouping. Can be a property name or a function that returns the key.
- * @returns An object where the keys are the grouped values and the values are arrays of elements that belong to each group.
+ * @returns An object mapping observed keys to their groups. Unobserved keys are absent.
  */
-export function groupBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Record<K, T[]>;
-export function groupBy<T, P extends KeyableProperty<T>>(array: readonly T[], key: P): Record<Extract<T[P], PropertyKey>, T[]>;
+export function groupBy<T, K extends PropertyKey>(array: readonly T[], key: (item: T) => K): Partial<Record<K, T[]>>;
+export function groupBy<T, P extends KeyableProperty<T>>(array: readonly T[], key: P): Partial<Record<Extract<T[P], PropertyKey>, T[]>>;
 export function groupBy<T>(array: readonly T[], key: KeySelector<T>): Record<PropertyKey, T[]> {
   const result = {} as Record<PropertyKey, T[]>;
   const keyFn = toSelectorFn<T, PropertyKey>(key);
@@ -358,27 +369,33 @@ export function uniqueBy<T>(array: readonly T[], key: KeySelector<T>): T[] {
 }
 
 /**
- * Generates an iterable iterator that produces all possible combinations of elements from the input arrays.
+ * Lazily generates Cartesian-product tuples, advancing the first input array fastest.
+ * Empty input or any empty input array produces no tuples. Do not mutate inputs during iteration.
  *
  * @template T - The type of the elements in the input arrays.
  * @param items - An array of arrays containing the elements to combine.
  * @yields The next cartesian-product tuple from the input arrays.
  * @returns An iterable iterator that produces all possible combinations of elements.
  */
-function* cartesianIt<T = unknown>(items: readonly T[][]): IterableIterator<T[]> {
-  if (items.length === 0) return;
+export function* iterateCartesian<T = unknown>(items: readonly (readonly T[])[]): IterableIterator<T[]> {
+  if (items.length === 0 || items.some((item) => item.length === 0)) return;
 
-  const [first, ...rest] = items;
-  if (first === undefined) {
-    return;
-  }
+  const indices = items.map(() => 0);
+  while (true) {
+    yield items.map((item, index) => item[indices[index] as number] as T);
 
-  const remainder = rest.length > 0 ? cartesianIt(rest) : [[]];
-
-  for (const rem of remainder) {
-    for (const item of first) {
-      yield [item, ...rem];
+    // Advance the first dimension fastest to preserve the eager collector's ordering.
+    let dimension = 0;
+    for (; dimension < items.length; dimension++) {
+      const nextIndex = (indices[dimension] as number) + 1;
+      if (nextIndex < (items[dimension] as readonly T[]).length) {
+        indices[dimension] = nextIndex;
+        break;
+      }
+      indices[dimension] = 0;
     }
+
+    if (dimension === items.length) return;
   }
 }
 
@@ -397,10 +414,24 @@ function* cartesianIt<T = unknown>(items: readonly T[][]): IterableIterator<T[]>
  *   ```;
  *
  * @param items - The array of arrays to calculate the cartesian product from.
- * @returns The cartesian product as a 2D array.
+ * @param options - Allocation limits for the eager result.
+ * @returns The Cartesian product as a 2D array, with the first input array advancing fastest.
+ * @throws RangeError if `maxResults` is invalid or the result would exceed it.
  */
-export function cartesian<T = unknown>(items: readonly T[][]): T[][] {
-  return [...cartesianIt(items)];
+export function cartesian<T = unknown>(items: readonly (readonly T[])[], options: Readonly<CartesianOptions> = {}): T[][] {
+  const maxResults = options.maxResults ?? DEFAULT_MAX_CARTESIAN_RESULTS;
+  if (maxResults !== Number.POSITIVE_INFINITY && (!Number.isSafeInteger(maxResults) || maxResults < 0)) {
+    throw new RangeError('maxResults must be a non-negative safe integer or Infinity.');
+  }
+
+  if (items.length === 0 || items.some((item) => item.length === 0)) return [];
+
+  const resultCount = items.reduce((count, item) => count * BigInt(item.length), 1n);
+  if (maxResults !== Number.POSITIVE_INFINITY && resultCount > BigInt(maxResults)) {
+    throw new RangeError(`cartesian would produce ${resultCount} results, exceeding the limit of ${maxResults}.`);
+  }
+
+  return Array.from(iterateCartesian(items));
 }
 
 /**

@@ -1,6 +1,6 @@
 {
   "name": "std-kit",
-  "version": "2.9.0",
+  "version": "2.10.0",
   "private": false,
   "description": "NodeJS Standard Library Additions",
   "keywords": [

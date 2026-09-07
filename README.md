@@ -106,9 +106,27 @@ const users = [
 groupBy(users, 'role');
 // { admin: [{ name: 'Alice', ... }, { name: 'Charlie', ... }], user: [...] }
 
+// Groups and counts contain only observed keys; handle missing groups
+const admins = groupBy(users, 'role').admin ?? [];
+
 // Sort by multiple fields
 orderBy(users, ['role', 'name'], ['asc', 'desc']);
 ```
+
+`cartesian` collects at most 100,000 tuples by default and throws `RangeError` above that limit. Pass `{ maxResults }` to choose another limit (`Infinity` disables it), or use `iterateCartesian` to consume tuples lazily. Both accept readonly input arrays and advance the first dimension fastest.
+
+```typescript
+import { cartesian, iterateCartesian } from 'std-kit';
+
+cartesian([[1, 2], [3, 4]], { maxResults: 4 });
+// [[1, 3], [2, 3], [1, 4], [2, 4]]
+
+for (const tuple of iterateCartesian([[1, 2], [3, 4]])) {
+  console.log(tuple);
+}
+```
+
+Compatibility: `groupBy` and `countBy` return partial records because unobserved keys are absent. Callers must handle `undefined`, including when the key type is a literal union. Existing calls to `cartesian` producing more than 100,000 tuples must provide an explicit limit or use the iterator.
 
 ### 🎯 Objects
 

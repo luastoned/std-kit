@@ -18,6 +18,23 @@ describe('math utils', () => {
     expect(roundTo(1234, -2)).toBe(1200);
   });
 
+  it('preserves finite values when decimal scaling would overflow', () => {
+    expect(roundTo(1e308, 2)).toBe(1e308);
+    expect(roundTo(-1e308, 2)).toBe(-1e308);
+    expect(roundTo(Number.MAX_VALUE, 308)).toBe(Number.MAX_VALUE);
+    expect(roundTo(12.5, 308)).toBe(12.5);
+  });
+
+  it('retains rounding behavior for extreme precision and non-finite values', () => {
+    expect(roundTo(1e-308, 308)).toBe(1e-308);
+    expect(roundTo(1.4e308, -308)).toBe(1e308);
+    expect(roundTo(Number.MAX_VALUE, -308)).toBe(Infinity);
+    expect(roundTo(Infinity)).toBe(Infinity);
+    expect(roundTo(-Infinity)).toBe(-Infinity);
+    expect(roundTo(NaN)).toBeNaN();
+    expect(roundTo(-0)).toBe(-0);
+  });
+
   it.each([1.5, Number.POSITIVE_INFINITY, 309, -309])('rejects an invalid decimal count of %s', (decimals) => {
     expect(() => roundTo(1.23, decimals)).toThrow('roundTo decimals must be an integer between -308 and 308.');
   });
@@ -79,6 +96,26 @@ describe('math utils', () => {
       const num = randomNum(10, 5);
       expect(num).toBeGreaterThanOrEqual(5);
       expect(num).toBeLessThan(10);
+    }
+  });
+
+  it.each([0, 0.25, 0.5, 0.75, 1 - Number.EPSILON])('keeps overflowing random float spans finite at sample %s', (sample) => {
+    vi.spyOn(Math, 'random').mockReturnValue(sample);
+    try {
+      for (const bounds of [
+        [-Number.MAX_VALUE, Number.MAX_VALUE],
+        [Number.MAX_VALUE, -Number.MAX_VALUE],
+      ] as const) {
+        const result = randomNum(...bounds);
+        expect(Number.isFinite(result)).toBe(true);
+        expect(result).toBeGreaterThanOrEqual(-Number.MAX_VALUE);
+        expect(result).toBeLessThanOrEqual(Number.MAX_VALUE);
+        if (sample === 0.5) expect(result).toBe(0);
+        if (sample === 0) expect(result).toBe(-Number.MAX_VALUE);
+      }
+      expect(randomNum(Number.MAX_VALUE, Number.MAX_VALUE)).toBe(Number.MAX_VALUE);
+    } finally {
+      vi.restoreAllMocks();
     }
   });
 
