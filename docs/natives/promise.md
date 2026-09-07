@@ -49,7 +49,8 @@ queue(options: Readonly<QueueOptions> = {}): Queue
 Creates a reusable FIFO queue for promise-returning tasks.
 
 `concurrency` limits how many tasks may run at the same time. `interval` enforces a minimum delay between task starts, which is useful for simple API rate
-limiting.
+limiting. The first task starts without an interval delay. Tasks run in a microtask; failures do not stop subsequent tasks.
+Clearing rejects only waiting tasks and preserves the interval since the last start.
 
 
 **Returns:** A reusable promise task queue.

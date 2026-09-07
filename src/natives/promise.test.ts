@@ -1,9 +1,18 @@
-import { describe, it, expect } from 'vitest';
+import { afterEach, beforeEach, describe, it, expect, expectTypeOf, vi } from 'vitest';
 
 import { threads, defer, queue } from './promise';
 import { sleep } from './timer';
 
 describe('queue', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(0);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('runs queued tasks with the provided concurrency limit', async () => {
     const taskQueue = queue({ concurrency: 2 });
     let activeCount = 0;
@@ -19,6 +28,7 @@ describe('queue', () => {
       }),
     );
 
+    await vi.runAllTimersAsync();
     await expect(Promise.all(tasks)).resolves.toEqual([0, 1, 2, 3, 4]);
     expect(maxActiveCount).toBe(2);
   });
@@ -27,7 +37,7 @@ describe('queue', () => {
     const taskQueue = queue({ concurrency: 3, interval: 50 });
     const starts: number[] = [];
 
-    await Promise.all([
+    const results = Promise.all([
       taskQueue.add(() => {
         starts.push(Date.now());
         return 'a';
@@ -42,9 +52,11 @@ describe('queue', () => {
       }),
     ]);
 
-    expect(starts).toHaveLength(3);
-    expect((starts[1] as number) - (starts[0] as number)).toBeGreaterThanOrEqual(40);
-    expect((starts[2] as number) - (starts[1] as number)).toBeGreaterThanOrEqual(40);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(starts).toEqual([0]);
+    await vi.runAllTimersAsync();
+    await expect(results).resolves.toEqual(['a', 'b', 'c']);
+    expect(starts).toEqual([0, 50, 100]);
   });
 
   it('reports active and pending counts', async () => {
@@ -97,6 +109,73 @@ describe('queue', () => {
 
     await expect(first).resolves.toBe('first');
     await secondExpectation;
+  });
+
+  it.each([0, -1, Number.NaN, Number.NEGATIVE_INFINITY, 1.9, 2.9, Number.POSITIVE_INFINITY])('normalizes concurrency %s', async (concurrency) => {
+    const taskQueue = queue({ concurrency });
+    const tasks = Array.from({ length: 3 }, () => taskQueue.add(() => sleep(10)));
+    expect(taskQueue.activeCount).toBe(concurrency === Infinity ? 3 : concurrency === 2.9 ? 2 : 1);
+    await vi.runAllTimersAsync();
+    await Promise.all(tasks);
+    expect(taskQueue.activeCount).toBe(0);
+  });
+
+  it.each([0, -1, Number.NaN, Infinity, 0.9])('disables invalid or sub-millisecond intervals %s', async (interval) => {
+    const taskQueue = queue({ interval });
+    await taskQueue.add(() => 1);
+    await taskQueue.add(() => 2);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('releases capacity before settling failures and continues in FIFO order', async () => {
+    const taskQueue = queue();
+    const error = new Error('failure');
+    const first = taskQueue.add(() => {
+      throw error;
+    });
+    const second = taskQueue.add(() => 'second');
+    const third = taskQueue.add(async () => 'third');
+    await expect(first).rejects.toBe(error);
+    await expect(second).resolves.toBe('second');
+    await expect(third).resolves.toBe('third');
+    expect(taskQueue.activeCount).toBe(0);
+  });
+
+  it('clears interval timers and can be reused with the remaining interval', async () => {
+    const taskQueue = queue({ interval: 50 });
+    await taskQueue.add(() => 1);
+    const task = vi.fn(() => 2);
+    const pending = taskQueue.add(task);
+    const rejected = expect(pending).rejects.toThrow('Queue was cleared.');
+    taskQueue.clear();
+    await rejected;
+    expect(taskQueue.pendingCount).toBe(0);
+    expect(vi.getTimerCount()).toBe(0);
+    const next = taskQueue.add(() => 3);
+    await vi.runAllTimersAsync();
+    await expect(next).resolves.toBe(3);
+    expect(task).not.toHaveBeenCalled();
+    expect(Date.now()).toBe(50);
+  });
+
+  it('chunks intervals that exceed the platform timer range', async () => {
+    const taskQueue = queue({ interval: 2_147_483_648 });
+    await taskQueue.add(() => 1);
+    const task = vi.fn(() => 2);
+    const pending = taskQueue.add(task);
+    await vi.advanceTimersByTimeAsync(2_147_483_647);
+    expect(task).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(1);
+    await expect(pending).resolves.toBe(2);
+  });
+
+  it('preserves inferred task result types', async () => {
+    const taskQueue = queue();
+    const number = taskQueue.add(() => 1);
+    const string = taskQueue.add(async () => 'value');
+    expectTypeOf(number).toEqualTypeOf<Promise<number>>();
+    expectTypeOf(string).toEqualTypeOf<Promise<string>>();
+    await Promise.all([number, string]);
   });
 });
 

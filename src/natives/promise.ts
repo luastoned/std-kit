@@ -9,30 +9,36 @@ export type DeferredTask<T> = () => Promise<T>;
  * Options used to create a promise task queue.
  */
 export interface QueueOptions {
-  concurrency?: number;
-  interval?: number;
+  /**
+   * Maximum active tasks; positive fractions are floored, Infinity is unlimited, and invalid values become 1.
+   */
+  readonly concurrency?: number;
+  /**
+   * Minimum milliseconds between starts; positive fractions are floored and invalid values become 0.
+   */
+  readonly interval?: number;
 }
 
 /**
  * Reusable promise task queue.
  */
 export interface Queue {
+  /**
+   * Number of tasks reserved or running.
+   */
   readonly activeCount: number;
+  /**
+   * Number of tasks waiting to start.
+   */
   readonly pendingCount: number;
+  /**
+   * Enqueues a task; synchronous throws and asynchronous failures reject its promise without stopping the queue.
+   */
   add<T>(task: () => T | Promise<T>): Promise<Awaited<T>>;
+  /**
+   * Rejects waiting tasks with the reason (an Error by default). Active tasks continue and the queue remains reusable.
+   */
   clear(reason?: unknown): void;
-}
-
-/**
- * Internal queue entry.
- *
- * @template T - Task result type.
- * @internal
- */
-interface QueueEntry<T> {
-  task: () => T | Promise<T>;
-  resolve: (value: Awaited<T>) => void;
-  reject: (reason?: unknown) => void;
 }
 
 /**
@@ -98,7 +104,8 @@ function normalizeInterval(interval: number | undefined): number {
  * Creates a reusable FIFO queue for promise-returning tasks.
  *
  * `concurrency` limits how many tasks may run at the same time. `interval` enforces a minimum delay between task starts, which is useful for simple API rate
- * limiting.
+ * limiting. The first task starts without an interval delay. Tasks run in a microtask; failures do not stop subsequent tasks.
+ * Clearing rejects only waiting tasks and preserves the interval since the last start.
  *
  * @example
  *   ```ts
@@ -117,10 +124,10 @@ function normalizeInterval(interval: number | undefined): number {
 export function queue(options: Readonly<QueueOptions> = {}): Queue {
   const concurrency = normalizeParallel(options.concurrency ?? 1);
   const interval = normalizeInterval(options.interval);
-  const entries: Array<QueueEntry<unknown>> = [];
+  const entries: Array<{ run: () => void; reject: (reason?: unknown) => void }> = [];
 
   let activeCount = 0;
-  let lastStartTime = 0;
+  let lastStartTime = Number.NEGATIVE_INFINITY;
   let timer: ReturnType<typeof setTimeout> | undefined;
 
   function clearTimer(): void {
@@ -141,7 +148,7 @@ export function queue(options: Readonly<QueueOptions> = {}): Queue {
 
     const waitFor = interval > 0 ? Math.max(0, lastStartTime + interval - Date.now()) : 0;
     if (waitFor > 0) {
-      timer = setTimeout(startNext, waitFor);
+      timer = setTimeout(startNext, Math.min(waitFor, 2_147_483_647));
       return;
     }
 
@@ -154,7 +161,7 @@ export function queue(options: Readonly<QueueOptions> = {}): Queue {
     while (entries.length > 0 && activeCount < concurrency) {
       const waitFor = interval > 0 ? Math.max(0, lastStartTime + interval - Date.now()) : 0;
       if (waitFor > 0) {
-        timer = setTimeout(startNext, waitFor);
+        timer = setTimeout(startNext, Math.min(waitFor, 2_147_483_647));
         return;
       }
 
@@ -166,13 +173,7 @@ export function queue(options: Readonly<QueueOptions> = {}): Queue {
       activeCount++;
       lastStartTime = Date.now();
 
-      Promise.resolve()
-        .then(() => entry.task())
-        .then(entry.resolve, entry.reject)
-        .finally(() => {
-          activeCount--;
-          schedule();
-        });
+      entry.run();
     }
   }
 
@@ -186,10 +187,27 @@ export function queue(options: Readonly<QueueOptions> = {}): Queue {
     add<T>(task: () => T | Promise<T>): Promise<Awaited<T>> {
       return new Promise<Awaited<T>>((resolve, reject) => {
         entries.push({
-          task,
-          resolve,
+          run(): void {
+            void Promise.resolve()
+              .then(async (): Promise<Awaited<T>> => {
+                lastStartTime = Date.now();
+                return await task();
+              })
+              .then(
+                (value) => {
+                  activeCount--;
+                  resolve(value);
+                  schedule();
+                },
+                (error: unknown) => {
+                  activeCount--;
+                  reject(error);
+                  schedule();
+                },
+              );
+          },
           reject,
-        } as QueueEntry<unknown>);
+        });
         schedule();
       });
     },

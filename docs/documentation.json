@@ -41,7 +41,7 @@
 									"fileName": "structures/heap.ts",
 									"line": 29,
 									"character": 11,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L29"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L29"
 								}
 							],
 							"type": {
@@ -60,7 +60,7 @@
 									"fileName": "structures/heap.ts",
 									"line": 30,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L30"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L30"
 								}
 							],
 							"signatures": [
@@ -75,7 +75,7 @@
 											"fileName": "structures/heap.ts",
 											"line": 30,
 											"character": 2,
-											"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L30"
+											"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L30"
 										}
 									],
 									"type": {
@@ -96,7 +96,7 @@
 									"fileName": "structures/heap.ts",
 									"line": 31,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L31"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L31"
 								}
 							],
 							"signatures": [
@@ -111,7 +111,7 @@
 											"fileName": "structures/heap.ts",
 											"line": 31,
 											"character": 2,
-											"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L31"
+											"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L31"
 										}
 									],
 									"type": {
@@ -132,7 +132,7 @@
 									"fileName": "structures/heap.ts",
 									"line": 32,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L32"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L32"
 								}
 							],
 							"signatures": [
@@ -147,7 +147,7 @@
 											"fileName": "structures/heap.ts",
 											"line": 32,
 											"character": 2,
-											"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L32"
+											"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L32"
 										}
 									],
 									"type": {
@@ -181,7 +181,7 @@
 									"fileName": "structures/heap.ts",
 									"line": 34,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L34"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L34"
 								}
 							],
 							"signatures": [
@@ -196,7 +196,7 @@
 											"fileName": "structures/heap.ts",
 											"line": 34,
 											"character": 2,
-											"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L34"
+											"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L34"
 										}
 									],
 									"type": {
@@ -230,7 +230,7 @@
 									"fileName": "structures/heap.ts",
 									"line": 33,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L33"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L33"
 								}
 							],
 							"signatures": [
@@ -245,7 +245,7 @@
 											"fileName": "structures/heap.ts",
 											"line": 33,
 											"character": 2,
-											"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L33"
+											"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L33"
 										}
 									],
 									"parameters": [
@@ -283,7 +283,7 @@
 									"fileName": "structures/heap.ts",
 									"line": 36,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L36"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L36"
 								}
 							],
 							"signatures": [
@@ -298,7 +298,7 @@
 											"fileName": "structures/heap.ts",
 											"line": 36,
 											"character": 2,
-											"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L36"
+											"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L36"
 										}
 									],
 									"parameters": [
@@ -340,7 +340,7 @@
 									"fileName": "structures/heap.ts",
 									"line": 35,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L35"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L35"
 								}
 							],
 							"signatures": [
@@ -355,7 +355,7 @@
 											"fileName": "structures/heap.ts",
 											"line": 35,
 											"character": 2,
-											"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L35"
+											"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L35"
 										}
 									],
 									"parameters": [
@@ -406,7 +406,7 @@
 									"fileName": "structures/heap.ts",
 									"line": 37,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L37"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L37"
 								}
 							],
 							"signatures": [
@@ -421,7 +421,7 @@
 											"fileName": "structures/heap.ts",
 											"line": 37,
 											"character": 2,
-											"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L37"
+											"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L37"
 										}
 									],
 									"type": {
@@ -465,7 +465,7 @@
 							"fileName": "structures/heap.ts",
 							"line": 28,
 							"character": 17,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L28"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L28"
 						}
 					],
 					"typeParameters": [
@@ -512,7 +512,7 @@
 									"fileName": "structures/heap.ts",
 									"line": 19,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L19"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L19"
 								}
 							],
 							"type": {
@@ -545,7 +545,7 @@
 									"fileName": "structures/heap.ts",
 									"line": 20,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L20"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L20"
 								}
 							],
 							"type": {
@@ -579,7 +579,7 @@
 							"fileName": "structures/heap.ts",
 							"line": 18,
 							"character": 17,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L18"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L18"
 						}
 					],
 					"typeParameters": [
@@ -623,12 +623,20 @@
 							"flags": {
 								"isReadonly": true
 							},
+							"comment": {
+								"summary": [
+									{
+										"kind": "text",
+										"text": "Number of tasks reserved or running."
+									}
+								]
+							},
 							"sources": [
 								{
 									"fileName": "natives/promise.ts",
-									"line": 20,
+									"line": 29,
 									"character": 11,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L20"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L29"
 								}
 							],
 							"type": {
@@ -644,12 +652,20 @@
 							"flags": {
 								"isReadonly": true
 							},
+							"comment": {
+								"summary": [
+									{
+										"kind": "text",
+										"text": "Number of tasks waiting to start."
+									}
+								]
+							},
 							"sources": [
 								{
 									"fileName": "natives/promise.ts",
-									"line": 21,
+									"line": 33,
 									"character": 11,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L21"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L33"
 								}
 							],
 							"type": {
@@ -666,9 +682,9 @@
 							"sources": [
 								{
 									"fileName": "natives/promise.ts",
-									"line": 22,
+									"line": 37,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L22"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L37"
 								}
 							],
 							"signatures": [
@@ -678,12 +694,20 @@
 									"variant": "signature",
 									"kind": 4096,
 									"flags": {},
+									"comment": {
+										"summary": [
+											{
+												"kind": "text",
+												"text": "Enqueues a task; synchronous throws and asynchronous failures reject its promise without stopping the queue."
+											}
+										]
+									},
 									"sources": [
 										{
 											"fileName": "natives/promise.ts",
-											"line": 22,
+											"line": 37,
 											"character": 2,
-											"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L22"
+											"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L37"
 										}
 									],
 									"typeParameters": [
@@ -797,9 +821,9 @@
 							"sources": [
 								{
 									"fileName": "natives/promise.ts",
-									"line": 23,
+									"line": 41,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L23"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L41"
 								}
 							],
 							"signatures": [
@@ -809,12 +833,20 @@
 									"variant": "signature",
 									"kind": 4096,
 									"flags": {},
+									"comment": {
+										"summary": [
+											{
+												"kind": "text",
+												"text": "Rejects waiting tasks with the reason (an Error by default). Active tasks continue and the queue remains reusable."
+											}
+										]
+									},
 									"sources": [
 										{
 											"fileName": "natives/promise.ts",
-											"line": 23,
+											"line": 41,
 											"character": 2,
-											"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L23"
+											"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L41"
 										}
 									],
 									"parameters": [
@@ -859,9 +891,9 @@
 					"sources": [
 						{
 							"fileName": "natives/promise.ts",
-							"line": 19,
+							"line": 25,
 							"character": 17,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L19"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L25"
 						}
 					]
 				},
@@ -886,14 +918,23 @@
 							"variant": "declaration",
 							"kind": 1024,
 							"flags": {
-								"isOptional": true
+								"isOptional": true,
+								"isReadonly": true
+							},
+							"comment": {
+								"summary": [
+									{
+										"kind": "text",
+										"text": "Maximum active tasks; positive fractions are floored, Infinity is unlimited, and invalid values become 1."
+									}
+								]
 							},
 							"sources": [
 								{
 									"fileName": "natives/promise.ts",
-									"line": 12,
-									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L12"
+									"line": 15,
+									"character": 11,
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L15"
 								}
 							],
 							"type": {
@@ -907,14 +948,23 @@
 							"variant": "declaration",
 							"kind": 1024,
 							"flags": {
-								"isOptional": true
+								"isOptional": true,
+								"isReadonly": true
+							},
+							"comment": {
+								"summary": [
+									{
+										"kind": "text",
+										"text": "Minimum milliseconds between starts; positive fractions are floored and invalid values become 0."
+									}
+								]
 							},
 							"sources": [
 								{
 									"fileName": "natives/promise.ts",
-									"line": 13,
-									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L13"
+									"line": 19,
+									"character": 11,
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L19"
 								}
 							],
 							"type": {
@@ -937,7 +987,7 @@
 							"fileName": "natives/promise.ts",
 							"line": 11,
 							"character": 17,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L11"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L11"
 						}
 					]
 				},
@@ -967,7 +1017,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 26,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L26"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L26"
 								}
 							],
 							"type": {
@@ -986,7 +1036,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 27,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L27"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L27"
 								}
 							],
 							"type": {
@@ -1005,7 +1055,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 24,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L24"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L24"
 								}
 							],
 							"type": {
@@ -1037,7 +1087,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 25,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L25"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L25"
 								}
 							],
 							"type": {
@@ -1064,7 +1114,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 23,
 							"character": 17,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L23"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L23"
 						}
 					],
 					"typeParameters": [
@@ -1114,7 +1164,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 76,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L76"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L76"
 								}
 							],
 							"type": {
@@ -1144,7 +1194,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 94,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L94"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L94"
 								}
 							],
 							"type": {
@@ -1180,7 +1230,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 93,
 							"character": 17,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L93"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L93"
 						}
 					],
 					"typeParameters": [
@@ -1261,7 +1311,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 76,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L76"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L76"
 								}
 							],
 							"type": {
@@ -1287,7 +1337,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 75,
 							"character": 17,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L75"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L75"
 						}
 					],
 					"typeParameters": [
@@ -1363,7 +1413,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 76,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L76"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L76"
 								}
 							],
 							"type": {
@@ -1393,7 +1443,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 85,
 									"character": 2,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L85"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L85"
 								}
 							],
 							"type": {
@@ -1416,7 +1466,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 84,
 							"character": 17,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L84"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L84"
 						}
 					],
 					"typeParameters": [
@@ -1488,7 +1538,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 89,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L89"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L89"
 						}
 					],
 					"typeParameters": [
@@ -1525,7 +1575,7 @@
 									"fileName": "utilities/types.ts",
 									"line": 89,
 									"character": 39,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L89"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L89"
 								}
 							],
 							"signatures": [
@@ -1598,7 +1648,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 105,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L105"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L105"
 						}
 					],
 					"type": {
@@ -1677,7 +1727,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 199,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L199"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L199"
 						}
 					],
 					"typeParameters": [
@@ -1804,7 +1854,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 208,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L208"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L208"
 						}
 					],
 					"typeParameters": [
@@ -1931,7 +1981,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 217,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L217"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L217"
 						}
 					],
 					"typeParameters": [
@@ -2045,7 +2095,7 @@
 							"fileName": "natives/promise.ts",
 							"line": 6,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L6"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L6"
 						}
 					],
 					"typeParameters": [
@@ -2123,7 +2173,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 73,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L73"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L73"
 						}
 					],
 					"typeParameters": [
@@ -2221,7 +2271,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 81,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L81"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L81"
 						}
 					],
 					"typeParameters": [
@@ -2395,7 +2445,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 100,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L100"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L100"
 						}
 					],
 					"type": {
@@ -2468,7 +2518,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 325,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L325"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L325"
 						}
 					],
 					"typeParameters": [
@@ -2673,7 +2723,7 @@
 							"fileName": "structures/heap.ts",
 							"line": 11,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L11"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L11"
 						}
 					],
 					"typeParameters": [
@@ -2796,7 +2846,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 65,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L65"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L65"
 						}
 					],
 					"typeParameters": [
@@ -2925,7 +2975,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 34,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L34"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L34"
 						}
 					],
 					"typeParameters": [
@@ -3016,7 +3066,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 258,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L258"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L258"
 						}
 					],
 					"typeParameters": [
@@ -3134,7 +3184,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 130,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L130"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L130"
 						}
 					],
 					"typeParameters": [
@@ -3211,7 +3261,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 117,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L117"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L117"
 						}
 					],
 					"type": {
@@ -3300,7 +3350,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 279,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L279"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L279"
 						}
 					],
 					"typeParameters": [
@@ -3386,7 +3436,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 43,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L43"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L43"
 						}
 					],
 					"typeParameters": [
@@ -3473,7 +3523,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 174,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L174"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L174"
 						}
 					],
 					"typeParameters": [
@@ -3643,7 +3693,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 52,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L52"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L52"
 						}
 					],
 					"typeParameters": [
@@ -3720,7 +3770,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 248,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L248"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L248"
 						}
 					],
 					"typeParameters": [
@@ -3879,7 +3929,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 163,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L163"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L163"
 						}
 					],
 					"typeParameters": [
@@ -4039,7 +4089,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 112,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L112"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L112"
 						}
 					],
 					"type": {
@@ -4103,7 +4153,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 12,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L12"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L12"
 						}
 					],
 					"typeParameters": [
@@ -4215,7 +4265,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 239,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L239"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L239"
 						}
 					],
 					"typeParameters": [
@@ -4374,7 +4424,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 152,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L152"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L152"
 						}
 					],
 					"typeParameters": [
@@ -4540,7 +4590,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 141,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L141"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L141"
 						}
 					],
 					"typeParameters": [
@@ -4677,7 +4727,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 21,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L21"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L21"
 						}
 					],
 					"typeParameters": [
@@ -4768,7 +4818,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 54,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L54"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L54"
 						}
 					],
 					"typeParameters": [
@@ -4872,7 +4922,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 15,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L15"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L15"
 						}
 					],
 					"typeParameters": [
@@ -5048,7 +5098,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 7,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L7"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L7"
 						}
 					],
 					"type": {
@@ -5082,7 +5132,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 40,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L40"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L40"
 						}
 					],
 					"typeParameters": [
@@ -5183,7 +5233,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 68,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L68"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L68"
 						}
 					],
 					"typeParameters": [
@@ -5249,7 +5299,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 61,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L61"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L61"
 						}
 					],
 					"typeParameters": [
@@ -5361,7 +5411,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 33,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L33"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L33"
 						}
 					],
 					"type": {
@@ -5401,7 +5451,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 47,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L47"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L47"
 						}
 					],
 					"typeParameters": [
@@ -5525,7 +5575,7 @@
 							"fileName": "utilities/types.ts",
 							"line": 230,
 							"character": 12,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/types.ts#L230"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/types.ts#L230"
 						}
 					],
 					"typeParameters": [
@@ -5578,7 +5628,7 @@
 							"fileName": "natives/array.ts",
 							"line": 359,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L359"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L359"
 						}
 					],
 					"signatures": [
@@ -5625,7 +5675,7 @@
 									"fileName": "natives/array.ts",
 									"line": 359,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L359"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L359"
 								}
 							],
 							"typeParameters": [
@@ -5702,7 +5752,7 @@
 							"fileName": "natives/array.ts",
 							"line": 136,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L136"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L136"
 						}
 					],
 					"signatures": [
@@ -5749,7 +5799,7 @@
 									"fileName": "natives/array.ts",
 									"line": 136,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L136"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L136"
 								}
 							],
 							"typeParameters": [
@@ -5847,7 +5897,7 @@
 							"fileName": "natives/number.ts",
 							"line": 17,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L17"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L17"
 						}
 					],
 					"signatures": [
@@ -5894,7 +5944,7 @@
 									"fileName": "natives/number.ts",
 									"line": 17,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L17"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L17"
 								}
 							],
 							"parameters": [
@@ -5974,7 +6024,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 279,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L279"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L279"
 						}
 					],
 					"signatures": [
@@ -6021,7 +6071,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 279,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L279"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L279"
 								}
 							],
 							"typeParameters": [
@@ -6096,7 +6146,7 @@
 							"fileName": "natives/array.ts",
 							"line": 155,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L155"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L155"
 						}
 					],
 					"signatures": [
@@ -6139,7 +6189,7 @@
 									"fileName": "natives/array.ts",
 									"line": 155,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L155"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L155"
 								}
 							],
 							"typeParameters": [
@@ -6237,7 +6287,7 @@
 							"fileName": "natives/array.ts",
 							"line": 370,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L370"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L370"
 						}
 					],
 					"signatures": [
@@ -6271,7 +6321,7 @@
 									"fileName": "natives/array.ts",
 									"line": 370,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L370"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L370"
 								}
 							],
 							"typeParameters": [
@@ -6349,7 +6399,7 @@
 							"fileName": "natives/array.ts",
 							"line": 51,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L51"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L51"
 						}
 					],
 					"signatures": [
@@ -6383,7 +6433,7 @@
 									"fileName": "natives/array.ts",
 									"line": 51,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L51"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L51"
 								}
 							],
 							"typeParameters": [
@@ -6470,7 +6520,7 @@
 							"fileName": "natives/array.ts",
 							"line": 169,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L169"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L169"
 						}
 					],
 					"signatures": [
@@ -6504,7 +6554,7 @@
 									"fileName": "natives/array.ts",
 									"line": 169,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L169"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L169"
 								}
 							],
 							"typeParameters": [
@@ -6658,7 +6708,7 @@
 							"fileName": "structures/heap.ts",
 							"line": 183,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L183"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L183"
 						}
 					],
 					"signatures": [
@@ -6705,7 +6755,7 @@
 									"fileName": "structures/heap.ts",
 									"line": 183,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L183"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L183"
 								}
 							],
 							"typeParameters": [
@@ -6798,7 +6848,7 @@
 							"fileName": "structures/heap.ts",
 							"line": 294,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L294"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L294"
 						}
 					],
 					"signatures": [
@@ -6845,7 +6895,7 @@
 									"fileName": "structures/heap.ts",
 									"line": 294,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L294"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L294"
 								}
 							],
 							"typeParameters": [
@@ -6951,7 +7001,7 @@
 							"fileName": "structures/heap.ts",
 							"line": 271,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L271"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L271"
 						}
 					],
 					"signatures": [
@@ -6998,7 +7048,7 @@
 									"fileName": "structures/heap.ts",
 									"line": 271,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/heap.ts#L271"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/heap.ts#L271"
 								}
 							],
 							"typeParameters": [
@@ -7104,7 +7154,7 @@
 							"fileName": "natives/timer.ts",
 							"line": 38,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/timer.ts#L38"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/timer.ts#L38"
 						}
 					],
 					"signatures": [
@@ -7151,7 +7201,7 @@
 									"fileName": "natives/timer.ts",
 									"line": 38,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/timer.ts#L38"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/timer.ts#L38"
 								}
 							],
 							"typeParameters": [
@@ -7328,7 +7378,7 @@
 							"fileName": "natives/object.ts",
 							"line": 562,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L562"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L562"
 						}
 					],
 					"signatures": [
@@ -7371,7 +7421,7 @@
 									"fileName": "natives/object.ts",
 									"line": 562,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L562"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L562"
 								}
 							],
 							"typeParameters": [
@@ -7515,7 +7565,7 @@
 																	"fileName": "natives/object.ts",
 																	"line": 569,
 																	"character": 4,
-																	"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L569"
+																	"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L569"
 																}
 															],
 															"type": {
@@ -7536,7 +7586,7 @@
 																	"fileName": "natives/object.ts",
 																	"line": 567,
 																	"character": 4,
-																	"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L567"
+																	"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L567"
 																}
 															],
 															"type": {
@@ -7557,7 +7607,7 @@
 																	"fileName": "natives/object.ts",
 																	"line": 568,
 																	"character": 4,
-																	"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L568"
+																	"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L568"
 																}
 															],
 															"type": {
@@ -7634,7 +7684,7 @@
 																	"fileName": "natives/object.ts",
 																	"line": 566,
 																	"character": 4,
-																	"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L566"
+																	"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L566"
 																}
 															],
 															"type": {
@@ -7694,9 +7744,9 @@
 					"sources": [
 						{
 							"fileName": "natives/promise.ts",
-							"line": 56,
+							"line": 62,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L56"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L62"
 						}
 					],
 					"signatures": [
@@ -7737,9 +7787,9 @@
 							"sources": [
 								{
 									"fileName": "natives/promise.ts",
-									"line": 56,
+									"line": 62,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L56"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L62"
 								}
 							],
 							"typeParameters": [
@@ -7935,7 +7985,7 @@
 							"fileName": "natives/number.ts",
 							"line": 64,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L64"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L64"
 						}
 					],
 					"signatures": [
@@ -7969,7 +8019,7 @@
 									"fileName": "natives/number.ts",
 									"line": 64,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L64"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L64"
 								}
 							],
 							"parameters": [
@@ -8011,7 +8061,7 @@
 							"fileName": "natives/array.ts",
 							"line": 115,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L115"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L115"
 						}
 					],
 					"signatures": [
@@ -8045,7 +8095,7 @@
 									"fileName": "natives/array.ts",
 									"line": 115,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L115"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L115"
 								}
 							],
 							"typeParameters": [
@@ -8132,19 +8182,19 @@
 							"fileName": "natives/object.ts",
 							"line": 276,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L276"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L276"
 						},
 						{
 							"fileName": "natives/object.ts",
 							"line": 289,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L289"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L289"
 						},
 						{
 							"fileName": "natives/object.ts",
 							"line": 297,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L297"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L297"
 						}
 					],
 					"signatures": [
@@ -8191,7 +8241,7 @@
 									"fileName": "natives/object.ts",
 									"line": 276,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L276"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L276"
 								}
 							],
 							"typeParameters": [
@@ -8394,7 +8444,7 @@
 									"fileName": "natives/object.ts",
 									"line": 289,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L289"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L289"
 								}
 							],
 							"typeParameters": [
@@ -8509,7 +8559,7 @@
 																	"fileName": "natives/object.ts",
 																	"line": 292,
 																	"character": 4,
-																	"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L292"
+																	"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L292"
 																}
 															],
 															"type": {
@@ -8611,7 +8661,7 @@
 																	"fileName": "natives/object.ts",
 																	"line": 293,
 																	"character": 4,
-																	"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L293"
+																	"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L293"
 																}
 															],
 															"type": {
@@ -8740,7 +8790,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 319,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L319"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L319"
 						}
 					],
 					"signatures": [
@@ -8782,7 +8832,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 319,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L319"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L319"
 								}
 							],
 							"typeParameters": [
@@ -8975,7 +9025,7 @@
 							"fileName": "natives/array.ts",
 							"line": 99,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L99"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L99"
 						}
 					],
 					"signatures": [
@@ -9009,7 +9059,7 @@
 									"fileName": "natives/array.ts",
 									"line": 99,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L99"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L99"
 								}
 							],
 							"typeParameters": [
@@ -9101,7 +9151,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 389,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L389"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L389"
 						}
 					],
 					"signatures": [
@@ -9135,7 +9185,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 389,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L389"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L389"
 								}
 							],
 							"typeParameters": [
@@ -9292,7 +9342,7 @@
 							"fileName": "natives/object.ts",
 							"line": 77,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L77"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L77"
 						}
 					],
 					"signatures": [
@@ -9339,7 +9389,7 @@
 									"fileName": "natives/object.ts",
 									"line": 77,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L77"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L77"
 								}
 							],
 							"typeParameters": [
@@ -9545,7 +9595,7 @@
 							"fileName": "natives/array.ts",
 							"line": 206,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L206"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L206"
 						}
 					],
 					"signatures": [
@@ -9592,7 +9642,7 @@
 									"fileName": "natives/array.ts",
 									"line": 206,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L206"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L206"
 								}
 							],
 							"typeParameters": [
@@ -9752,19 +9802,19 @@
 							"fileName": "utilities/guard.ts",
 							"line": 24,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/guard.ts#L24"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/guard.ts#L24"
 						},
 						{
 							"fileName": "utilities/guard.ts",
 							"line": 25,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/guard.ts#L25"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/guard.ts#L25"
 						},
 						{
 							"fileName": "utilities/guard.ts",
 							"line": 26,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/guard.ts#L26"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/guard.ts#L26"
 						}
 					],
 					"signatures": [
@@ -9811,7 +9861,7 @@
 									"fileName": "utilities/guard.ts",
 									"line": 24,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/guard.ts#L24"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/guard.ts#L24"
 								}
 							],
 							"typeParameters": [
@@ -10011,7 +10061,7 @@
 									"fileName": "utilities/guard.ts",
 									"line": 25,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/guard.ts#L25"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/guard.ts#L25"
 								}
 							],
 							"typeParameters": [
@@ -10157,7 +10207,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 706,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L706"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L706"
 						}
 					],
 					"signatures": [
@@ -10204,7 +10254,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 706,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L706"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L706"
 								}
 							],
 							"typeParameters": [
@@ -10410,7 +10460,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 17,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L17"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L17"
 						}
 					],
 					"signatures": [
@@ -10469,7 +10519,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 17,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L17"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L17"
 								}
 							],
 							"typeParameters": [
@@ -10554,7 +10604,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 27,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L27"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L27"
 						}
 					],
 					"signatures": [
@@ -10600,7 +10650,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 27,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L27"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L27"
 								}
 							],
 							"parameters": [
@@ -10647,7 +10697,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 145,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L145"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L145"
 						}
 					],
 					"signatures": [
@@ -10698,7 +10748,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 145,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L145"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L145"
 								}
 							],
 							"parameters": [
@@ -10747,7 +10797,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 37,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L37"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L37"
 						}
 					],
 					"signatures": [
@@ -10793,7 +10843,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 37,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L37"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L37"
 								}
 							],
 							"parameters": [
@@ -10846,7 +10896,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 47,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L47"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L47"
 						}
 					],
 					"signatures": [
@@ -10880,7 +10930,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 47,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L47"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L47"
 								}
 							],
 							"typeParameters": [
@@ -10962,7 +11012,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 57,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L57"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L57"
 						}
 					],
 					"signatures": [
@@ -11008,7 +11058,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 57,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L57"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L57"
 								}
 							],
 							"parameters": [
@@ -11061,7 +11111,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 67,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L67"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L67"
 						}
 					],
 					"signatures": [
@@ -11107,7 +11157,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 67,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L67"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L67"
 								}
 							],
 							"parameters": [
@@ -11191,7 +11241,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 77,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L77"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L77"
 						}
 					],
 					"signatures": [
@@ -11225,7 +11275,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 77,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L77"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L77"
 								}
 							],
 							"parameters": [
@@ -11272,7 +11322,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 89,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L89"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L89"
 						}
 					],
 					"signatures": [
@@ -11318,7 +11368,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 89,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L89"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L89"
 								}
 							],
 							"typeParameters": [
@@ -11427,7 +11477,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 155,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L155"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L155"
 						}
 					],
 					"signatures": [
@@ -11465,7 +11515,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 155,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L155"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L155"
 								}
 							],
 							"parameters": [
@@ -11514,7 +11564,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 99,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L99"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L99"
 						}
 					],
 					"signatures": [
@@ -11560,7 +11610,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 99,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L99"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L99"
 								}
 							],
 							"parameters": [
@@ -11607,7 +11657,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 109,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L109"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L109"
 						}
 					],
 					"signatures": [
@@ -11653,7 +11703,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 109,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L109"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L109"
 								}
 							],
 							"parameters": [
@@ -11700,7 +11750,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 127,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L127"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L127"
 						}
 					],
 					"signatures": [
@@ -11759,7 +11809,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 127,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L127"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L127"
 								}
 							],
 							"parameters": [
@@ -11828,7 +11878,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 165,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L165"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L165"
 						}
 					],
 					"signatures": [
@@ -11862,7 +11912,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 165,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L165"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L165"
 								}
 							],
 							"parameters": [
@@ -11931,7 +11981,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 183,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L183"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L183"
 						}
 					],
 					"signatures": [
@@ -11990,7 +12040,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 183,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L183"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L183"
 								}
 							],
 							"typeParameters": [
@@ -12065,7 +12115,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 193,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L193"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L193"
 						}
 					],
 					"signatures": [
@@ -12111,7 +12161,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 193,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L193"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L193"
 								}
 							],
 							"parameters": [
@@ -12164,7 +12214,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 203,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L203"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L203"
 						}
 					],
 					"signatures": [
@@ -12198,7 +12248,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 203,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L203"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L203"
 								}
 							],
 							"typeParameters": [
@@ -12273,7 +12323,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 213,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L213"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L213"
 						}
 					],
 					"signatures": [
@@ -12319,7 +12369,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 213,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L213"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L213"
 								}
 							],
 							"parameters": [
@@ -12366,7 +12416,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 223,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L223"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L223"
 						}
 					],
 					"signatures": [
@@ -12412,7 +12462,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 223,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L223"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L223"
 								}
 							],
 							"parameters": [
@@ -12459,7 +12509,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 233,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L233"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L233"
 						}
 					],
 					"signatures": [
@@ -12493,7 +12543,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 233,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L233"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L233"
 								}
 							],
 							"parameters": [
@@ -12540,7 +12590,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 245,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L245"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L245"
 						}
 					],
 					"signatures": [
@@ -12574,7 +12624,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 245,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L245"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L245"
 								}
 							],
 							"typeParameters": [
@@ -12689,7 +12739,7 @@
 							"fileName": "utilities/generic.ts",
 							"line": 256,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L256"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L256"
 						}
 					],
 					"signatures": [
@@ -12723,7 +12773,7 @@
 									"fileName": "utilities/generic.ts",
 									"line": 256,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/utilities/generic.ts#L256"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/utilities/generic.ts#L256"
 								}
 							],
 							"typeParameters": [
@@ -12812,7 +12862,7 @@
 							"fileName": "natives/number.ts",
 							"line": 140,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L140"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L140"
 						}
 					],
 					"signatures": [
@@ -12846,7 +12896,7 @@
 									"fileName": "natives/number.ts",
 									"line": 140,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L140"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L140"
 								}
 							],
 							"parameters": [
@@ -12926,7 +12976,7 @@
 							"fileName": "natives/object.ts",
 							"line": 450,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L450"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L450"
 						}
 					],
 					"signatures": [
@@ -12973,7 +13023,7 @@
 									"fileName": "natives/object.ts",
 									"line": 450,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L450"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L450"
 								}
 							],
 							"typeParameters": [
@@ -13122,7 +13172,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 438,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L438"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L438"
 						}
 					],
 					"signatures": [
@@ -13169,7 +13219,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 438,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L438"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L438"
 								}
 							],
 							"typeParameters": [
@@ -13353,7 +13403,7 @@
 							"fileName": "natives/number.ts",
 							"line": 128,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L128"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L128"
 						}
 					],
 					"signatures": [
@@ -13400,7 +13450,7 @@
 									"fileName": "natives/number.ts",
 									"line": 128,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L128"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L128"
 								}
 							],
 							"parameters": [
@@ -13449,7 +13499,7 @@
 							"fileName": "natives/function.ts",
 							"line": 55,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/function.ts#L55"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/function.ts#L55"
 						}
 					],
 					"signatures": [
@@ -13496,7 +13546,7 @@
 									"fileName": "natives/function.ts",
 									"line": 55,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/function.ts#L55"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/function.ts#L55"
 								}
 							],
 							"typeParameters": [
@@ -13642,7 +13692,7 @@
 															"fileName": "natives/function.ts",
 															"line": 58,
 															"character": 4,
-															"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/function.ts#L58"
+															"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/function.ts#L58"
 														}
 													],
 													"type": {
@@ -13759,7 +13809,7 @@
 							"fileName": "natives/object.ts",
 							"line": 527,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L527"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L527"
 						}
 					],
 					"signatures": [
@@ -13822,7 +13872,7 @@
 									"fileName": "natives/object.ts",
 									"line": 527,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L527"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L527"
 								}
 							],
 							"typeParameters": [
@@ -13966,7 +14016,7 @@
 																	"fileName": "natives/object.ts",
 																	"line": 534,
 																	"character": 4,
-																	"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L534"
+																	"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L534"
 																}
 															],
 															"type": {
@@ -13987,7 +14037,7 @@
 																	"fileName": "natives/object.ts",
 																	"line": 532,
 																	"character": 4,
-																	"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L532"
+																	"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L532"
 																}
 															],
 															"type": {
@@ -14008,7 +14058,7 @@
 																	"fileName": "natives/object.ts",
 																	"line": 533,
 																	"character": 4,
-																	"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L533"
+																	"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L533"
 																}
 															],
 															"type": {
@@ -14085,7 +14135,7 @@
 																	"fileName": "natives/object.ts",
 																	"line": 531,
 																	"character": 4,
-																	"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L531"
+																	"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L531"
 																}
 															],
 															"type": {
@@ -14147,7 +14197,7 @@
 							"fileName": "natives/object.ts",
 							"line": 42,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L42"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L42"
 						}
 					],
 					"signatures": [
@@ -14181,7 +14231,7 @@
 									"fileName": "natives/object.ts",
 									"line": 42,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L42"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L42"
 								}
 							],
 							"typeParameters": [
@@ -14330,7 +14380,7 @@
 							"fileName": "natives/function.ts",
 							"line": 20,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/function.ts#L20"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/function.ts#L20"
 						}
 					],
 					"signatures": [
@@ -14373,7 +14423,7 @@
 									"fileName": "natives/function.ts",
 									"line": 20,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/function.ts#L20"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/function.ts#L20"
 								}
 							],
 							"typeParameters": [
@@ -14534,7 +14584,7 @@
 							"fileName": "natives/array.ts",
 							"line": 250,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L250"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L250"
 						}
 					],
 					"signatures": [
@@ -14581,7 +14631,7 @@
 									"fileName": "natives/array.ts",
 									"line": 250,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L250"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L250"
 								}
 							],
 							"typeParameters": [
@@ -14787,7 +14837,7 @@
 							"fileName": "natives/object.ts",
 							"line": 22,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L22"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L22"
 						}
 					],
 					"signatures": [
@@ -14821,7 +14871,7 @@
 									"fileName": "natives/object.ts",
 									"line": 22,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L22"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L22"
 								}
 							],
 							"typeParameters": [
@@ -14970,7 +15020,7 @@
 							"fileName": "natives/object.ts",
 							"line": 203,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L203"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L203"
 						}
 					],
 					"signatures": [
@@ -15041,7 +15091,7 @@
 									"fileName": "natives/object.ts",
 									"line": 203,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L203"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L203"
 								}
 							],
 							"typeParameters": [
@@ -15281,7 +15331,7 @@
 															"fileName": "natives/object.ts",
 															"line": 207,
 															"character": 28,
-															"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L207"
+															"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L207"
 														}
 													],
 													"type": {
@@ -15300,7 +15350,7 @@
 															"fileName": "natives/object.ts",
 															"line": 207,
 															"character": 42,
-															"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L207"
+															"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L207"
 														}
 													],
 													"type": {
@@ -15346,7 +15396,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 354,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L354"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L354"
 						}
 					],
 					"signatures": [
@@ -15380,7 +15430,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 354,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L354"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L354"
 								}
 							],
 							"typeParameters": [
@@ -15565,9 +15615,9 @@
 					"sources": [
 						{
 							"fileName": "natives/promise.ts",
-							"line": 117,
+							"line": 124,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L117"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L124"
 						}
 					],
 					"signatures": [
@@ -15597,7 +15647,7 @@
 									},
 									{
 										"kind": "text",
-										"text": " enforces a minimum delay between task starts, which is useful for simple API rate\nlimiting."
+										"text": " enforces a minimum delay between task starts, which is useful for simple API rate\nlimiting. The first task starts without an interval delay. Tasks run in a microtask; failures do not stop subsequent tasks.\nClearing rejects only waiting tasks and preserves the interval since the last start."
 									}
 								],
 								"blockTags": [
@@ -15628,9 +15678,9 @@
 							"sources": [
 								{
 									"fileName": "natives/promise.ts",
-									"line": 117,
+									"line": 124,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L117"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L124"
 								}
 							],
 							"parameters": [
@@ -15703,7 +15753,7 @@
 							"fileName": "natives/number.ts",
 							"line": 74,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L74"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L74"
 						}
 					],
 					"signatures": [
@@ -15737,7 +15787,7 @@
 									"fileName": "natives/number.ts",
 									"line": 74,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L74"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L74"
 								}
 							],
 							"parameters": [
@@ -15779,7 +15829,7 @@
 							"fileName": "natives/number.ts",
 							"line": 39,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L39"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L39"
 						}
 					],
 					"signatures": [
@@ -15813,7 +15863,7 @@
 									"fileName": "natives/number.ts",
 									"line": 39,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L39"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L39"
 								}
 							],
 							"parameters": [
@@ -15874,7 +15924,7 @@
 							"fileName": "natives/number.ts",
 							"line": 52,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L52"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L52"
 						}
 					],
 					"signatures": [
@@ -15908,7 +15958,7 @@
 									"fileName": "natives/number.ts",
 									"line": 52,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L52"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L52"
 								}
 							],
 							"parameters": [
@@ -15969,7 +16019,7 @@
 							"fileName": "natives/number.ts",
 							"line": 97,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L97"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L97"
 						}
 					],
 					"signatures": [
@@ -16016,7 +16066,7 @@
 									"fileName": "natives/number.ts",
 									"line": 97,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L97"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L97"
 								}
 							],
 							"parameters": [
@@ -16104,7 +16154,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 610,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L610"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L610"
 						}
 					],
 					"signatures": [
@@ -16146,7 +16196,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 610,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L610"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L610"
 								}
 							],
 							"typeParameters": [
@@ -16339,7 +16389,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 589,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L589"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L589"
 						}
 					],
 					"signatures": [
@@ -16373,7 +16423,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 589,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L589"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L589"
 								}
 							],
 							"typeParameters": [
@@ -16579,7 +16629,7 @@
 							"fileName": "natives/array.ts",
 							"line": 63,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L63"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L63"
 						}
 					],
 					"signatures": [
@@ -16613,7 +16663,7 @@
 									"fileName": "natives/array.ts",
 									"line": 63,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L63"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L63"
 								}
 							],
 							"typeParameters": [
@@ -16708,7 +16758,7 @@
 							"fileName": "natives/number.ts",
 							"line": 28,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L28"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L28"
 						}
 					],
 					"signatures": [
@@ -16742,7 +16792,7 @@
 									"fileName": "natives/number.ts",
 									"line": 28,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L28"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L28"
 								}
 							],
 							"parameters": [
@@ -16804,7 +16854,7 @@
 							"fileName": "natives/object.ts",
 							"line": 125,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L125"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L125"
 						}
 					],
 					"signatures": [
@@ -16851,7 +16901,7 @@
 									"fileName": "natives/object.ts",
 									"line": 125,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/object.ts#L125"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/object.ts#L125"
 								}
 							],
 							"typeParameters": [
@@ -16991,7 +17041,7 @@
 							"fileName": "natives/array.ts",
 							"line": 76,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L76"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L76"
 						}
 					],
 					"signatures": [
@@ -17025,7 +17075,7 @@
 									"fileName": "natives/array.ts",
 									"line": 76,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L76"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L76"
 								}
 							],
 							"typeParameters": [
@@ -17120,7 +17170,7 @@
 							"fileName": "natives/timer.ts",
 							"line": 14,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/timer.ts#L14"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/timer.ts#L14"
 						}
 					],
 					"signatures": [
@@ -17167,7 +17217,7 @@
 									"fileName": "natives/timer.ts",
 									"line": 14,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/timer.ts#L14"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/timer.ts#L14"
 								}
 							],
 							"parameters": [
@@ -17221,7 +17271,7 @@
 							"fileName": "natives/number.ts",
 							"line": 110,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L110"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L110"
 						}
 					],
 					"signatures": [
@@ -17255,7 +17305,7 @@
 									"fileName": "natives/number.ts",
 									"line": 110,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/number.ts#L110"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/number.ts#L110"
 								}
 							],
 							"parameters": [
@@ -17302,9 +17352,9 @@
 					"sources": [
 						{
 							"fileName": "natives/promise.ts",
-							"line": 225,
+							"line": 243,
 							"character": 22,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L225"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L243"
 						}
 					],
 					"signatures": [
@@ -17349,9 +17399,9 @@
 							"sources": [
 								{
 									"fileName": "natives/promise.ts",
-									"line": 225,
+									"line": 243,
 									"character": 22,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/promise.ts#L225"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/promise.ts#L243"
 								}
 							],
 							"typeParameters": [
@@ -17465,7 +17515,7 @@
 							"fileName": "natives/timer.ts",
 							"line": 69,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/timer.ts#L69"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/timer.ts#L69"
 						}
 					],
 					"signatures": [
@@ -17512,7 +17562,7 @@
 									"fileName": "natives/timer.ts",
 									"line": 69,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/timer.ts#L69"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/timer.ts#L69"
 								}
 							],
 							"typeParameters": [
@@ -17716,7 +17766,7 @@
 							"fileName": "natives/array.ts",
 							"line": 40,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L40"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L40"
 						}
 					],
 					"signatures": [
@@ -17763,7 +17813,7 @@
 									"fileName": "natives/array.ts",
 									"line": 40,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L40"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L40"
 								}
 							],
 							"typeParameters": [
@@ -17838,7 +17888,7 @@
 							"fileName": "natives/array.ts",
 							"line": 306,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L306"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L306"
 						}
 					],
 					"signatures": [
@@ -17885,7 +17935,7 @@
 									"fileName": "natives/array.ts",
 									"line": 306,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/array.ts#L306"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/array.ts#L306"
 								}
 							],
 							"typeParameters": [
@@ -18026,7 +18076,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 514,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L514"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L514"
 						}
 					],
 					"signatures": [
@@ -18073,7 +18123,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 514,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L514"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L514"
 								}
 							],
 							"typeParameters": [
@@ -18287,7 +18337,7 @@
 							"fileName": "structures/tree.ts",
 							"line": 255,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L255"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L255"
 						}
 					],
 					"signatures": [
@@ -18350,7 +18400,7 @@
 									"fileName": "structures/tree.ts",
 									"line": 255,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/structures/tree.ts#L255"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/structures/tree.ts#L255"
 								}
 							],
 							"typeParameters": [
@@ -18665,7 +18715,7 @@
 					"fileName": "index.ts",
 					"line": 1,
 					"character": 0,
-					"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/index.ts#L1"
+					"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/index.ts#L1"
 				}
 			]
 		},
@@ -18687,7 +18737,7 @@
 							"fileName": "natives/buffer.ts",
 							"line": 60,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/buffer.ts#L60"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/buffer.ts#L60"
 						}
 					],
 					"signatures": [
@@ -18734,7 +18784,7 @@
 									"fileName": "natives/buffer.ts",
 									"line": 60,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/buffer.ts#L60"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/buffer.ts#L60"
 								}
 							],
 							"parameters": [
@@ -18814,7 +18864,7 @@
 							"fileName": "natives/buffer.ts",
 							"line": 32,
 							"character": 16,
-							"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/buffer.ts#L32"
+							"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/buffer.ts#L32"
 						}
 					],
 					"signatures": [
@@ -18861,7 +18911,7 @@
 									"fileName": "natives/buffer.ts",
 									"line": 32,
 									"character": 16,
-									"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/natives/buffer.ts#L32"
+									"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/natives/buffer.ts#L32"
 								}
 							],
 							"parameters": [
@@ -18945,7 +18995,7 @@
 					"fileName": "node.ts",
 					"line": 1,
 					"character": 0,
-					"url": "https://github.com/luastoned/std-kit/blob/36b93cee1e6405173347196ef9ac8858398c43d1/src/node.ts#L1"
+					"url": "https://github.com/luastoned/std-kit/blob/5922975f5b95fe069efbc405d2f4e50ad355abf6/src/node.ts#L1"
 				}
 			]
 		}
@@ -19040,7 +19090,7 @@
 		},
 		{
 			"kind": "code",
-			"text": "```typescript\nimport { threads, defer, sleep } from 'std-kit';\n\n// Limit concurrent promises\nconst tasks = urls.map((url) => defer(fetch, url));\nconst results = await threads(3, tasks); // Max 3 concurrent requests\n\n// Sleep/delay execution\nawait sleep(1000); // 1 second\nawait sleep(500); // 500ms\n```"
+			"text": "```typescript\nimport { threads, defer, queue, sleep } from 'std-kit';\n\n// Limit concurrent promises\nconst tasks = urls.map((url) => defer(fetch, url));\nconst results = await threads(3, tasks); // Max 3 concurrent requests\n\n// Reuse a queue for API work\nconst apiQueue = queue({ concurrency: 3, interval: 1000 });\nconst user = await apiQueue.add(() => fetch('/users/1'));\n\n// Sleep/delay execution\nawait sleep(1000); // 1 second\nawait sleep(500); // 500ms\n```"
 		},
 		{
 			"kind": "text",
