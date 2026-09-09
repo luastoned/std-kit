@@ -7,7 +7,7 @@ Use these instructions for all work in this repository. This is a single-package
 - `std-kit` is a runtime-dependency-free utility library built with strict TypeScript and Yarn 1.
 - Support Node.js 20 and newer. Emit ES2022 and preserve both CommonJS and ESM package outputs.
 - Keep the main `std-kit` entrypoint in `src/index.ts` browser/universal compatible. Put Node.js-only APIs behind `src/node.ts` and the `std-kit/node` entrypoint.
-- Treat `package.json`, `tsconfig*.json`, `tsdown.config.mts`, `vitest.config.ts`, and the package scripts as authoritative for runtime, module, build, and tooling behavior.
+- Treat `package.json`, `tsconfig*.json`, `tsdown.config.mts`, `vitest.config.mts`, and the package scripts as authoritative for runtime, module, build, and tooling behavior.
 
 ## TypeScript principles
 

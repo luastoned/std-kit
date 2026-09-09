@@ -346,6 +346,8 @@ Contributions are welcome! Feel free to:
 - 📖 Improve documentation
 - 🔧 Submit pull requests
 
+Development tooling requires Node.js 22.21+ (22.x), 24.11+ (24.x), or 26+; the published library still supports Node.js 20 and newer. TypeScript 7 (`@typescript/native`) provides `tsc` for typechecking and compiler scripts. The `typescript` alias points to Microsoft’s TypeScript 6 compatibility package for TypeDoc, declaration bundling, and scripts that use the compiler API.
+
 Before submitting a change, run `yarn verify`. Maintainers can run `yarn release:check` for the complete build, documentation, export-parity, and package-content validation.
 
 ## 📄 License

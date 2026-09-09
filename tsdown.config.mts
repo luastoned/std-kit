@@ -15,6 +15,8 @@ export default defineConfig([
     minify: true,
     clean: true,
     dts: true,
+    // Explicit export lists keep bundled declaration helpers private.
+    footer: { dts: 'export {};' },
   },
   // Node.js-specific bundle
   {
@@ -27,5 +29,7 @@ export default defineConfig([
     treeshake: true,
     minify: true,
     dts: true,
+    // Explicit export lists keep bundled declaration helpers private.
+    footer: { dts: 'export {};' },
   },
 ]);

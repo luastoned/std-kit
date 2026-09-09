@@ -1327,7 +1327,7 @@
 																	{
 																		"type": "reference",
 																		"target": {
-																			"packageName": "typescript",
+																			"packageName": "@typescript/old",
 																			"packagePath": "lib/lib.es5.d.ts",
 																			"qualifiedName": "Promise"
 																		},
@@ -1341,7 +1341,7 @@
 																			}
 																		],
 																		"name": "Promise",
-																		"package": "typescript"
+																		"package": "@typescript/old"
 																	}
 																]
 															}
@@ -1354,7 +1354,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Promise"
 										},
@@ -1362,7 +1362,7 @@
 											{
 												"type": "reference",
 												"target": {
-													"packageName": "typescript",
+													"packageName": "@typescript/old",
 													"packagePath": "lib/lib.es5.d.ts",
 													"qualifiedName": "Awaited"
 												},
@@ -1376,11 +1376,11 @@
 													}
 												],
 												"name": "Awaited",
-												"package": "typescript"
+												"package": "@typescript/old"
 											}
 										],
 										"name": "Promise",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							]
@@ -1824,12 +1824,12 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "PropertyKey"
 								},
 								"name": "PropertyKey",
-								"package": "typescript"
+								"package": "@typescript/old"
 							},
 							"default": {
 								"type": "literal",
@@ -1931,12 +1931,12 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "PropertyKey"
 								},
 								"name": "PropertyKey",
-								"package": "typescript"
+								"package": "@typescript/old"
 							},
 							"default": {
 								"type": "literal",
@@ -2060,12 +2060,12 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "PropertyKey"
 								},
 								"name": "PropertyKey",
-								"package": "typescript"
+								"package": "@typescript/old"
 							},
 							"default": {
 								"type": "literal",
@@ -2632,7 +2632,7 @@
 															{
 																"type": "reference",
 																"target": {
-																	"packageName": "typescript",
+																	"packageName": "@typescript/old",
 																	"packagePath": "lib/lib.es5.d.ts",
 																	"qualifiedName": "Omit"
 																},
@@ -2660,7 +2660,7 @@
 																		"trueType": {
 																			"type": "reference",
 																			"target": {
-																				"packageName": "typescript",
+																				"packageName": "@typescript/old",
 																				"packagePath": "lib/lib.es5.d.ts",
 																				"qualifiedName": "Extract"
 																			},
@@ -2675,7 +2675,7 @@
 																				}
 																			],
 																			"name": "Extract",
-																			"package": "typescript"
+																			"package": "@typescript/old"
 																		},
 																		"falseType": {
 																			"type": "typeOperator",
@@ -2688,7 +2688,7 @@
 																	}
 																],
 																"name": "Omit",
-																"package": "typescript"
+																"package": "@typescript/old"
 															},
 															{
 																"type": "mapped",
@@ -2709,7 +2709,7 @@
 																	"trueType": {
 																		"type": "reference",
 																		"target": {
-																			"packageName": "typescript",
+																			"packageName": "@typescript/old",
 																			"packagePath": "lib/lib.es5.d.ts",
 																			"qualifiedName": "Extract"
 																		},
@@ -2724,7 +2724,7 @@
 																			}
 																		],
 																		"name": "Extract",
-																		"package": "typescript"
+																		"package": "@typescript/old"
 																	},
 																	"falseType": {
 																		"type": "typeOperator",
@@ -2934,7 +2934,7 @@
 							"extendsType": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
@@ -2945,12 +2945,12 @@
 									}
 								],
 								"name": "Promise",
-								"package": "typescript"
+								"package": "@typescript/old"
 							},
 							"trueType": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
@@ -2976,7 +2976,7 @@
 									}
 								],
 								"name": "Promise",
-								"package": "typescript"
+								"package": "@typescript/old"
 							},
 							"falseType": {
 								"type": "conditional",
@@ -2990,7 +2990,7 @@
 								"extendsType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es2015.collection.d.ts",
 										"qualifiedName": "Map"
 									},
@@ -3005,12 +3005,12 @@
 										}
 									],
 									"name": "Map",
-									"package": "typescript"
+									"package": "@typescript/old"
 								},
 								"trueType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es2015.collection.d.ts",
 										"qualifiedName": "Map"
 									},
@@ -3047,7 +3047,7 @@
 										}
 									],
 									"name": "Map",
-									"package": "typescript"
+									"package": "@typescript/old"
 								},
 								"falseType": {
 									"type": "conditional",
@@ -3061,7 +3061,7 @@
 									"extendsType": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es2015.collection.d.ts",
 											"qualifiedName": "ReadonlyMap"
 										},
@@ -3076,12 +3076,12 @@
 											}
 										],
 										"name": "ReadonlyMap",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"trueType": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es2015.collection.d.ts",
 											"qualifiedName": "ReadonlyMap"
 										},
@@ -3118,7 +3118,7 @@
 											}
 										],
 										"name": "ReadonlyMap",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"falseType": {
 										"type": "conditional",
@@ -3132,7 +3132,7 @@
 										"extendsType": {
 											"type": "reference",
 											"target": {
-												"packageName": "typescript",
+												"packageName": "@typescript/old",
 												"packagePath": "lib/lib.es2015.collection.d.ts",
 												"qualifiedName": "Set"
 											},
@@ -3143,12 +3143,12 @@
 												}
 											],
 											"name": "Set",
-											"package": "typescript"
+											"package": "@typescript/old"
 										},
 										"trueType": {
 											"type": "reference",
 											"target": {
-												"packageName": "typescript",
+												"packageName": "@typescript/old",
 												"packagePath": "lib/lib.es2015.collection.d.ts",
 												"qualifiedName": "Set"
 											},
@@ -3174,7 +3174,7 @@
 												}
 											],
 											"name": "Set",
-											"package": "typescript"
+											"package": "@typescript/old"
 										},
 										"falseType": {
 											"type": "conditional",
@@ -3188,7 +3188,7 @@
 											"extendsType": {
 												"type": "reference",
 												"target": {
-													"packageName": "typescript",
+													"packageName": "@typescript/old",
 													"packagePath": "lib/lib.es2015.collection.d.ts",
 													"qualifiedName": "ReadonlySet"
 												},
@@ -3199,12 +3199,12 @@
 													}
 												],
 												"name": "ReadonlySet",
-												"package": "typescript"
+												"package": "@typescript/old"
 											},
 											"trueType": {
 												"type": "reference",
 												"target": {
-													"packageName": "typescript",
+													"packageName": "@typescript/old",
 													"packagePath": "lib/lib.es2015.collection.d.ts",
 													"qualifiedName": "ReadonlySet"
 												},
@@ -3230,7 +3230,7 @@
 													}
 												],
 												"name": "ReadonlySet",
-												"package": "typescript"
+												"package": "@typescript/old"
 											},
 											"falseType": {
 												"type": "conditional",
@@ -3244,7 +3244,7 @@
 												"extendsType": {
 													"type": "reference",
 													"target": {
-														"packageName": "typescript",
+														"packageName": "@typescript/old",
 														"packagePath": "lib/lib.es2015.collection.d.ts",
 														"qualifiedName": "WeakMap"
 													},
@@ -3259,12 +3259,12 @@
 														}
 													],
 													"name": "WeakMap",
-													"package": "typescript"
+													"package": "@typescript/old"
 												},
 												"trueType": {
 													"type": "reference",
 													"target": {
-														"packageName": "typescript",
+														"packageName": "@typescript/old",
 														"packagePath": "lib/lib.es2015.collection.d.ts",
 														"qualifiedName": "WeakMap"
 													},
@@ -3301,7 +3301,7 @@
 														}
 													],
 													"name": "WeakMap",
-													"package": "typescript"
+													"package": "@typescript/old"
 												},
 												"falseType": {
 													"type": "conditional",
@@ -3315,7 +3315,7 @@
 													"extendsType": {
 														"type": "reference",
 														"target": {
-															"packageName": "typescript",
+															"packageName": "@typescript/old",
 															"packagePath": "lib/lib.es2015.collection.d.ts",
 															"qualifiedName": "WeakSet"
 														},
@@ -3326,12 +3326,12 @@
 															}
 														],
 														"name": "WeakSet",
-														"package": "typescript"
+														"package": "@typescript/old"
 													},
 													"trueType": {
 														"type": "reference",
 														"target": {
-															"packageName": "typescript",
+															"packageName": "@typescript/old",
 															"packagePath": "lib/lib.es2015.collection.d.ts",
 															"qualifiedName": "WeakSet"
 														},
@@ -3349,7 +3349,7 @@
 															}
 														],
 														"name": "WeakSet",
-														"package": "typescript"
+														"package": "@typescript/old"
 													},
 													"falseType": {
 														"type": "conditional",
@@ -3504,7 +3504,7 @@
 							"extendsType": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
@@ -3515,12 +3515,12 @@
 									}
 								],
 								"name": "Promise",
-								"package": "typescript"
+								"package": "@typescript/old"
 							},
 							"trueType": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
@@ -3546,7 +3546,7 @@
 									}
 								],
 								"name": "Promise",
-								"package": "typescript"
+								"package": "@typescript/old"
 							},
 							"falseType": {
 								"type": "conditional",
@@ -3560,7 +3560,7 @@
 								"extendsType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es2015.collection.d.ts",
 										"qualifiedName": "Map"
 									},
@@ -3575,12 +3575,12 @@
 										}
 									],
 									"name": "Map",
-									"package": "typescript"
+									"package": "@typescript/old"
 								},
 								"trueType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es2015.collection.d.ts",
 										"qualifiedName": "ReadonlyMap"
 									},
@@ -3625,7 +3625,7 @@
 										}
 									],
 									"name": "ReadonlyMap",
-									"package": "typescript"
+									"package": "@typescript/old"
 								},
 								"falseType": {
 									"type": "conditional",
@@ -3639,7 +3639,7 @@
 									"extendsType": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es2015.collection.d.ts",
 											"qualifiedName": "ReadonlyMap"
 										},
@@ -3654,12 +3654,12 @@
 											}
 										],
 										"name": "ReadonlyMap",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"trueType": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es2015.collection.d.ts",
 											"qualifiedName": "ReadonlyMap"
 										},
@@ -3704,7 +3704,7 @@
 											}
 										],
 										"name": "ReadonlyMap",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"falseType": {
 										"type": "conditional",
@@ -3718,7 +3718,7 @@
 										"extendsType": {
 											"type": "reference",
 											"target": {
-												"packageName": "typescript",
+												"packageName": "@typescript/old",
 												"packagePath": "lib/lib.es2015.collection.d.ts",
 												"qualifiedName": "Set"
 											},
@@ -3729,12 +3729,12 @@
 												}
 											],
 											"name": "Set",
-											"package": "typescript"
+											"package": "@typescript/old"
 										},
 										"trueType": {
 											"type": "reference",
 											"target": {
-												"packageName": "typescript",
+												"packageName": "@typescript/old",
 												"packagePath": "lib/lib.es2015.collection.d.ts",
 												"qualifiedName": "ReadonlySet"
 											},
@@ -3760,7 +3760,7 @@
 												}
 											],
 											"name": "ReadonlySet",
-											"package": "typescript"
+											"package": "@typescript/old"
 										},
 										"falseType": {
 											"type": "conditional",
@@ -3774,7 +3774,7 @@
 											"extendsType": {
 												"type": "reference",
 												"target": {
-													"packageName": "typescript",
+													"packageName": "@typescript/old",
 													"packagePath": "lib/lib.es2015.collection.d.ts",
 													"qualifiedName": "ReadonlySet"
 												},
@@ -3785,12 +3785,12 @@
 													}
 												],
 												"name": "ReadonlySet",
-												"package": "typescript"
+												"package": "@typescript/old"
 											},
 											"trueType": {
 												"type": "reference",
 												"target": {
-													"packageName": "typescript",
+													"packageName": "@typescript/old",
 													"packagePath": "lib/lib.es2015.collection.d.ts",
 													"qualifiedName": "ReadonlySet"
 												},
@@ -3816,7 +3816,7 @@
 													}
 												],
 												"name": "ReadonlySet",
-												"package": "typescript"
+												"package": "@typescript/old"
 											},
 											"falseType": {
 												"type": "conditional",
@@ -3830,7 +3830,7 @@
 												"extendsType": {
 													"type": "reference",
 													"target": {
-														"packageName": "typescript",
+														"packageName": "@typescript/old",
 														"packagePath": "lib/lib.es2015.collection.d.ts",
 														"qualifiedName": "WeakMap"
 													},
@@ -3845,12 +3845,12 @@
 														}
 													],
 													"name": "WeakMap",
-													"package": "typescript"
+													"package": "@typescript/old"
 												},
 												"trueType": {
 													"type": "reference",
 													"target": {
-														"packageName": "typescript",
+														"packageName": "@typescript/old",
 														"packagePath": "lib/lib.es2015.collection.d.ts",
 														"qualifiedName": "WeakMap"
 													},
@@ -3887,7 +3887,7 @@
 														}
 													],
 													"name": "WeakMap",
-													"package": "typescript"
+													"package": "@typescript/old"
 												},
 												"falseType": {
 													"type": "conditional",
@@ -3901,7 +3901,7 @@
 													"extendsType": {
 														"type": "reference",
 														"target": {
-															"packageName": "typescript",
+															"packageName": "@typescript/old",
 															"packagePath": "lib/lib.es2015.collection.d.ts",
 															"qualifiedName": "WeakSet"
 														},
@@ -3912,12 +3912,12 @@
 															}
 														],
 														"name": "WeakSet",
-														"package": "typescript"
+														"package": "@typescript/old"
 													},
 													"trueType": {
 														"type": "reference",
 														"target": {
-															"packageName": "typescript",
+															"packageName": "@typescript/old",
 															"packagePath": "lib/lib.es2015.collection.d.ts",
 															"qualifiedName": "WeakSet"
 														},
@@ -3935,7 +3935,7 @@
 															}
 														],
 														"name": "WeakSet",
-														"package": "typescript"
+														"package": "@typescript/old"
 													},
 													"falseType": {
 														"type": "conditional",
@@ -4090,7 +4090,7 @@
 							"extendsType": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
@@ -4101,12 +4101,12 @@
 									}
 								],
 								"name": "Promise",
-								"package": "typescript"
+								"package": "@typescript/old"
 							},
 							"trueType": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
@@ -4132,7 +4132,7 @@
 									}
 								],
 								"name": "Promise",
-								"package": "typescript"
+								"package": "@typescript/old"
 							},
 							"falseType": {
 								"type": "conditional",
@@ -4146,7 +4146,7 @@
 								"extendsType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es2015.collection.d.ts",
 										"qualifiedName": "Map"
 									},
@@ -4161,12 +4161,12 @@
 										}
 									],
 									"name": "Map",
-									"package": "typescript"
+									"package": "@typescript/old"
 								},
 								"trueType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es2015.collection.d.ts",
 										"qualifiedName": "Map"
 									},
@@ -4203,7 +4203,7 @@
 										}
 									],
 									"name": "Map",
-									"package": "typescript"
+									"package": "@typescript/old"
 								},
 								"falseType": {
 									"type": "conditional",
@@ -4217,7 +4217,7 @@
 									"extendsType": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es2015.collection.d.ts",
 											"qualifiedName": "ReadonlyMap"
 										},
@@ -4232,12 +4232,12 @@
 											}
 										],
 										"name": "ReadonlyMap",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"trueType": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es2015.collection.d.ts",
 											"qualifiedName": "ReadonlyMap"
 										},
@@ -4274,7 +4274,7 @@
 											}
 										],
 										"name": "ReadonlyMap",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"falseType": {
 										"type": "conditional",
@@ -4288,7 +4288,7 @@
 										"extendsType": {
 											"type": "reference",
 											"target": {
-												"packageName": "typescript",
+												"packageName": "@typescript/old",
 												"packagePath": "lib/lib.es2015.collection.d.ts",
 												"qualifiedName": "Set"
 											},
@@ -4299,12 +4299,12 @@
 												}
 											],
 											"name": "Set",
-											"package": "typescript"
+											"package": "@typescript/old"
 										},
 										"trueType": {
 											"type": "reference",
 											"target": {
-												"packageName": "typescript",
+												"packageName": "@typescript/old",
 												"packagePath": "lib/lib.es2015.collection.d.ts",
 												"qualifiedName": "Set"
 											},
@@ -4330,7 +4330,7 @@
 												}
 											],
 											"name": "Set",
-											"package": "typescript"
+											"package": "@typescript/old"
 										},
 										"falseType": {
 											"type": "conditional",
@@ -4344,7 +4344,7 @@
 											"extendsType": {
 												"type": "reference",
 												"target": {
-													"packageName": "typescript",
+													"packageName": "@typescript/old",
 													"packagePath": "lib/lib.es2015.collection.d.ts",
 													"qualifiedName": "ReadonlySet"
 												},
@@ -4355,12 +4355,12 @@
 													}
 												],
 												"name": "ReadonlySet",
-												"package": "typescript"
+												"package": "@typescript/old"
 											},
 											"trueType": {
 												"type": "reference",
 												"target": {
-													"packageName": "typescript",
+													"packageName": "@typescript/old",
 													"packagePath": "lib/lib.es2015.collection.d.ts",
 													"qualifiedName": "ReadonlySet"
 												},
@@ -4386,7 +4386,7 @@
 													}
 												],
 												"name": "ReadonlySet",
-												"package": "typescript"
+												"package": "@typescript/old"
 											},
 											"falseType": {
 												"type": "conditional",
@@ -4400,7 +4400,7 @@
 												"extendsType": {
 													"type": "reference",
 													"target": {
-														"packageName": "typescript",
+														"packageName": "@typescript/old",
 														"packagePath": "lib/lib.es2015.collection.d.ts",
 														"qualifiedName": "WeakMap"
 													},
@@ -4415,12 +4415,12 @@
 														}
 													],
 													"name": "WeakMap",
-													"package": "typescript"
+													"package": "@typescript/old"
 												},
 												"trueType": {
 													"type": "reference",
 													"target": {
-														"packageName": "typescript",
+														"packageName": "@typescript/old",
 														"packagePath": "lib/lib.es2015.collection.d.ts",
 														"qualifiedName": "WeakMap"
 													},
@@ -4457,7 +4457,7 @@
 														}
 													],
 													"name": "WeakMap",
-													"package": "typescript"
+													"package": "@typescript/old"
 												},
 												"falseType": {
 													"type": "conditional",
@@ -4471,7 +4471,7 @@
 													"extendsType": {
 														"type": "reference",
 														"target": {
-															"packageName": "typescript",
+															"packageName": "@typescript/old",
 															"packagePath": "lib/lib.es2015.collection.d.ts",
 															"qualifiedName": "WeakSet"
 														},
@@ -4482,12 +4482,12 @@
 															}
 														],
 														"name": "WeakSet",
-														"package": "typescript"
+														"package": "@typescript/old"
 													},
 													"trueType": {
 														"type": "reference",
 														"target": {
-															"packageName": "typescript",
+															"packageName": "@typescript/old",
 															"packagePath": "lib/lib.es2015.collection.d.ts",
 															"qualifiedName": "WeakSet"
 														},
@@ -4505,7 +4505,7 @@
 															}
 														],
 														"name": "WeakSet",
-														"package": "typescript"
+														"package": "@typescript/old"
 													},
 													"falseType": {
 														"type": "conditional",
@@ -4627,7 +4627,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Promise"
 										},
@@ -4641,7 +4641,7 @@
 											}
 										],
 										"name": "Promise",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							]
@@ -4842,7 +4842,7 @@
 											"type": {
 												"type": "reference",
 												"target": {
-													"packageName": "typescript",
+													"packageName": "@typescript/old",
 													"packagePath": "lib/lib.es5.d.ts",
 													"qualifiedName": "Parameters"
 												},
@@ -4856,14 +4856,14 @@
 													}
 												],
 												"name": "Parameters",
-												"package": "typescript"
+												"package": "@typescript/old"
 											}
 										}
 									],
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "ReturnType"
 										},
@@ -4877,7 +4877,7 @@
 											}
 										],
 										"name": "ReturnType",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							]
@@ -4920,7 +4920,7 @@
 					"type": {
 						"type": "reference",
 						"target": {
-							"packageName": "typescript",
+							"packageName": "@typescript/old",
 							"packagePath": "lib/lib.es5.d.ts",
 							"qualifiedName": "Record"
 						},
@@ -4928,12 +4928,12 @@
 							{
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "PropertyKey"
 								},
 								"name": "PropertyKey",
-								"package": "typescript"
+								"package": "@typescript/old"
 							},
 							{
 								"type": "intrinsic",
@@ -4941,7 +4941,7 @@
 							}
 						],
 						"name": "Record",
-						"package": "typescript"
+						"package": "@typescript/old"
 					}
 				},
 				{
@@ -5380,12 +5380,12 @@
 								"extendsType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es5.d.ts",
 										"qualifiedName": "PropertyKey"
 									},
 									"name": "PropertyKey",
-									"package": "typescript"
+									"package": "@typescript/old"
 								},
 								"trueType": {
 									"type": "reference",
@@ -5446,22 +5446,22 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "PropertyKey"
 								},
 								"name": "PropertyKey",
-								"package": "typescript"
+								"package": "@typescript/old"
 							},
 							"default": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "PropertyKey"
 								},
 								"name": "PropertyKey",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						}
 					],
@@ -5761,7 +5761,7 @@
 							{
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Omit"
 								},
@@ -5786,7 +5786,7 @@
 									}
 								],
 								"name": "Omit",
-								"package": "typescript"
+								"package": "@typescript/old"
 							},
 							{
 								"type": "reference",
@@ -5924,7 +5924,7 @@
 							{
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Record"
 								},
@@ -5939,7 +5939,7 @@
 									}
 								],
 								"name": "Record",
-								"package": "typescript"
+								"package": "@typescript/old"
 							},
 							{
 								"type": "array",
@@ -6215,7 +6215,7 @@
 					"type": {
 						"type": "reference",
 						"target": {
-							"packageName": "typescript",
+							"packageName": "@typescript/old",
 							"packagePath": "lib/lib.es5.d.ts",
 							"qualifiedName": "Pick"
 						},
@@ -6304,7 +6304,7 @@
 							}
 						],
 						"name": "Pick",
-						"package": "typescript"
+						"package": "@typescript/old"
 					}
 				},
 				{
@@ -6486,7 +6486,7 @@
 								"extendsType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es5.d.ts",
 										"qualifiedName": "Pick"
 									},
@@ -6511,7 +6511,7 @@
 										}
 									],
 									"name": "Pick",
-									"package": "typescript"
+									"package": "@typescript/old"
 								},
 								"trueType": {
 									"type": "reference",
@@ -6725,7 +6725,7 @@
 					"type": {
 						"type": "reference",
 						"target": {
-							"packageName": "typescript",
+							"packageName": "@typescript/old",
 							"packagePath": "lib/lib.es5.d.ts",
 							"qualifiedName": "Pick"
 						},
@@ -6814,7 +6814,7 @@
 							}
 						],
 						"name": "Pick",
-						"package": "typescript"
+						"package": "@typescript/old"
 					}
 				},
 				{
@@ -6853,7 +6853,7 @@
 					"type": {
 						"type": "reference",
 						"target": {
-							"packageName": "typescript",
+							"packageName": "@typescript/old",
 							"packagePath": "lib/lib.es5.d.ts",
 							"qualifiedName": "Record"
 						},
@@ -6868,7 +6868,7 @@
 							}
 						],
 						"name": "Record",
-						"package": "typescript"
+						"package": "@typescript/old"
 					}
 				},
 				{
@@ -7085,7 +7085,7 @@
 								"extendsType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es5.d.ts",
 										"qualifiedName": "Pick"
 									},
@@ -7110,7 +7110,7 @@
 										}
 									],
 									"name": "Pick",
-									"package": "typescript"
+									"package": "@typescript/old"
 								},
 								"trueType": {
 									"type": "intrinsic",
@@ -7234,7 +7234,7 @@
 							{
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Omit"
 								},
@@ -7255,12 +7255,12 @@
 									}
 								],
 								"name": "Omit",
-								"package": "typescript"
+								"package": "@typescript/old"
 							},
 							{
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Partial"
 								},
@@ -7268,7 +7268,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Pick"
 										},
@@ -7289,11 +7289,11 @@
 											}
 										],
 										"name": "Pick",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								],
 								"name": "Partial",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						]
 					}
@@ -7407,7 +7407,7 @@
 							{
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Required"
 								},
@@ -7415,7 +7415,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Pick"
 										},
@@ -7436,11 +7436,11 @@
 											}
 										],
 										"name": "Pick",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								],
 								"name": "Required",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						]
 					}
@@ -7691,7 +7691,7 @@
 							"default": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Record"
 								},
@@ -7706,7 +7706,7 @@
 									}
 								],
 								"name": "Record",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						},
 						{
@@ -7726,12 +7726,12 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "PropertyKey"
 								},
 								"name": "PropertyKey",
-								"package": "typescript"
+								"package": "@typescript/old"
 							},
 							"default": {
 								"type": "literal",
@@ -7752,7 +7752,7 @@
 							{
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Partial"
 								},
@@ -7760,7 +7760,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Record"
 										},
@@ -7803,11 +7803,11 @@
 											}
 										],
 										"name": "Record",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								],
 								"name": "Partial",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						]
 					}
@@ -8506,7 +8506,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -8519,7 +8519,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"defaultValue": "{}"
 								}
@@ -9120,7 +9120,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -9133,7 +9133,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"defaultValue": "{}"
 								}
@@ -9255,7 +9255,7 @@
 								"elementType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es5.d.ts",
 										"qualifiedName": "Exclude"
 									},
@@ -9275,7 +9275,7 @@
 										}
 									],
 									"name": "Exclude",
-									"package": "typescript"
+									"package": "@typescript/old"
 								}
 							}
 						}
@@ -9374,12 +9374,12 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "PropertyKey"
 										},
 										"name": "PropertyKey",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							],
@@ -9474,7 +9474,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Partial"
 								},
@@ -9482,7 +9482,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Record"
 										},
@@ -9500,11 +9500,11 @@
 											}
 										],
 										"name": "Record",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								],
 								"name": "Partial",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						},
 						{
@@ -9637,7 +9637,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Partial"
 								},
@@ -9645,7 +9645,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Record"
 										},
@@ -9653,7 +9653,7 @@
 											{
 												"type": "reference",
 												"target": {
-													"packageName": "typescript",
+													"packageName": "@typescript/old",
 													"packagePath": "lib/lib.es5.d.ts",
 													"qualifiedName": "Extract"
 												},
@@ -9678,16 +9678,16 @@
 													{
 														"type": "reference",
 														"target": {
-															"packageName": "typescript",
+															"packageName": "@typescript/old",
 															"packagePath": "lib/lib.es5.d.ts",
 															"qualifiedName": "PropertyKey"
 														},
 														"name": "PropertyKey",
-														"package": "typescript"
+														"package": "@typescript/old"
 													}
 												],
 												"name": "Extract",
-												"package": "typescript"
+												"package": "@typescript/old"
 											},
 											{
 												"type": "intrinsic",
@@ -9695,11 +9695,11 @@
 											}
 										],
 										"name": "Record",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								],
 								"name": "Partial",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						}
 					]
@@ -9800,7 +9800,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -9822,7 +9822,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							],
@@ -9940,7 +9940,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -9948,7 +9948,7 @@
 											{
 												"type": "reference",
 												"target": {
-													"packageName": "typescript",
+													"packageName": "@typescript/old",
 													"packagePath": "lib/lib.es5.d.ts",
 													"qualifiedName": "Partial"
 												},
@@ -9970,11 +9970,11 @@
 													}
 												],
 												"name": "Partial",
-												"package": "typescript"
+												"package": "@typescript/old"
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"defaultValue": "{}"
 								}
@@ -10093,7 +10093,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -10101,7 +10101,7 @@
 											{
 												"type": "reference",
 												"target": {
-													"packageName": "typescript",
+													"packageName": "@typescript/old",
 													"packagePath": "lib/lib.es5.d.ts",
 													"qualifiedName": "Partial"
 												},
@@ -10123,11 +10123,11 @@
 													}
 												],
 												"name": "Partial",
-												"package": "typescript"
+												"package": "@typescript/old"
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"defaultValue": "{}"
 								}
@@ -10535,7 +10535,7 @@
 															{
 																"type": "reference",
 																"target": {
-																	"packageName": "typescript",
+																	"packageName": "@typescript/old",
 																	"packagePath": "lib/lib.es5.d.ts",
 																	"qualifiedName": "Promise"
 																},
@@ -10549,7 +10549,7 @@
 																	}
 																],
 																"name": "Promise",
-																"package": "typescript"
+																"package": "@typescript/old"
 															}
 														]
 													}
@@ -10590,7 +10590,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Awaited"
 										},
@@ -10604,7 +10604,7 @@
 											}
 										],
 										"name": "Awaited",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								],
 								"name": "DeferredTask",
@@ -10918,7 +10918,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -10932,7 +10932,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								},
 								{
@@ -11121,7 +11121,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -11135,7 +11135,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								},
 								{
@@ -11171,7 +11171,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -11387,7 +11387,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							],
@@ -11511,12 +11511,12 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "PropertyKey"
 										},
 										"name": "PropertyKey",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"default": {
 										"type": "literal",
@@ -11542,7 +11542,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -11556,7 +11556,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								},
 								{
@@ -11608,7 +11608,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -11630,7 +11630,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							],
@@ -11864,12 +11864,12 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "PropertyKey"
 										},
 										"name": "PropertyKey",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"default": {
 										"type": "literal",
@@ -11895,7 +11895,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -11909,7 +11909,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								},
 								{
@@ -11931,7 +11931,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -11953,7 +11953,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							],
@@ -12122,7 +12122,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -12136,7 +12136,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								},
 								{
@@ -12329,12 +12329,12 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "PropertyKey"
 										},
 										"name": "PropertyKey",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							],
@@ -12429,7 +12429,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Partial"
 								},
@@ -12437,7 +12437,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Record"
 										},
@@ -12461,11 +12461,11 @@
 											}
 										],
 										"name": "Record",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								],
 								"name": "Partial",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						},
 						{
@@ -12611,7 +12611,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Partial"
 								},
@@ -12619,7 +12619,7 @@
 									{
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Record"
 										},
@@ -12627,7 +12627,7 @@
 											{
 												"type": "reference",
 												"target": {
-													"packageName": "typescript",
+													"packageName": "@typescript/old",
 													"packagePath": "lib/lib.es5.d.ts",
 													"qualifiedName": "Extract"
 												},
@@ -12652,16 +12652,16 @@
 													{
 														"type": "reference",
 														"target": {
-															"packageName": "typescript",
+															"packageName": "@typescript/old",
 															"packagePath": "lib/lib.es5.d.ts",
 															"qualifiedName": "PropertyKey"
 														},
 														"name": "PropertyKey",
-														"package": "typescript"
+														"package": "@typescript/old"
 													}
 												],
 												"name": "Extract",
-												"package": "typescript"
+												"package": "@typescript/old"
 											},
 											{
 												"type": "array",
@@ -12675,11 +12675,11 @@
 											}
 										],
 										"name": "Record",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								],
 								"name": "Partial",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						}
 					]
@@ -12807,7 +12807,7 @@
 													"type": {
 														"type": "reference",
 														"target": {
-															"packageName": "typescript",
+															"packageName": "@typescript/old",
 															"packagePath": "lib/lib.es5.d.ts",
 															"qualifiedName": "PromiseLike"
 														},
@@ -12821,7 +12821,7 @@
 															}
 														],
 														"name": "PromiseLike",
-														"package": "typescript"
+														"package": "@typescript/old"
 													}
 												}
 											]
@@ -12885,7 +12885,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
@@ -12908,7 +12908,7 @@
 									}
 								],
 								"name": "Promise",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						},
 						{
@@ -13187,12 +13187,12 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "PropertyKey"
 										},
 										"name": "PropertyKey",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"default": {
 										"type": "literal",
@@ -13218,7 +13218,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -13232,7 +13232,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								},
 								{
@@ -13306,7 +13306,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -13328,7 +13328,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							],
@@ -13767,12 +13767,12 @@
 								"targetType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es5.d.ts",
 										"qualifiedName": "Date"
 									},
 									"name": "Date",
-									"package": "typescript"
+									"package": "@typescript/old"
 								}
 							}
 						}
@@ -13870,7 +13870,7 @@
 								"targetType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es5.d.ts",
 										"qualifiedName": "Exclude"
 									},
@@ -13888,7 +13888,7 @@
 										}
 									],
 									"name": "Exclude",
-									"package": "typescript"
+									"package": "@typescript/old"
 								}
 							}
 						}
@@ -13982,12 +13982,12 @@
 								"targetType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es5.d.ts",
 										"qualifiedName": "Error"
 									},
 									"name": "Error",
-									"package": "typescript"
+									"package": "@typescript/old"
 								}
 							}
 						}
@@ -14332,7 +14332,7 @@
 								"targetType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es2015.collection.d.ts",
 										"qualifiedName": "Map"
 									},
@@ -14353,7 +14353,7 @@
 										}
 									],
 									"name": "Map",
-									"package": "typescript"
+									"package": "@typescript/old"
 								}
 							}
 						}
@@ -14733,7 +14733,7 @@
 								"targetType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es5.d.ts",
 										"qualifiedName": "Record"
 									},
@@ -14741,12 +14741,12 @@
 										{
 											"type": "reference",
 											"target": {
-												"packageName": "typescript",
+												"packageName": "@typescript/old",
 												"packagePath": "lib/lib.es5.d.ts",
 												"qualifiedName": "PropertyKey"
 											},
 											"name": "PropertyKey",
-											"package": "typescript"
+											"package": "@typescript/old"
 										},
 										{
 											"type": "intrinsic",
@@ -14754,7 +14754,7 @@
 										}
 									],
 									"name": "Record",
-									"package": "typescript"
+									"package": "@typescript/old"
 								}
 							}
 						}
@@ -14836,7 +14836,7 @@
 								"targetType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es5.d.ts",
 										"qualifiedName": "Record"
 									},
@@ -14844,12 +14844,12 @@
 										{
 											"type": "reference",
 											"target": {
-												"packageName": "typescript",
+												"packageName": "@typescript/old",
 												"packagePath": "lib/lib.es5.d.ts",
 												"qualifiedName": "PropertyKey"
 											},
 											"name": "PropertyKey",
-											"package": "typescript"
+											"package": "@typescript/old"
 										},
 										{
 											"type": "intrinsic",
@@ -14857,7 +14857,7 @@
 										}
 									],
 									"name": "Record",
-									"package": "typescript"
+									"package": "@typescript/old"
 								}
 							}
 						}
@@ -14977,7 +14977,7 @@
 								"targetType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es5.d.ts",
 										"qualifiedName": "Promise"
 									},
@@ -14991,7 +14991,7 @@
 										}
 									],
 									"name": "Promise",
-									"package": "typescript"
+									"package": "@typescript/old"
 								}
 							}
 						}
@@ -15085,12 +15085,12 @@
 								"targetType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es5.d.ts",
 										"qualifiedName": "RegExp"
 									},
 									"name": "RegExp",
-									"package": "typescript"
+									"package": "@typescript/old"
 								}
 							}
 						}
@@ -15185,7 +15185,7 @@
 								"targetType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es2015.collection.d.ts",
 										"qualifiedName": "Set"
 									},
@@ -15199,7 +15199,7 @@
 										}
 									],
 									"name": "Set",
-									"package": "typescript"
+									"package": "@typescript/old"
 								}
 							}
 						}
@@ -15588,7 +15588,7 @@
 								"targetType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es2015.collection.d.ts",
 										"qualifiedName": "WeakMap"
 									},
@@ -15609,7 +15609,7 @@
 										}
 									],
 									"name": "WeakMap",
-									"package": "typescript"
+									"package": "@typescript/old"
 								}
 							}
 						}
@@ -15712,7 +15712,7 @@
 								"targetType": {
 									"type": "reference",
 									"target": {
-										"packageName": "typescript",
+										"packageName": "@typescript/old",
 										"packagePath": "lib/lib.es2015.collection.d.ts",
 										"qualifiedName": "WeakSet"
 									},
@@ -15726,7 +15726,7 @@
 										}
 									],
 									"name": "WeakSet",
-									"package": "typescript"
+									"package": "@typescript/old"
 								}
 							}
 						}
@@ -15851,7 +15851,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es2015.iterable.d.ts",
 									"qualifiedName": "IterableIterator"
 								},
@@ -15868,7 +15868,7 @@
 									}
 								],
 								"name": "IterableIterator",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						}
 					]
@@ -15981,7 +15981,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es2015.iterable.d.ts",
 									"qualifiedName": "IterableIterator"
 								},
@@ -15998,7 +15998,7 @@
 									}
 								],
 								"name": "IterableIterator",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						}
 					]
@@ -16450,12 +16450,12 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "PropertyKey"
 										},
 										"name": "PropertyKey",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"default": {
 										"type": "literal",
@@ -16481,7 +16481,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -16495,7 +16495,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								},
 								{
@@ -16547,7 +16547,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -16569,7 +16569,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							],
@@ -16864,7 +16864,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -16886,7 +16886,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript",
+										"package": "@typescript/old",
 										"highlightedProperties": {
 											"keyFn": [
 												{
@@ -17084,7 +17084,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -17097,12 +17097,12 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"default": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -17115,7 +17115,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							],
@@ -17159,7 +17159,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -17173,7 +17173,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								},
 								{
@@ -17559,7 +17559,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Omit"
 								},
@@ -17580,7 +17580,7 @@
 									}
 								],
 								"name": "Omit",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						}
 					]
@@ -18230,7 +18230,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Pick"
 								},
@@ -18251,7 +18251,7 @@
 									}
 								],
 								"name": "Pick",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						}
 					]
@@ -18717,12 +18717,12 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "PropertyKey"
 										},
 										"name": "PropertyKey",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"default": {
 										"type": "literal",
@@ -18748,7 +18748,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -18762,7 +18762,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								},
 								{
@@ -18814,7 +18814,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -18836,7 +18836,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							],
@@ -18948,7 +18948,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -18961,7 +18961,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript",
+										"package": "@typescript/old",
 										"highlightedProperties": {
 											"concurrency": [
 												{
@@ -19510,12 +19510,12 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "PropertyKey"
 										},
 										"name": "PropertyKey",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"default": {
 										"type": "literal",
@@ -19541,7 +19541,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -19555,7 +19555,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								},
 								{
@@ -19607,7 +19607,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -19629,7 +19629,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							],
@@ -19737,12 +19737,12 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "PropertyKey"
 										},
 										"name": "PropertyKey",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"default": {
 										"type": "literal",
@@ -19768,7 +19768,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -19782,7 +19782,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								},
 								{
@@ -19856,7 +19856,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -19878,7 +19878,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							],
@@ -20643,7 +20643,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
@@ -20654,7 +20654,7 @@
 									}
 								],
 								"name": "Promise",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						}
 					]
@@ -20881,7 +20881,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
@@ -20898,7 +20898,7 @@
 									}
 								],
 								"name": "Promise",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						}
 					]
@@ -21119,7 +21119,7 @@
 											"type": {
 												"type": "reference",
 												"target": {
-													"packageName": "typescript",
+													"packageName": "@typescript/old",
 													"packagePath": "lib/lib.es5.d.ts",
 													"qualifiedName": "Promise"
 												},
@@ -21127,7 +21127,7 @@
 													{
 														"type": "reference",
 														"target": {
-															"packageName": "typescript",
+															"packageName": "@typescript/old",
 															"packagePath": "lib/lib.es5.d.ts",
 															"qualifiedName": "Awaited"
 														},
@@ -21141,11 +21141,11 @@
 															}
 														],
 														"name": "Awaited",
-														"package": "typescript"
+														"package": "@typescript/old"
 													}
 												],
 												"name": "Promise",
-												"package": "typescript"
+												"package": "@typescript/old"
 											}
 										}
 									]
@@ -21382,12 +21382,12 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "PropertyKey"
 										},
 										"name": "PropertyKey",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							],
@@ -21741,12 +21741,12 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "PropertyKey"
 										},
 										"name": "PropertyKey",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"default": {
 										"type": "literal",
@@ -21772,7 +21772,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -21786,7 +21786,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								},
 								{
@@ -21868,7 +21868,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -21890,7 +21890,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							],
@@ -22018,12 +22018,12 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "PropertyKey"
 										},
 										"name": "PropertyKey",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"default": {
 										"type": "literal",
@@ -22049,7 +22049,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -22063,7 +22063,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								},
 								{
@@ -22115,7 +22115,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -22137,7 +22137,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									}
 								}
 							],
@@ -22506,7 +22506,7 @@
 									"type": {
 										"type": "reference",
 										"target": {
-											"packageName": "typescript",
+											"packageName": "@typescript/old",
 											"packagePath": "lib/lib.es5.d.ts",
 											"qualifiedName": "Readonly"
 										},
@@ -22519,7 +22519,7 @@
 											}
 										],
 										"name": "Readonly",
-										"package": "typescript"
+										"package": "@typescript/old"
 									},
 									"defaultValue": "{}"
 								}
@@ -22527,7 +22527,7 @@
 							"type": {
 								"type": "reference",
 								"target": {
-									"packageName": "typescript",
+									"packageName": "@typescript/old",
 									"packagePath": "lib/lib.es5.d.ts",
 									"qualifiedName": "Promise"
 								},
@@ -22543,12 +22543,12 @@
 											{
 												"type": "reference",
 												"target": {
-													"packageName": "typescript",
+													"packageName": "@typescript/old",
 													"packagePath": "lib/lib.es5.d.ts",
 													"qualifiedName": "ArrayBufferLike"
 												},
 												"name": "ArrayBufferLike",
-												"package": "typescript"
+												"package": "@typescript/old"
 											}
 										],
 										"name": "Buffer",
@@ -22557,7 +22557,7 @@
 									}
 								],
 								"name": "Promise",
-								"package": "typescript"
+								"package": "@typescript/old"
 							}
 						}
 					]
@@ -22901,7 +22901,31 @@
 		},
 		{
 			"kind": "text",
-			"text": ") | Stream to buffer conversion and buffer utilities |\n\n---\n\n## 🤝 Contributing\n\nContributions are welcome! Feel free to:\n\n- 🐛 Report bugs\n- 💡 Suggest new features\n- 📖 Improve documentation\n- 🔧 Submit pull requests\n\nBefore submitting a change, run "
+			"text": ") | Stream to buffer conversion and buffer utilities |\n\n---\n\n## 🤝 Contributing\n\nContributions are welcome! Feel free to:\n\n- 🐛 Report bugs\n- 💡 Suggest new features\n- 📖 Improve documentation\n- 🔧 Submit pull requests\n\nDevelopment tooling requires Node.js 22.21+ (22.x), 24.11+ (24.x), or 26+; the published library still supports Node.js 20 and newer. TypeScript 7 ("
+		},
+		{
+			"kind": "code",
+			"text": "`@typescript/native`"
+		},
+		{
+			"kind": "text",
+			"text": ") provides "
+		},
+		{
+			"kind": "code",
+			"text": "`tsc`"
+		},
+		{
+			"kind": "text",
+			"text": " for typechecking and compiler scripts. The "
+		},
+		{
+			"kind": "code",
+			"text": "`typescript`"
+		},
+		{
+			"kind": "text",
+			"text": " alias points to Microsoft’s TypeScript 6 compatibility package for TypeDoc, declaration bundling, and scripts that use the compiler API.\n\nBefore submitting a change, run "
 		},
 		{
 			"kind": "code",
